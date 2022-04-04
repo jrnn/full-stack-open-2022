@@ -3,17 +3,15 @@ import Part from "./Part"
 import { Part as PartType } from "./types"
 
 interface Props {
-  part1: PartType
-  part2: PartType
-  part3: PartType
+  parts: Array<PartType>
 }
 
-const Content: FunctionComponent<Props> = (props) => {
+const Content: FunctionComponent<Props> = ({ parts }) => {
   return (
     <>
-      <Part {...props.part1} />
-      <Part {...props.part2} />
-      <Part {...props.part3} />
+      <Part {...parts[0]} />
+      <Part {...parts[1]} />
+      <Part {...parts[2]} />
     </>
   )
 }
