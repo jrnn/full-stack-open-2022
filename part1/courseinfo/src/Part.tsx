@@ -1,14 +1,10 @@
 import React, { FunctionComponent } from "react"
+import { Part as PartType } from "./types"
 
-interface Props {
-  part: string
-  exercises: number
-}
-
-const Part: FunctionComponent<Props> = ({ part, exercises }) => {
+const Part: FunctionComponent<PartType> = ({ name, exercises }) => {
   return (
     <p>
-      {part} {exercises}
+      {name} {exercises}
     </p>
   )
 }

@@ -1,30 +1,19 @@
 import React, { FunctionComponent } from "react"
 import Part from "./Part"
+import { Part as PartType } from "./types"
 
 interface Props {
-  part1: string
-  exercises1: number
-  part2: string
-  exercises2: number
-  part3: string
-  exercises3: number
+  part1: PartType
+  part2: PartType
+  part3: PartType
 }
 
 const Content: FunctionComponent<Props> = (props) => {
   return (
     <>
-      <Part
-        part={props.part1}
-        exercises={props.exercises1}
-      />
-      <Part
-        part={props.part2}
-        exercises={props.exercises2}
-      />
-      <Part
-        part={props.part3}
-        exercises={props.exercises3}
-      />
+      <Part {...props.part1} />
+      <Part {...props.part2} />
+      <Part {...props.part3} />
     </>
   )
 }
