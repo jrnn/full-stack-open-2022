@@ -1,13 +1,14 @@
 import React, { FunctionComponent } from "react"
+import { Course as CourseType } from "./types"
 
 interface Props {
-  course: string
+  course: CourseType
 }
 
 const Course: FunctionComponent<Props> = ({ course }) => {
   return (
     <h1>
-      {course}
+      {course.name}
     </h1>
   )
 }
