@@ -9,9 +9,13 @@ interface Props {
 
 const Statistics: FunctionComponent<Props> = ({ good, neutral, bad }) => {
   const total = good + neutral + bad
-  const average = (good - bad) / total
-  const positiveShare = 100 * good / total
-
+  if (total === 0) {
+    return (
+      <p>
+        No feedback given yet, go ahead and click away!
+      </p>
+    )
+  }
   return (
     <>
       <Statistic
@@ -32,11 +36,11 @@ const Statistics: FunctionComponent<Props> = ({ good, neutral, bad }) => {
       />
       <Statistic
         text="average"
-        score={average}
+        score={(good - bad) / total}
       />
       <Statistic
         text="positive"
-        score={`${positiveShare} %`}
+        score={`${100 * good / total} %`}
       />
     </>
   )
