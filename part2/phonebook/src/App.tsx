@@ -22,12 +22,20 @@ const App = () => {
   }
   const addPerson = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const trimmedName = name.trim()
+    const existingNames = persons.map(person => person.name)
+
+    if (existingNames.includes(trimmedName)) {
+      alert(`${trimmedName} is already present in contacts`)
+      return
+    }
     const newPerson: Person = {
-      name
+      name: trimmedName
     }
     setPersons(persons.concat(newPerson))
     setName("")
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -36,7 +44,7 @@ const App = () => {
         handleSubmit={addPerson}
         inputValue={name}
       />
-      <h2>Numbers</h2>
+      <h2>Contacts</h2>
       {persons.map(person =>
         <Entry
           key={person.name}
