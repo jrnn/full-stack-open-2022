@@ -21,6 +21,11 @@ const App = () => {
         id: 3,
         name: "State of a component",
         exercises: 14
+      },
+      {
+        id: 4,
+        name: "All you need to know about hooks",
+        exercises: 42
       }
     ]
   }
