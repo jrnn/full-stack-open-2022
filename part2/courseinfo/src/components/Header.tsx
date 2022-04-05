@@ -5,9 +5,9 @@ interface Props {
 }
 
 const Header: FunctionComponent<Props> = ({ header }) => (
-  <h1>
+  <h2>
     {header}
-  </h1>
+  </h2>
 )
 
 export default Header
