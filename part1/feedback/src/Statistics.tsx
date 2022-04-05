@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react"
-import Statistic from "./Statistic"
+import StatisticLine from "./StatisticLine"
 
 interface Props {
   good: number
@@ -18,29 +18,29 @@ const Statistics: FunctionComponent<Props> = ({ good, neutral, bad }) => {
   }
   return (
     <>
-      <Statistic
+      <StatisticLine
         text="good"
-        score={good}
+        value={good}
       />
-      <Statistic
+      <StatisticLine
         text="neutral"
-        score={neutral}
+        value={neutral}
       />
-      <Statistic
+      <StatisticLine
         text="bad"
-        score={bad}
+        value={bad}
       />
-      <Statistic
+      <StatisticLine
         text="total"
-        score={total}
+        value={total}
       />
-      <Statistic
+      <StatisticLine
         text="average"
-        score={(good - bad) / total}
+        value={(good - bad) / total}
       />
-      <Statistic
+      <StatisticLine
         text="positive"
-        score={`${100 * good / total} %`}
+        value={`${100 * good / total} %`}
       />
     </>
   )
