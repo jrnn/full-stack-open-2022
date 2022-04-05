@@ -6,9 +6,14 @@ interface Props {
 }
 
 const Entry: FunctionComponent<Props> = ({ person }) => (
-  <p>
-    {person.name}
-  </p>
+  <tr>
+    <td>
+      {person.name}
+    </td>
+    <td>
+      {person.phone}
+    </td>
+  </tr>
 )
 
 export default Entry

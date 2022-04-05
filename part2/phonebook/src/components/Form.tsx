@@ -1,12 +1,14 @@
 import React, { FormEvent, FunctionComponent } from "react"
 
 interface Props {
-  handleChange: (event: FormEvent<HTMLInputElement>) => void
+  editName: (event: FormEvent<HTMLInputElement>) => void
+  editPhone: (event: FormEvent<HTMLInputElement>) => void
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void
-  inputValue: string
+  name: string
+  phone: string
 }
 
-const Form: FunctionComponent<Props> = ({ handleChange, handleSubmit, inputValue }) => (
+const Form: FunctionComponent<Props> = ({ editName, editPhone, handleSubmit, name, phone }) => (
   <form onSubmit={handleSubmit}>
     <section>
       <label htmlFor="name">
@@ -14,8 +16,18 @@ const Form: FunctionComponent<Props> = ({ handleChange, handleSubmit, inputValue
       </label>
       <input
         id="name"
-        onChange={handleChange}
-        value={inputValue}
+        onChange={editName}
+        value={name}
+      />
+    </section>
+    <section>
+      <label htmlFor="phone">
+        Phone:
+      </label>
+      <input
+        id="phone"
+        onChange={editPhone}
+        value={phone}
       />
     </section>
     <section>
