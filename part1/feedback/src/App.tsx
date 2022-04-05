@@ -12,6 +12,10 @@ const App = () => {
   const [ neutral, setNeutral ] = useState(0)
   const [ bad, setBad ] = useState(0)
 
+  const total = good + neutral + bad
+  const average = (good - bad) / total
+  const positiveShare = 100 * good / total
+
   return (
     <>
       <Title title={"Give feedback"} />
@@ -39,6 +43,18 @@ const App = () => {
       <Statistic
         text="bad"
         score={bad}
+      />
+      <Statistic
+        text="total"
+        score={total}
+      />
+      <Statistic
+        text="average"
+        score={average}
+      />
+      <Statistic
+        text="positive"
+        score={`${positiveShare} %`}
       />
     </>
   )

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react"
 
 interface Props {
   text: string
-  score: number
+  score: number | string
 }
 
 const Statistic: FunctionComponent<Props> = ({ text, score }) => (
