@@ -6,9 +6,14 @@ interface Props {
 }
 
 const StatisticLine: FunctionComponent<Props> = ({ text, value }) => (
-  <div>
-    {text}: {value}
-  </div>
+  <tr>
+    <td>
+      {text}
+    </td>
+    <td>
+      {value}
+    </td>
+  </tr>
 )
 
 export default StatisticLine

@@ -17,32 +17,34 @@ const Statistics: FunctionComponent<Props> = ({ good, neutral, bad }) => {
     )
   }
   return (
-    <>
-      <StatisticLine
-        text="good"
-        value={good}
-      />
-      <StatisticLine
-        text="neutral"
-        value={neutral}
-      />
-      <StatisticLine
-        text="bad"
-        value={bad}
-      />
-      <StatisticLine
-        text="total"
-        value={total}
-      />
-      <StatisticLine
-        text="average"
-        value={(good - bad) / total}
-      />
-      <StatisticLine
-        text="positive"
-        value={`${100 * good / total} %`}
-      />
-    </>
+    <table>
+      <tbody>
+        <StatisticLine
+          text="good"
+          value={good}
+        />
+        <StatisticLine
+          text="neutral"
+          value={neutral}
+        />
+        <StatisticLine
+          text="bad"
+          value={bad}
+        />
+        <StatisticLine
+          text="total"
+          value={total}
+        />
+        <StatisticLine
+          text="average"
+          value={(good - bad) / total}
+        />
+        <StatisticLine
+          text="positive"
+          value={`${100 * good / total} %`}
+        />
+      </tbody>
+    </table>
   )
 }
 
