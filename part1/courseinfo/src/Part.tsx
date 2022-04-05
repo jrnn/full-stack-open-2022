@@ -1,7 +1,12 @@
 import React, { FunctionComponent } from "react"
 import { Part as PartType } from "./types"
 
-const Part: FunctionComponent<PartType> = ({ name, exercises }) => {
+interface Props {
+  part: PartType
+}
+
+const Part: FunctionComponent<Props> = ({ part }) => {
+  const { name, exercises } = part
   return (
     <p>
       {name} {exercises}
