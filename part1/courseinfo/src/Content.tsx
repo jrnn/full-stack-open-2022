@@ -9,9 +9,9 @@ interface Props {
 const Content: FunctionComponent<Props> = ({ parts }) => {
   return (
     <>
-      <Part {...parts[0]} />
-      <Part {...parts[1]} />
-      <Part {...parts[2]} />
+      <Part part={parts[0] as PartType} />
+      <Part part={parts[1] as PartType} />
+      <Part part={parts[2] as PartType} />
     </>
   )
 }
