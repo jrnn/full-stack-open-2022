@@ -1,37 +1,34 @@
 import React, { FormEvent, useState } from "react"
-import Entry from "./components/Entry"
+import Contacts from "./components/Contacts"
+import Filter from "./components/Filter"
 import Form from "./components/Form"
+import { persons as initialPersons } from "./persons"
 import { Person } from "./types"
-
-const initialPersons: Array<Person> = [
-  {
-    name: "Chuck Norris",
-    phone: "+1-42-666-1337"
-  },
-  {
-    name: "Spongebob Squarepants",
-    phone: "+13-313-1337"
-  }
-]
 
 const App = () => {
   const [ name, setName ] = useState("")
   const [ phone, setPhone ] = useState("")
+  const [ filter, setFilter ] = useState("")
   const [ persons, setPersons ] = useState(initialPersons)
 
-  const editName = (event: FormEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget
-    setName(value)
-  }
-  const editPhone = (event: FormEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget
-    setPhone(value)
-  }
+  const editName = (event: FormEvent<HTMLInputElement>) =>
+    setName(event.currentTarget.value)
+
+  const editPhone = (event: FormEvent<HTMLInputElement>) =>
+    setPhone(event.currentTarget.value)
+
+  const editFilter = (event: FormEvent<HTMLInputElement>) =>
+    setFilter(event.currentTarget.value)
+
   const addPerson = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmedName = name.trim()
     const existingNames = persons.map(person => person.name)
 
+    if (!trimmedName) {
+      alert("What kind of a name is that supposed to be?")
+      return
+    }
     if (existingNames.includes(trimmedName)) {
       alert(`${trimmedName} is already present in contacts`)
       return
@@ -56,16 +53,14 @@ const App = () => {
         phone={phone}
       />
       <h2>Contacts</h2>
-      <table>
-        <tbody>
-          {persons.map(person =>
-            <Entry
-              key={person.name}
-              person={person}
-            />
-          )}
-        </tbody>
-      </table>
+      <Filter
+        handleChange={editFilter}
+        value={filter}
+      />
+      <Contacts
+        filter={filter}
+        persons={persons}
+      />
     </div>
   )
 }
