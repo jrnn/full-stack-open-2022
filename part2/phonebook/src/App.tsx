@@ -2,20 +2,31 @@ import React, { FormEvent, useEffect, useState } from "react"
 import Entries from "./components/Entries"
 import Filter from "./components/Filter"
 import Form from "./components/Form"
+import Notification from "./components/Notification"
 import contactService from "./services/contacts"
-import { Contact } from "./types"
+import { Contact, Message } from "./types"
 
 const App = () => {
   const [ name, setName ] = useState("")
   const [ phone, setPhone ] = useState("")
   const [ filter, setFilter ] = useState("")
   const [ contacts, setContacts ] = useState([] as Array<Contact>)
+  const [ message, setMessage ] = useState({ type: "none" } as Message)
+
+  const notify = (text: string, type: "success" | "error") => {
+    setTimeout(() => setMessage({ type: "none" }), 5000)
+    setMessage({ text, type })
+  }
+  const handleError = (text: string) => (error: Error) => {
+    console.error(error)
+    notify(text, "error")
+  }
 
   useEffect(() => {
     contactService
       .getAllContacts()
       .then(initialContacts => setContacts(initialContacts))
-      .catch(error => console.error(error))
+      .catch(handleError("Could not fetch contacts from server, maybe try again later (who knows)"))
   }, [])
 
   const editName = (event: FormEvent<HTMLInputElement>) =>
@@ -32,7 +43,7 @@ const App = () => {
     const trimmedName = name.trim()
 
     if (!trimmedName) {
-      alert("What kind of a name is that supposed to be?")
+      notify("What kind of a name is that supposed to be?", "error")
       return
     }
     const existingContact = await contactService.getByName(trimmedName)
@@ -49,7 +60,9 @@ const App = () => {
             setContacts(contacts.map(contact => contact.id !== updatedContact.id ? contact : updatedContact))
             setName("")
             setPhone("")
+            notify(`${updatedContact.name}'s number has been updated`, "success")
           })
+          .catch(handleError(`Could not update ${existingContact.name}'s number, maybe they've just been deleted from server?`))
       }
     } else {
       contactService
@@ -58,25 +71,30 @@ const App = () => {
           setContacts(contacts.concat(newContact))
           setName("")
           setPhone("")
+          notify(`${newContact.name} added to contacts`, "success")
         })
-        .catch(error => console.error(error))
+        .catch(handleError("Failed to add new contact, maybe the server is down or something?"))
     }
   }
 
   const deleteContact = (id: number) => () => {
-    const contactToDelete = contacts.find(contact => contact.id === id) as Contact
-    const shouldDelete = window.confirm(`Are you sure you want to delete ${contactToDelete.name}?`)
+    const { name: nameToDelete } = contacts.find(contact => contact.id === id) as Contact
+    const shouldDelete = window.confirm(`Are you sure you want to delete ${nameToDelete}?`)
 
     if (shouldDelete) {
       contactService
         .removeContact(id)
-        .then(() => setContacts(contacts.filter(contact => contact.id !== id)))
-        .catch(error => console.error(error))
+        .then(() => {
+          setContacts(contacts.filter(contact => contact.id !== id))
+          notify(`${nameToDelete} deleted from contacts`, "success")
+        })
+        .catch(handleError(`Could not delete ${nameToDelete}, maybe they've already been deleted from server?`))
     }
   }
 
   return (
     <div>
+      <Notification {...message} />
       <h2>Phonebook</h2>
       <Form
         editName={editName}
