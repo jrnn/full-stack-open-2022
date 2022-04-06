@@ -1,0 +1,20 @@
+{
+  "name": "part3-phonebook-api",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc --project ./tsconfig.json",
+    "dev": "nodemon --watch src ./src/index.ts",
+    "start": "npm run build && node ./dist/index.js",
+    "types": "tsc --noEmit --project ./tsconfig.json"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.17.3"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.13",
+    "@types/node": "17.0.23",
+    "nodemon": "2.0.15",
+    "ts-node": "10.7.0"
+  }
+}
