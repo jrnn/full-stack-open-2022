@@ -27,20 +27,42 @@ const App = () => {
   const editFilter = (event: FormEvent<HTMLInputElement>) =>
     setFilter(event.currentTarget.value)
 
-  const addContact = (event: FormEvent<HTMLFormElement>) => {
+  const addContact = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    contactService
-      .createContact(name, phone)
-      .then(newContact => {
-        setContacts(contacts.concat(newContact))
-        setName("")
-        setPhone("")
-      })
-      .catch((error: Error) => {
-        console.error(error)
-        alert(error.message)
-      })
+    const trimmedName = name.trim()
+
+    if (!trimmedName) {
+      alert("What kind of a name is that supposed to be?")
+      return
+    }
+    const existingContact = await contactService.getByName(trimmedName)
+
+    if (existingContact) {
+      const shouldReplace = window.confirm(`${trimmedName} is already present in contacts, replace the existing number?`)
+      if (shouldReplace) {
+        contactService
+          .updateContact({
+            ...existingContact,
+            phone: phone.trim() || "N/A"
+          })
+          .then(updatedContact => {
+            setContacts(contacts.map(contact => contact.id !== updatedContact.id ? contact : updatedContact))
+            setName("")
+            setPhone("")
+          })
+      }
+    } else {
+      contactService
+        .createContact(trimmedName, phone)
+        .then(newContact => {
+          setContacts(contacts.concat(newContact))
+          setName("")
+          setPhone("")
+        })
+        .catch(error => console.error(error))
+    }
   }
+
   const deleteContact = (id: number) => () => {
     const contactToDelete = contacts.find(contact => contact.id === id) as Contact
     const shouldDelete = window.confirm(`Are you sure you want to delete ${contactToDelete.name}?`)
@@ -52,6 +74,7 @@ const App = () => {
         .catch(error => console.error(error))
     }
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
