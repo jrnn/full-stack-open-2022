@@ -1,15 +1,25 @@
-import React, { FormEvent, useState } from "react"
-import Contacts from "./components/Contacts"
+import React, { FormEvent, useEffect, useState } from "react"
+import axios from "axios"
+import Entries from "./components/Entries"
 import Filter from "./components/Filter"
 import Form from "./components/Form"
-import { persons as initialPersons } from "./persons"
-import { Person } from "./types"
+import { Contact } from "./types"
+
+const SERVER_URI = "http://localhost:3001/contacts"
 
 const App = () => {
   const [ name, setName ] = useState("")
   const [ phone, setPhone ] = useState("")
   const [ filter, setFilter ] = useState("")
-  const [ persons, setPersons ] = useState(initialPersons)
+  const [ contacts, setContacts ] = useState([] as Array<Contact>)
+
+  useEffect(() => {
+    axios
+      .get<Array<Contact>>(SERVER_URI)
+      .then(({ data }) => setContacts(data))
+      .catch(error => console.error(error))
+    },
+  [])
 
   const editName = (event: FormEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value)
@@ -20,10 +30,10 @@ const App = () => {
   const editFilter = (event: FormEvent<HTMLInputElement>) =>
     setFilter(event.currentTarget.value)
 
-  const addPerson = (event: FormEvent<HTMLFormElement>) => {
+  const addContact = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmedName = name.trim()
-    const existingNames = persons.map(person => person.name)
+    const existingNames = contacts.map(contact => contact.name)
 
     if (!trimmedName) {
       alert("What kind of a name is that supposed to be?")
@@ -33,11 +43,12 @@ const App = () => {
       alert(`${trimmedName} is already present in contacts`)
       return
     }
-    const newPerson: Person = {
+    const newContact: Contact = {
+      id: contacts.length + 1,
       name: trimmedName,
       phone: phone.trim() || "N/A"
     }
-    setPersons(persons.concat(newPerson))
+    setContacts(contacts.concat(newContact))
     setName("")
     setPhone("")
   }
@@ -48,7 +59,7 @@ const App = () => {
       <Form
         editName={editName}
         editPhone={editPhone}
-        handleSubmit={addPerson}
+        handleSubmit={addContact}
         name={name}
         phone={phone}
       />
@@ -57,9 +68,9 @@ const App = () => {
         handleChange={editFilter}
         value={filter}
       />
-      <Contacts
+      <Entries
+        contacts={contacts}
         filter={filter}
-        persons={persons}
       />
     </div>
   )
