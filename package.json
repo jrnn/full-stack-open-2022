@@ -4,7 +4,8 @@
   "description": "Full Stack Open 2022 exercises",
   "workspaces": [
     "part1/*",
-    "part2/*"
+    "part2/*",
+    "part3/*"
   ],
   "dependencies": {
     "axios": "0.26.1",
