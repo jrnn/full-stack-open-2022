@@ -1,11 +1,9 @@
 import React, { FormEvent, useEffect, useState } from "react"
-import axios from "axios"
 import Entries from "./components/Entries"
 import Filter from "./components/Filter"
 import Form from "./components/Form"
+import contactService from "./services/contacts"
 import { Contact } from "./types"
-
-const SERVER_URI = "http://localhost:3001/contacts"
 
 const App = () => {
   const [ name, setName ] = useState("")
@@ -14,12 +12,11 @@ const App = () => {
   const [ contacts, setContacts ] = useState([] as Array<Contact>)
 
   useEffect(() => {
-    axios
-      .get<Array<Contact>>(SERVER_URI)
-      .then(({ data }) => setContacts(data))
+    contactService
+      .getAllContacts()
+      .then(initialContacts => setContacts(initialContacts))
       .catch(error => console.error(error))
-    },
-  [])
+  }, [])
 
   const editName = (event: FormEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value)
@@ -32,28 +29,16 @@ const App = () => {
 
   const addContact = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const trimmedName = name.trim()
-    const existingNames = contacts.map(contact => contact.name)
-
-    if (!trimmedName) {
-      alert("What kind of a name is that supposed to be?")
-      return
-    }
-    if (existingNames.includes(trimmedName)) {
-      alert(`${trimmedName} is already present in contacts`)
-      return
-    }
-    const contactDto = {
-      name: trimmedName,
-      phone: phone.trim() || "N/A"
-    }
-    axios
-      .post<Contact>(SERVER_URI, contactDto)
-      .then(({ data: newContact }) => {
-        console.log(newContact)
+    contactService
+      .createContact(name, phone)
+      .then(newContact => {
         setContacts(contacts.concat(newContact))
         setName("")
         setPhone("")
+      })
+      .catch((error: Error) => {
+        console.error(error)
+        alert(error.message)
       })
   }
 
