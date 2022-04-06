@@ -4,10 +4,11 @@ import Entry from "./Entry"
 
 interface Props {
   contacts: Array<Contact>
+  deleteContact: (id: number) => () => void
   filter: string
 }
 
-const Entries: FunctionComponent<Props> = ({ contacts, filter }) => {
+const Entries: FunctionComponent<Props> = ({ contacts, deleteContact, filter }) => {
   const trimmedFilter = filter.trim().toLowerCase()
   const contactsToShow = !trimmedFilter
     ? contacts
@@ -20,6 +21,7 @@ const Entries: FunctionComponent<Props> = ({ contacts, filter }) => {
           <Entry
             key={contact.id}
             contact={contact}
+            handleClick={deleteContact(contact.id)}
           />
         )}
       </tbody>

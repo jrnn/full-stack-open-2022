@@ -41,7 +41,17 @@ const App = () => {
         alert(error.message)
       })
   }
+  const deleteContact = (id: number) => () => {
+    const contactToDelete = contacts.find(contact => contact.id === id) as Contact
+    const shouldDelete = window.confirm(`Are you sure you want to delete ${contactToDelete.name}?`)
 
+    if (shouldDelete) {
+      contactService
+        .removeContact(id)
+        .then(() => setContacts(contacts.filter(contact => contact.id !== id)))
+        .catch(error => console.error(error))
+    }
+  }
   return (
     <div>
       <h2>Phonebook</h2>
@@ -59,6 +69,7 @@ const App = () => {
       />
       <Entries
         contacts={contacts}
+        deleteContact={deleteContact}
         filter={filter}
       />
     </div>

@@ -9,7 +9,7 @@ const getAllContacts = (): Promise<Array<Contact>> => {
     .then(response => response.data)
 }
 
-const createContact = async (name: string, phone: string): Promise<Contact> => {
+const createContact = (name: string, phone: string): Promise<Contact> => {
   const trimmedName = name.trim()
   if (!trimmedName) {
     throw new Error("What kind of a name is that supposed to be?")
@@ -31,7 +31,12 @@ const createContact = async (name: string, phone: string): Promise<Contact> => {
     })
 }
 
+const removeContact = (id: number): Promise<void> => {
+  return axios.delete(`${rootUri}/${id}`)
+}
+
 export default {
   getAllContacts,
-  createContact
+  createContact,
+  removeContact
 }
