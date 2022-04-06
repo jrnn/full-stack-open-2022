@@ -16,6 +16,18 @@ app.get(rootUri, (_, response) => {
   response.json(persons)
 })
 
+app.get(`${rootUri}/:id`, (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.find(p => p.id === id)
+
+  if (!person) {
+    return response
+      .status(404)
+      .json({ error: `no person found with id ${id}` })
+  }
+  return response.json(person)
+})
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`)
 })
