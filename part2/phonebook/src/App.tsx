@@ -2,14 +2,21 @@ import React, { FormEvent, useEffect, useState } from "react"
 import Entries from "./components/Entries"
 import Filter from "./components/Filter"
 import Form from "./components/Form"
+import Notification from "./components/Notification"
 import contactService from "./services/contacts"
-import { Contact } from "./types"
+import { Contact, Message } from "./types"
 
 const App = () => {
   const [ name, setName ] = useState("")
   const [ phone, setPhone ] = useState("")
   const [ filter, setFilter ] = useState("")
   const [ contacts, setContacts ] = useState([] as Array<Contact>)
+  const [ message, setMessage ] = useState({ type: "none" } as Message)
+
+  const notify = (text: string, type: "success" | "error") => {
+    setTimeout(() => setMessage({ type: "none" }), 5000)
+    setMessage({ text, type })
+  }
 
   useEffect(() => {
     contactService
@@ -32,7 +39,7 @@ const App = () => {
     const trimmedName = name.trim()
 
     if (!trimmedName) {
-      alert("What kind of a name is that supposed to be?")
+      notify("What kind of a name is that supposed to be?", "error")
       return
     }
     const existingContact = await contactService.getByName(trimmedName)
@@ -49,6 +56,7 @@ const App = () => {
             setContacts(contacts.map(contact => contact.id !== updatedContact.id ? contact : updatedContact))
             setName("")
             setPhone("")
+            notify(`${updatedContact.name}'s number has been updated`, "success")
           })
       }
     } else {
@@ -58,25 +66,30 @@ const App = () => {
           setContacts(contacts.concat(newContact))
           setName("")
           setPhone("")
+          notify(`${newContact.name} added to contacts`, "success")
         })
         .catch(error => console.error(error))
     }
   }
 
   const deleteContact = (id: number) => () => {
-    const contactToDelete = contacts.find(contact => contact.id === id) as Contact
-    const shouldDelete = window.confirm(`Are you sure you want to delete ${contactToDelete.name}?`)
+    const { name: nameToDelete } = contacts.find(contact => contact.id === id) as Contact
+    const shouldDelete = window.confirm(`Are you sure you want to delete ${nameToDelete}?`)
 
     if (shouldDelete) {
       contactService
         .removeContact(id)
-        .then(() => setContacts(contacts.filter(contact => contact.id !== id)))
+        .then(() => {
+          setContacts(contacts.filter(contact => contact.id !== id))
+          notify(`${nameToDelete} deleted from contacts`, "success")
+        })
         .catch(error => console.error(error))
     }
   }
 
   return (
     <div>
+      <Notification {...message} />
       <h2>Phonebook</h2>
       <Form
         editName={editName}

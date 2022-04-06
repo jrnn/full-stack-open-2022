@@ -3,3 +3,8 @@ export interface Contact {
   name: string
   phone: string
 }
+
+export interface Message {
+  text?: string
+  type: "success" | "error" | "none"
+}
