@@ -43,14 +43,18 @@ const App = () => {
       alert(`${trimmedName} is already present in contacts`)
       return
     }
-    const newContact: Contact = {
-      id: contacts.length + 1,
+    const contactDto = {
       name: trimmedName,
       phone: phone.trim() || "N/A"
     }
-    setContacts(contacts.concat(newContact))
-    setName("")
-    setPhone("")
+    axios
+      .post<Contact>(SERVER_URI, contactDto)
+      .then(({ data: newContact }) => {
+        console.log(newContact)
+        setContacts(contacts.concat(newContact))
+        setName("")
+        setPhone("")
+      })
   }
 
   return (
