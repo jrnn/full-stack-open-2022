@@ -1,4 +1,4 @@
-import express, { json } from "express"
+import express, { json, Response } from "express"
 import { persons as initialPersons } from "./persons"
 import { Person, PersonDto, TypedRequest } from "./types"
 
@@ -13,6 +13,17 @@ app.use(json())
 const getPersonById = (id: string | number): Person | undefined => {
   const numericId = Number(id)
   return persons.find(p => p.id === numericId)
+}
+
+const getPersonByName = (name: string): Person | undefined => {
+  const trimmedName = name.trim()
+  return persons.find(p => p.name === trimmedName)
+}
+
+const errorResponse = (response: Response, status: number, message: string) => {
+  return response
+    .status(status)
+    .json({ error: message })
 }
 
 app.get("/info", (_, response) => {
@@ -30,23 +41,29 @@ app.get(`${rootUri}/:id`, (request, response) => {
   const { id } = request.params
   const person = getPersonById(id)
 
-  if (!person) {
-    return response
-      .status(404)
-      .json({ error: `no person found with id ${id}` })
-  }
-  return response.json(person)
+  return !!person
+    ? response.json(person)
+    : errorResponse(response, 404, `no person found with id ${id}`)
 })
 
 app.post(rootUri, (request: TypedRequest<PersonDto>, response) => {
   const { name, phone } = request.body
+  if (!name || !name.trim()) {
+    return errorResponse(response, 400, "name missing")
+  }
+  if (!phone || !phone.trim()) {
+    return errorResponse(response, 400, "phone missing")
+  }
+  if (getPersonByName(name)) {
+    return errorResponse(response, 400, "name must be unique")
+  }
   const newPerson: Person = {
-    name: name || "PLACEHOLDER",
-    phone: phone || "PLACEHOLDER",
+    name: name.trim(),
+    phone: phone.trim(),
     id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
   }
   persons.push(newPerson)
-  response
+  return response
     .status(201)
     .json(newPerson)
 })
@@ -56,9 +73,7 @@ app.delete(`${rootUri}/:id`, (request, response) => {
   const person = getPersonById(id)
 
   if (!person) {
-    return response
-      .status(404)
-      .json({ error: `no person found with id ${id}` })
+    return errorResponse(response, 404, `no person found with id ${id}`)
   }
   persons = persons.filter(p => p.id !== person.id)
   return response
