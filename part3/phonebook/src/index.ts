@@ -1,4 +1,5 @@
 import express, { json, Response } from "express"
+import morgan from "morgan"
 import { persons as initialPersons } from "./persons"
 import { Person, PersonDto, TypedRequest } from "./types"
 
@@ -9,6 +10,7 @@ const port = 3001
 const rootUri = "/api/persons"
 
 app.use(json())
+app.use(morgan("tiny"))
 
 const getPersonById = (id: string | number): Person | undefined => {
   const numericId = Number(id)
