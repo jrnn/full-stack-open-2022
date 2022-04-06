@@ -1,12 +1,14 @@
-import express from "express"
+import express, { json } from "express"
 import { persons as initialPersons } from "./persons"
-import { Person } from "./types"
+import { Person, PersonDto, TypedRequest } from "./types"
 
 let persons = [ ...initialPersons ]
 
 const app = express()
 const port = 3001
 const rootUri = "/api/persons"
+
+app.use(json())
 
 const getPersonById = (id: string | number): Person | undefined => {
   const numericId = Number(id)
@@ -34,6 +36,19 @@ app.get(`${rootUri}/:id`, (request, response) => {
       .json({ error: `no person found with id ${id}` })
   }
   return response.json(person)
+})
+
+app.post(rootUri, (request: TypedRequest<PersonDto>, response) => {
+  const { name, phone } = request.body
+  const newPerson: Person = {
+    name: name || "PLACEHOLDER",
+    phone: phone || "PLACEHOLDER",
+    id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+  }
+  persons.push(newPerson)
+  response
+    .status(201)
+    .json(newPerson)
 })
 
 app.delete(`${rootUri}/:id`, (request, response) => {
