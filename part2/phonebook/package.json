@@ -3,8 +3,12 @@
   "main": "./src/index.tsx",
   "scripts": {
     "build": "rm -rf ./dist && webpack --mode production",
+    "server": "json-server --port 3001 --watch db.json",
     "start": "webpack-dev-server --mode development",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "json-server": "0.17.0"
+  }
 }

@@ -1,17 +1,17 @@
 import React, { FunctionComponent } from "react"
-import { Person } from "../types"
+import { Contact } from "../types"
 
 interface Props {
-  person: Person
+  contact: Contact
 }
 
-const Entry: FunctionComponent<Props> = ({ person }) => (
+const Entry: FunctionComponent<Props> = ({ contact }) => (
   <tr>
     <td>
-      {person.name}
+      {contact.name}
     </td>
     <td>
-      {person.phone}
+      {contact.phone}
     </td>
   </tr>
 )
