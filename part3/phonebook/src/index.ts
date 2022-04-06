@@ -1,7 +1,7 @@
 import express, { json, Response } from "express"
 import morgan from "morgan"
 import { persons as initialPersons } from "./persons"
-import { Person, PersonDto, TypedRequest } from "./types"
+import { IncomingMessageWithBody, Person, PersonDto, TypedRequest } from "./types"
 
 let persons = [ ...initialPersons ]
 
@@ -9,8 +9,14 @@ const app = express()
 const port = 3001
 const rootUri = "/api/persons"
 
+morgan.token<IncomingMessageWithBody<never>>("body", ({ body, method }) => {
+  return method === "POST"
+    ? JSON.stringify(body || {})
+    : " "
+})
+
 app.use(json())
-app.use(morgan("tiny"))
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"))
 
 const getPersonById = (id: string | number): Person | undefined => {
   const numericId = Number(id)
