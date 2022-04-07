@@ -6,5 +6,8 @@
     "start": "webpack-dev-server --mode development",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
+  "devDependencies": {
+    "dotenv-webpack": "7.1.0"
+  },
   "license": "ISC"
 }

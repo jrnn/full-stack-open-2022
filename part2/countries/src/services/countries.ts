@@ -13,7 +13,7 @@ const toCountryData = (data: ExternalCountryData): CountryData => {
     ? []
     : extractValues<string>(data.languages)
 
-  return {
+  const result = {
     area: data.area,
     capital,
     flagUri: data.flags.png,
@@ -21,6 +21,17 @@ const toCountryData = (data: ExternalCountryData): CountryData => {
     name: data.name.common,
     population: data.population
   }
+  if (data.capitalInfo.latlng) {
+    const [ latitude, longitude ] = data.capitalInfo.latlng
+    return {
+      ...result,
+      capitalCoordinates: {
+        latitude,
+        longitude
+      }
+    }
+  }
+  return result
 }
 
 export const getCountries = (): Promise<Array<CountryData>> => {

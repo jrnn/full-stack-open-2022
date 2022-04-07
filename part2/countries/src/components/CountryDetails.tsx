@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react"
 import { CountryData } from "../types"
+import WeatherReport from "./WeatherReport"
 
 interface Props {
   country: CountryData
@@ -32,6 +33,7 @@ const CountryDetails: FunctionComponent<Props> = ({ country }) => (
       )}
     </ul>
     <img src={country.flagUri}/>
+    <WeatherReport country={country} />
   </>
 )
 
