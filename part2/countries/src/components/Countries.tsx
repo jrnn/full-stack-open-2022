@@ -6,21 +6,21 @@ import CountryList from "./CountryList"
 
 interface Props {
   countries: Array<CountryData>
-  filter: string
+  selectCountry: (country: CountryData) => void
 }
 
-const Countries: FunctionComponent<Props> = ({ countries, filter }) => {
-  const _filter = filter.trim().toLowerCase()
-  const matchingCountries = countries.filter(({ name }) => name.toLowerCase().includes(_filter))
-
-  if (matchingCountries.length > 10) {
+const Countries: FunctionComponent<Props> = ({ countries, selectCountry }) => {
+  if (countries.length > 10) {
     return <p>Too many matching countries, please give a more specific filter.</p>
   }
-  if (matchingCountries.length > 1) {
-    return <CountryList countries={matchingCountries.sort(sortCountriesByName)} />
+  if (countries.length > 1) {
+    return <CountryList
+      countries={countries.sort(sortCountriesByName)}
+      selectCountry={selectCountry}
+    />
   }
-  if (matchingCountries.length === 1) {
-    return <CountryDetails country={matchingCountries[0] as CountryData}/>
+  if (countries.length === 1) {
+    return <CountryDetails country={countries[0] as CountryData}/>
   }
   return <p>No countries to show!</p>
 }
