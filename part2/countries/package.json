@@ -1,0 +1,10 @@
+{
+  "name": "part2-countries",
+  "main": "./src/index.tsx",
+  "scripts": {
+    "build": "rm -rf ./dist && webpack --mode production",
+    "start": "webpack-dev-server --mode development",
+    "types": "tsc --noEmit --project ./tsconfig.json"
+  },
+  "license": "ISC"
+}
