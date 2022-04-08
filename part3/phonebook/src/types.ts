@@ -9,13 +9,8 @@ export interface IncomingMessageWithBody<T> extends IncomingMessage {
   body?: T
 }
 
-export interface PersonDto {
-  name?: string
-  phone?: string
-}
-
 export interface Person {
-  id: number
+  id: string
   name: string
   phone: string
 }
