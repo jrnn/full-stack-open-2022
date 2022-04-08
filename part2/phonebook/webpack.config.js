@@ -18,6 +18,9 @@ module.exports = {
   devServer: {
     compress: true,
     port: 8080,
+    proxy: {
+      "/api": "http://localhost:3001"
+    },
     static: path.resolve(__dirname, "dist")
   },
   module: {
