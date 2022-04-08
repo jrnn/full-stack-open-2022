@@ -7,7 +7,7 @@ import { IncomingMessageWithBody, Person, PersonDto, TypedRequest } from "./type
 let persons = [ ...initialPersons ]
 
 const app = express()
-const port = 3001
+const port = process.env["PORT"] || 3001
 const rootUri = "/api/persons"
 
 morgan.token<IncomingMessageWithBody<never>>("body", ({ body, method }) => {
