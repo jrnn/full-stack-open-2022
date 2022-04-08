@@ -40,7 +40,7 @@ const errorResponse = (response: Response, status: number, message: string) => {
 
 app.get("/info", async (_, response) => {
   const persons = await getAllPersons()
-  response.send(`<div>
+  return response.send(`<div>
     <p>Phonebook currently has ${persons.length} contacts.</p>
     <p>Server time: ${new Date().toISOString()}</p>
   </div>`)
@@ -48,7 +48,7 @@ app.get("/info", async (_, response) => {
 
 app.get(rootUri, async (_, response) => {
   const persons = await getAllPersons()
-  response.json(persons)
+  return response.json(persons)
 })
 
 app.get(`${rootUri}/:id`, async (request, response) => {
@@ -60,7 +60,7 @@ app.get(`${rootUri}/:id`, async (request, response) => {
     : errorResponse(response, 404, `no person found with id ${id}`)
 })
 
-app.post(rootUri, (request: TypedRequest<Partial<Person>>, response) => {
+app.post(rootUri, async (request: TypedRequest<Partial<Person>>, response) => {
   const { name, phone } = request.body
   if (!name || !name.trim()) {
     return errorResponse(response, 400, "name missing")
@@ -68,12 +68,7 @@ app.post(rootUri, (request: TypedRequest<Partial<Person>>, response) => {
   if (!phone || !phone.trim()) {
     return errorResponse(response, 400, "phone missing")
   }
-  const newPerson: Person = {
-    id: "placeholder...",
-    name: name.trim(),
-    phone: phone.trim()
-  }
-  // TODO exercise 3.14
+  const newPerson = await new PersonModel({ name, phone }).save()
   return response
     .status(201)
     .json(newPerson)
