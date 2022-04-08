@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Contact } from "../types";
 
-const rootUri = "http://localhost:3001/contacts"
+const rootUri = "/api/persons"
 
 const getAllContacts = (): Promise<Array<Contact>> => {
   return axios

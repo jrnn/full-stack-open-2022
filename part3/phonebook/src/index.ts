@@ -1,4 +1,5 @@
-import express, { json, Response } from "express"
+import express, { Response } from "express"
+import cors from "cors"
 import morgan from "morgan"
 import { persons as initialPersons } from "./persons"
 import { IncomingMessageWithBody, Person, PersonDto, TypedRequest } from "./types"
@@ -6,7 +7,7 @@ import { IncomingMessageWithBody, Person, PersonDto, TypedRequest } from "./type
 let persons = [ ...initialPersons ]
 
 const app = express()
-const port = 3001
+const port = process.env["PORT"] || 3001
 const rootUri = "/api/persons"
 
 morgan.token<IncomingMessageWithBody<never>>("body", ({ body, method }) => {
@@ -15,7 +16,9 @@ morgan.token<IncomingMessageWithBody<never>>("body", ({ body, method }) => {
     : " "
 })
 
-app.use(json())
+app.use(cors())
+app.use(express.static("static"))
+app.use(express.json())
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"))
 
 const getPersonById = (id: string | number): Person | undefined => {
