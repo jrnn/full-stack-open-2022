@@ -13,6 +13,7 @@ const schema = new Schema({
       true,
       "Property 'name' cannot be empty"
     ],
+    minlength: 3,
     trim: true
   },
   phone: {
