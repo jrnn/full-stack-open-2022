@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-export const connectToDatabase = (uri: string): void => {
+const connect = (uri: string): void => {
   mongoose
     .connect(uri)
     .then(() => console.log("Now connected to MongoDB"))
@@ -10,7 +10,7 @@ export const connectToDatabase = (uri: string): void => {
     })
 }
 
-export const disconnectFromDatabase = (): void => {
+const disconnect = (): void => {
   mongoose
     .disconnect()
     .then(() => console.log("Connection to database closed"))
@@ -19,3 +19,5 @@ export const disconnectFromDatabase = (): void => {
       process.exit(1)
     })
 }
+
+export default { connect, disconnect }
