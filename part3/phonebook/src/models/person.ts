@@ -22,7 +22,11 @@ const schema = new Schema({
       true,
       "Property 'phone' cannot be empty"
     ],
-    trim: true
+    trim: true,
+    validate: {
+      validator: (value: string) => /(^\d{2}-\d{6,}$)|(^\d{3}-\d{5,}$)/.test(value),
+      message: () => "Phone must have two or three leading numbers separated with a dash"
+    }
   }
 })
 
