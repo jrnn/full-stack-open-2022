@@ -17,16 +17,16 @@ const App = () => {
     setTimeout(() => setMessage({ type: "none" }), 5000)
     setMessage({ text, type })
   }
-  const handleError = (text: string) => (error: Error) => {
+  const handleError = (error: Error) => {
     console.error(error)
-    notify(text, "error")
+    notify(error.message, "error")
   }
 
   useEffect(() => {
     contactService
       .getAllContacts()
       .then(initialContacts => setContacts(initialContacts))
-      .catch(handleError("Could not fetch contacts from server, maybe try again later (who knows)"))
+      .catch(handleError)
   }, [])
 
   const editName = (event: FormEvent<HTMLInputElement>) =>
@@ -41,11 +41,6 @@ const App = () => {
   const addContact = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmedName = name.trim()
-
-    if (!trimmedName) {
-      notify("What kind of a name is that supposed to be?", "error")
-      return
-    }
     const existingContact = await contactService.getByName(trimmedName)
 
     if (existingContact) {
@@ -62,18 +57,18 @@ const App = () => {
             setPhone("")
             notify(`${updatedContact.name}'s number has been updated`, "success")
           })
-          .catch(handleError(`Could not update ${existingContact.name}'s number, maybe they've just been deleted from server?`))
+          .catch(handleError)
       }
     } else {
       contactService
-        .createContact(trimmedName, phone)
+        .createContact(name, phone)
         .then(newContact => {
           setContacts(contacts.concat(newContact))
           setName("")
           setPhone("")
           notify(`${newContact.name} added to contacts`, "success")
         })
-        .catch(handleError("Failed to add new contact, maybe the server is down or something?"))
+        .catch(handleError)
     }
   }
 
@@ -88,7 +83,7 @@ const App = () => {
           setContacts(contacts.filter(contact => contact.id !== id))
           notify(`${nameToDelete} deleted from contacts`, "success")
         })
-        .catch(handleError(`Could not delete ${nameToDelete}, maybe they've already been deleted from server?`))
+        .catch(handleError)
     }
   }
 

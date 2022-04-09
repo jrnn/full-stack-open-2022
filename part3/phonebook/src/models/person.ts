@@ -9,10 +9,18 @@ interface Document {
 const schema = new Schema({
   name: {
     type: String,
+    required: [
+      true,
+      "Property 'name' cannot be empty"
+    ],
     trim: true
   },
   phone: {
     type: String,
+    required: [
+      true,
+      "Property 'phone' cannot be empty"
+    ],
     trim: true
   }
 })
