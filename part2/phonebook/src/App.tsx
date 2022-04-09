@@ -49,7 +49,7 @@ const App = () => {
         contactService
           .updateContact({
             ...existingContact,
-            phone: phone.trim() || "N/A"
+            phone
           })
           .then(updatedContact => {
             setContacts(contacts.map(contact => contact.id !== updatedContact.id ? contact : updatedContact))

@@ -13,7 +13,7 @@ const router = Router()
 
 router.get("/", throwsError(async (_, response) => {
   const persons = await PersonModel.find({}).exec()
-  return response.json(persons)
+  return response.status(200).json(persons)
 }))
 
 router.get("/:id", throwsError(async (request, response) => {
@@ -23,15 +23,23 @@ router.get("/:id", throwsError(async (request, response) => {
   if (!person) {
     throw new NotFoundError(`No person found with the given id '${id}'`)
   }
-  return response.json(person)
+  return response.status(200).json(person)
 }))
 
-router.post("/", throwsError(async (request: TypedRequest<Partial<Person>>, response) => {
+router.post("/", throwsError(async (request: TypedRequest<Person>, response) => {
   const { name, phone } = request.body
   const person = await new PersonModel({ name, phone }).save()
-  return response
-    .status(201)
-    .json(person)
+  return response.status(201).json(person)
+}))
+
+router.put("/:id", throwsError(async (request: TypedRequest<Person>, response) => {
+  const { id } = request.params
+  const person = await PersonModel.findByIdAndUpdate(id, request.body, { new: true })
+
+  if (!person) {
+    throw new NotFoundError(`No person found with the given id '${id}'`)
+  }
+  return response.status(200).json(person)
 }))
 
 router.delete("/:id", throwsError(async (request, response) => {
