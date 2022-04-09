@@ -10,6 +10,7 @@ const throwsError = (wrappedHandler: (req: Request, res: Response) => Promise<un
 }
 
 const router = Router()
+const updateOpts = { new: true, runValidators: true }
 
 router.get("/", throwsError(async (_, response) => {
   const persons = await PersonModel.find({}).exec()
@@ -34,7 +35,7 @@ router.post("/", throwsError(async (request: TypedRequest<Person>, response) => 
 
 router.put("/:id", throwsError(async (request: TypedRequest<Person>, response) => {
   const { id } = request.params
-  const person = await PersonModel.findByIdAndUpdate(id, request.body, { new: true })
+  const person = await PersonModel.findByIdAndUpdate(id, request.body, updateOpts)
 
   if (!person) {
     throw new NotFoundError(`No person found with the given id '${id}'`)
