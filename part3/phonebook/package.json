@@ -8,7 +8,6 @@
     "start": "npm run build && node ./dist/index.js",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
-  "license": "ISC",
   "dependencies": {
     "cors": "2.8.5",
     "dotenv": "16.0.0",
