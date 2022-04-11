@@ -1,30 +1,21 @@
-# Make the production build for the React client (part2/phonebook).
-# It will be copied to the server's static resources in a later stage.
+# Make the production build for the React client (part2/phonebook), and
+# compile the Express server from TypeScript to JavaScript (part3/phonebook).
 #
-FROM node:17-alpine as build-client
-COPY tsconfig.json .
-COPY /part2/phonebook /part2/phonebook
-WORKDIR /part2/phonebook
-RUN npm install
-RUN npm run build
+FROM node:17-alpine as build
+COPY . /temp
+WORKDIR /temp
+RUN npm install --workspace part2/phonebook --workspace part3/phonebook
+RUN npm run build --workspace part2/phonebook --workspace part3/phonebook
 
-# Compile the server from TypeScript to JavaScript.
+# Copy the products from the previous stage and run the server. The client
+# is served as a static resource.
 #
-FROM node:17-alpine as compile-server
-COPY tsconfig.json .
-COPY /part3/phonebook /part3/phonebook
-WORKDIR /part3/phonebook
-RUN npm install
-RUN npm run build
-
-# Copy the products from the previous stages and run the server.
-#
-FROM node:17-alpine as run-server
+FROM node:17-alpine as serve
 ENV NODE_ENV=production
-COPY /part3/phonebook/package.json /phonebook/
-COPY --from=compile-server /part3/phonebook/dist /phonebook/lib
-COPY --from=build-client /part2/phonebook/dist /phonebook/static
 WORKDIR /phonebook
+COPY /part3/phonebook/package.json .
+COPY --from=build /temp/part3/phonebook/dist ./lib
+COPY --from=build /temp/part2/phonebook/dist ./static
 RUN npm install --production
 EXPOSE 3001
 CMD [ "node", "lib/index.js" ]

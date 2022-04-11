@@ -1,6 +1,6 @@
-import axios from "axios";
-import { CountryData, ExternalCountryData } from "../types";
-import { extractValues } from "../utils";
+import axios from "axios"
+import { CountryData, ExternalCountryData } from "../types"
+import { extractValues } from "../utils"
 
 const API_URI = "https://restcountries.com/v3.1/all"
 
