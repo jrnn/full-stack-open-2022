@@ -20,3 +20,21 @@ export const favoriteBlog = (blogs: Array<Blog>): Blog => {
   }
   return [ ...blogs ].sort((p, q) => q.likes - p.likes)[0] as Blog
 }
+
+export const mostBlogs = (blogs: Array<Blog>) => {
+  if (blogs.length === 0) {
+    throw new Error("can't pick author with most blogs from nothing")
+  }
+  const stats = blogs
+    .map(blog => blog.author)
+    .reduce((prev, next) => {
+      const count = prev[next] || 0
+      return { ...prev, [next]: count + 1 }
+    }, {} as Record<string, number>)
+
+  const [ author, totalBlogs ] = Object
+    .entries(stats)
+    .sort((p, q) => q[1] - p[1])[0] as [ string, number ]
+
+  return { author, blogs: totalBlogs }
+}
