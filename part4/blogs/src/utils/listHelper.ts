@@ -8,6 +8,15 @@ export const dummy = (blogs: Array<Blog>): number => {
 
 export const totalLikes = (blogs: Array<Blog>): number => {
   return blogs
-    .map(blog => blog.likes || 0)
+    .map(blog => blog.likes)
     .reduce((prev, next) => prev + next, 0)
+}
+
+export const favoriteBlog = (blogs: Array<Blog>): Blog => {
+  if (blogs.length === 0) {
+    throw new Error("can't pick a favorite from nothing")
+  } else if (blogs.length === 1) {
+    return blogs[0] as Blog
+  }
+  return [ ...blogs ].sort((p, q) => q.likes - p.likes)[0] as Blog
 }
