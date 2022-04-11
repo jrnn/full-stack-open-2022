@@ -1,6 +1,6 @@
 import { model, Model, Schema } from "mongoose"
 
-interface Blog {
+export interface Blog {
   title?: string
   author?: string
   url?: string
