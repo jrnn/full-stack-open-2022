@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
+import path from "path"
 import db from "./db"
 import infoRouter from "./routers/info"
 import personRouter from "./routers/persons"
@@ -16,7 +17,7 @@ const ENVIRONMENT = process.env["NODE_ENV"] || "development"
 const app = express()
 
 app.use(cors())
-app.use(express.static("static"))
+app.use(express.static(path.resolve(__dirname, "..", "static")))
 app.use(express.json())
 app.use(requestLogger)
 
