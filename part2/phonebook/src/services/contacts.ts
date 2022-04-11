@@ -1,12 +1,12 @@
-import axios from "axios";
-import { Contact, ErrorResponse } from "../types";
+import axios from "axios"
+import { Contact, ErrorResponse } from "../types"
 
 const rootUri = "/api/persons"
 
 const extractErrorMessage = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
     const { message } = error.response?.data as ErrorResponse
-    if (!!message) {
+    if (message) {
       return `Oops! Something went wrong: ${message}.`
     }
   }

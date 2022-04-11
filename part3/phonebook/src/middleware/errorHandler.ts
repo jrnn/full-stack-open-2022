@@ -1,4 +1,4 @@
-import { ErrorRequestHandler } from "express";
+import { ErrorRequestHandler } from "express"
 
 const interpretError = (name: string, message: string) => {
   switch (name) {

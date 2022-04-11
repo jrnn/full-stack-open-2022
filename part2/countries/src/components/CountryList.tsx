@@ -15,7 +15,7 @@ const CountryList: FunctionComponent<Props> = ({ countries, selectCountry }) => 
           <tr key={country.name}>
             <td>{country.name}</td>
             <td>
-              <button onClick={_ => selectCountry(country)}>Show</button>
+              <button onClick={() => selectCountry(country)}>Show</button>
             </td>
           </tr>
         )}

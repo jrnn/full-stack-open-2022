@@ -1,6 +1,6 @@
 import { CountryData } from "../types"
 
-export const extractValues = <T, O extends Record<string, T> = {}>(obj: O): Array<T> => {
+export const extractValues = <T, O extends Record<string, T> = Record<string, T>>(obj: O): Array<T> => {
   return !obj
     ? []
     : Object.keys(obj).map((key: keyof O) => obj[key])
