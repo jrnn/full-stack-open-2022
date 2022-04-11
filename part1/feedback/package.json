@@ -2,7 +2,8 @@
   "name": "part1-feedback",
   "main": "./src/index.tsx",
   "scripts": {
-    "build": "rm -rf ./dist && webpack --mode production",
+    "build": "npm run lint && rm -rf ./dist && webpack --mode production",
+    "lint": "eslint .",
     "start": "webpack-dev-server --mode development",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
@@ -13,6 +14,9 @@
   "devDependencies": {
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
+    "@typescript-eslint/eslint-plugin": "5.18.0",
+    "@typescript-eslint/parser": "5.18.0",
+    "eslint": "8.13.0",
     "html-webpack-plugin": "5.5.0",
     "ts-loader": "9.2.8",
     "typescript": "4.6.3",
