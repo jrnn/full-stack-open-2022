@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 import logger from "./middleware/logger"
 
-const connect = (uri: string): void => {
-  mongoose
+const connect = (uri: string): Promise<void> => {
+  return mongoose
     .connect(uri)
     .then(() => logger.info(`Now connected to MongoDB at ${uri}`))
     .catch(error => {
@@ -11,8 +11,8 @@ const connect = (uri: string): void => {
     })
 }
 
-const disconnect = (): void => {
-  mongoose
+const disconnect = (): Promise<void> => {
+  return mongoose
     .disconnect()
     .then(() => logger.info("Connection to database closed"))
     .catch(error => {
