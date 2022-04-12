@@ -1,5 +1,6 @@
 import { Request, RequestHandler, Response, Router } from "express"
 import { Blog, BlogModel } from "../models/blog"
+import { NotFoundError } from "../errors/errors"
 
 const router = Router()
 
@@ -21,6 +22,15 @@ router.get("/", throwsError(async (_, response) => {
 router.post("/", throwsError(async (request: TypedRequest<Blog>, response) => {
   const blog = await new BlogModel(request.body).save()
   return response.status(201).json(blog)
+}))
+
+router.delete("/:id", throwsError(async (request, response) => {
+  const { id } = request.params
+  const deletedBlog = await BlogModel.findByIdAndDelete(id)
+  if (!deletedBlog) {
+    throw new NotFoundError(`no blog found with id '${id}'`)
+  }
+  return response.status(204).end()
 }))
 
 export default router
