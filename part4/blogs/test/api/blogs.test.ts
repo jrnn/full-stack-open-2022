@@ -65,6 +65,20 @@ describe(`When POST ${rootUri}`, () => {
       expect(likes).toEqual(newBlog.likes)
     })
   })
+  describe("Given no 'likes' in request body", () => {
+    const { likes, ...withoutLikes } = newBlog
+
+    it("Then adds a new blog to database", async () => {
+      const blogsBefore = await getBlogsInDb()
+      await post(withoutLikes)
+      const blogsAfter = await getBlogsInDb()
+      expect(blogsAfter).toHaveLength(blogsBefore.length + 1)
+    })
+    it("Then by default sets the new blog's 'likes' to 0", async () => {
+      const { likes } = await postAndGet(withoutLikes)
+      expect(likes).toEqual(0)
+    })
+  })
 
   const post = async (blog: Partial<Blog>): Promise<BlogDocument> => {
     const response = await api
