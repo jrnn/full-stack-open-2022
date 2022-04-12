@@ -24,6 +24,10 @@ module.exports = {
     "static"
   ],
   rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { ignoreRestSiblings: true }
+    ],
     camelcase: "error",
     curly: "error",
     "default-case": "error",
@@ -31,9 +35,7 @@ module.exports = {
     indent: [
       "error",
       2,
-      {
-        SwitchCase: 1
-      }
+      { SwitchCase: 1 }
     ],
     "no-trailing-spaces": "error",
     "no-var": "error",
