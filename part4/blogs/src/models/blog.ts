@@ -17,12 +17,30 @@ export interface BlogDocument extends Blog {
 }
 
 const schema = new Schema({
-  title: String,
+  title: {
+    type: String,
+    required: [
+      true,
+      "Property 'title' cannot be empty"
+    ],
+    trim: true
+  },
   author: {
     type: String,
-    default: "(unknown)"
+    required: [
+      true,
+      "Property 'author' cannot be empty"
+    ],
+    trim: true
   },
-  url: String,
+  url: {
+    type: String,
+    required: [
+      true,
+      "Property 'author' cannot be empty"
+    ],
+    trim: true
+  },
   likes: {
     type: Number,
     default: 0

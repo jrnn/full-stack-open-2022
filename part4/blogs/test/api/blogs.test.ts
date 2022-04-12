@@ -44,7 +44,7 @@ describe(`When POST ${rootUri}`, () => {
   describe("Given valid blog as request body", () => {
     it("Then adds a new blog to database", async () => {
       const blogsBefore = await getBlogsInDb()
-      await post(newBlog)
+      await postAndExpectOk(newBlog)
       const blogsAfter = await getBlogsInDb()
       expect(blogsAfter).toHaveLength(blogsBefore.length + 1)
     })
@@ -65,12 +65,39 @@ describe(`When POST ${rootUri}`, () => {
       expect(likes).toEqual(newBlog.likes)
     })
   })
+  describe("Given no 'title' in request body", () => {
+    it("Then returns 400 without adding blog to database", async () => {
+      const { title, ...withoutTitle } = newBlog
+      const blogsBefore = await getBlogsInDb()
+      await postAndExpectError(withoutTitle)
+      const blogsAfter = await getBlogsInDb()
+      expect(blogsAfter).toHaveLength(blogsBefore.length)
+    })
+  })
+  describe("Given no 'author' in request body", () => {
+    it("Then returns 400 without adding blog to database", async () => {
+      const { author, ...withoutAuthor } = newBlog
+      const blogsBefore = await getBlogsInDb()
+      await postAndExpectError(withoutAuthor)
+      const blogsAfter = await getBlogsInDb()
+      expect(blogsAfter).toHaveLength(blogsBefore.length)
+    })
+  })
+  describe("Given no 'url' in request body", () => {
+    it("Then returns 400 without adding blog to database", async () => {
+      const { url, ...withoutUrl } = newBlog
+      const blogsBefore = await getBlogsInDb()
+      await postAndExpectError(withoutUrl)
+      const blogsAfter = await getBlogsInDb()
+      expect(blogsAfter).toHaveLength(blogsBefore.length)
+    })
+  })
   describe("Given no 'likes' in request body", () => {
     const { likes, ...withoutLikes } = newBlog
 
     it("Then adds a new blog to database", async () => {
       const blogsBefore = await getBlogsInDb()
-      await post(withoutLikes)
+      await postAndExpectOk(withoutLikes)
       const blogsAfter = await getBlogsInDb()
       expect(blogsAfter).toHaveLength(blogsBefore.length + 1)
     })
@@ -80,7 +107,7 @@ describe(`When POST ${rootUri}`, () => {
     })
   })
 
-  const post = async (blog: Partial<Blog>): Promise<BlogDocument> => {
+  const postAndExpectOk = async (blog: Partial<Blog>): Promise<BlogDocument> => {
     const response = await api
       .post(rootUri)
       .send(blog)
@@ -89,8 +116,15 @@ describe(`When POST ${rootUri}`, () => {
 
     return response.body as BlogDocument
   }
+  const postAndExpectError = async (blog: Partial<Blog>): Promise<void> => {
+    await api
+      .post(rootUri)
+      .send(blog)
+      .expect(400)
+      .expect("Content-Type", /application\/json/)
+  }
   const postAndGet = async (blog: Partial<Blog>): Promise<BlogDocument> => {
-    const { id } = await post(blog)
+    const { id } = await postAndExpectOk(blog)
     return await BlogModel.findById(id) as BlogDocument
   }
 })
