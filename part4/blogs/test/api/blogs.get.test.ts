@@ -1,29 +1,25 @@
 import { api } from "../jest.setup"
 import { BlogDocument, BlogModel } from "../../src/models/blog"
-import { blogs as initialBlogs } from "../testblogs"
-
-const rootUri = "/api/blogs"
+import { BLOGS_ROOT_URI, countBlogsInDb, initBlogs } from "./helper"
 
 beforeEach(async () => {
-  await BlogModel.deleteMany({})
+  await initBlogs()
 })
 
-describe(`When GET ${rootUri}`, () => {
+describe(`When GET ${BLOGS_ROOT_URI}`, () => {
   describe("Given no blogs in database", () => {
     it("Then returns an empty array", async () => {
+      await BlogModel.deleteMany({})
       const blogs = await get()
       expect(blogs).toEqual([])
     })
   })
 
   describe("Given existing blogs in database", () => {
-    beforeEach(async () => {
-      await Promise.all(initialBlogs.map(blog => new BlogModel(blog).save()))
-    })
-
     it("Then returns all those blogs", async () => {
+      const blogCount = await countBlogsInDb()
       const blogs = await get()
-      expect(blogs).toHaveLength(initialBlogs.length)
+      expect(blogs).toHaveLength(blogCount)
     })
 
     describe("And", () => {
@@ -37,7 +33,7 @@ describe(`When GET ${rootUri}`, () => {
 
 const get = async (): Promise<Array<BlogDocument>> => {
   const response = await api
-    .get(rootUri)
+    .get(BLOGS_ROOT_URI)
     .expect(200)
     .expect("Content-Type", /application\/json/)
 

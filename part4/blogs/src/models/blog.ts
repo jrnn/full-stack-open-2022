@@ -6,9 +6,9 @@ interface Document {
 }
 
 export interface Blog {
-  title?: string
+  title: string
   author: string
-  url?: string
+  url: string
   likes: number
 }
 
