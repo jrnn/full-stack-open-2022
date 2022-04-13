@@ -1,6 +1,7 @@
-import { Blog } from "../src/models/blog"
+import { BlogSchema } from "../src/models/blog"
+import { UserSchema } from "../src/models/user"
 
-export const blogs: Array<Blog> = [
+export const blogs: Array<BlogSchema> = [
   {
     title: "All About Coffee",
     author: "Beany McBeanface",
@@ -51,6 +52,17 @@ export const blogs: Array<Blog> = [
   }
 ]
 
-export const randomBlog = (): Blog => {
-  return blogs[Math.floor(Math.random() * blogs.length)] as Blog
-}
+export const users: Array<UserSchema> = [
+  {
+    username: "spongebob",
+    name: "Spongebob Squarepants",
+    pwHash: "$2a$10$G3PibHySjCjHksyBdWV7vORitpn8OBWQHouN35nOHvWUZACPJGjeO",  // qwerty123
+    blogs: []
+  },
+  {
+    username: "cnorris",
+    name: "Chuck Norris",
+    pwHash: "$2a$10$u7WE1.VQ14CgUzbdq4ZlYuzEryH75V6cI0CgTXSG5pQmHi4gXwsFW",  // qwerty123
+    blogs: []
+  }
+]

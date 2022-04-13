@@ -1,8 +1,8 @@
 import { api } from "../jest.setup"
-import { Blog, BlogDocument } from "../../src/models/blog"
-import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogInDb, getBlogsInDb, getRandomBlogInDb, initBlogs } from "./helper"
+import { BlogRequest, BlogDocument } from "../../src/models/blog"
+import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogInDb, getBlogsInDb, getRandomBlogInDb, initDb } from "./helper"
 
-const newBlog: Blog = {
+const newBlog: BlogRequest = {
   title: "All About Plumbuses",
   author: "Plumbusy McPlumbusface",
   url: "http://all.about.plumb.us",
@@ -10,7 +10,7 @@ const newBlog: Blog = {
 }
 
 beforeEach(async () => {
-  await initBlogs()
+  await initDb()
 })
 
 describe(`When PUT ${BLOGS_ROOT_URI}/:id`, () => {
@@ -61,32 +61,32 @@ describe(`When PUT ${BLOGS_ROOT_URI}/:id`, () => {
 
       it("'title' to the given 'title'", async () => {
         const { id } = await getRandomBlogInDb()
-        const updatedBlog = await putAndGet(id, { title })
+        const updatedBlog = await putAndGetFromDb(id, { title })
         expect(updatedBlog.title).toEqual(title)
       })
 
       it("'author' to the given 'author'", async () => {
         const { id } = await getRandomBlogInDb()
-        const updatedBlog = await putAndGet(id, { author })
+        const updatedBlog = await putAndGetFromDb(id, { author })
         expect(updatedBlog.author).toEqual(author)
       })
 
       it("'url' to the given 'url'", async () => {
         const { id } = await getRandomBlogInDb()
-        const updatedBlog = await putAndGet(id, { url })
+        const updatedBlog = await putAndGetFromDb(id, { url })
         expect(updatedBlog.url).toEqual(url)
       })
 
       it("'likes' to the given 'likes'", async () => {
         const { id } = await getRandomBlogInDb()
-        const updatedBlog = await putAndGet(id, { likes })
+        const updatedBlog = await putAndGetFromDb(id, { likes })
         expect(updatedBlog.likes).toEqual(likes)
       })
     })
   })
 })
 
-const putAndExpectOk = async (id: string, blog: Partial<Blog>): Promise<void> => {
+const putAndExpectOk = async (id: string, blog: Partial<BlogRequest>): Promise<void> => {
   await api
     .put(`${BLOGS_ROOT_URI}/${id}`)
     .send(blog)
@@ -94,7 +94,7 @@ const putAndExpectOk = async (id: string, blog: Partial<Blog>): Promise<void> =>
     .expect("Content-Type", /application\/json/)
 }
 
-const putAndGet = async (id: string, blog: Partial<Blog>): Promise<BlogDocument> => {
+const putAndGetFromDb = async (id: string, blog: Partial<BlogRequest>): Promise<BlogDocument> => {
   await putAndExpectOk(id, blog)
   return await getBlogInDb(id)
 }

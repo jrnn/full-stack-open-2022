@@ -1,5 +1,6 @@
+import { BlogSchema } from "../../src/models/blog"
 import { dummy, favoriteBlog, mostBlogs, mostLikes, totalLikes } from "../../src/utils/listHelper"
-import { blogs, randomBlog } from "../testblogs"
+import { blogs } from "../testdata"
 
 describe("When calling 'dummy'", () => {
   it("Then always returns 1", () => {
@@ -70,3 +71,7 @@ describe("When calling 'mostLikes'", () => {
     })
   })
 })
+
+const randomBlog = (): BlogSchema => {
+  return blogs[Math.floor(Math.random() * blogs.length)] as BlogSchema
+}

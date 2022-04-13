@@ -1,9 +1,9 @@
 import { api } from "../jest.setup"
-import { BlogDocument, BlogModel } from "../../src/models/blog"
-import { BLOGS_ROOT_URI, countBlogsInDb, initBlogs } from "./helper"
+import { BlogModel } from "../../src/models/blog"
+import { BLOGS_ROOT_URI, countBlogsInDb, initDb } from "./helper"
 
 beforeEach(async () => {
-  await initBlogs()
+  await initDb()
 })
 
 describe(`When GET ${BLOGS_ROOT_URI}`, () => {
@@ -25,17 +25,22 @@ describe(`When GET ${BLOGS_ROOT_URI}`, () => {
     describe("And", () => {
       it("identifies each blog with an 'id' property", async () => {
         const blogs = await get()
-        blogs.map(blog => expect(blog.id).toBeDefined())
+        blogs.map(blog => expect(blog["id"]).toBeDefined())
+      })
+
+      it("does not identify any blog with an '_id' property", async () => {
+        const blogs = await get()
+        blogs.map(blog => expect(blog["_id"]).toBeUndefined())
       })
     })
   })
 })
 
-const get = async (): Promise<Array<BlogDocument>> => {
+const get = async (): Promise<Array<Record<string, unknown>>> => {
   const response = await api
     .get(BLOGS_ROOT_URI)
     .expect(200)
     .expect("Content-Type", /application\/json/)
 
-  return response.body as Array<BlogDocument>
+  return response.body
 }
