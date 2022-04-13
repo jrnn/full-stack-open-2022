@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { BlogRequest, BlogModel } from "../models/blog"
-import { NotFoundError, throwsError } from "../errors/errors"
+import { AuthorizationError, NotFoundError, throwsError } from "../errors/errors"
 import { TypedRequest } from "../types"
 import { UserModel } from "../models/user"
 import { decodeToken } from "../utils/security"
@@ -36,12 +36,18 @@ router.put("/:id", throwsError(async ({ body, params }, response) => {
   return response.status(200).json(updatedBlog)
 }))
 
-router.delete("/:id", throwsError(async ({ params }, response) => {
-  const { id } = params
-  const deletedBlog = await BlogModel.findByIdAndDelete(id)
-  if (!deletedBlog) {
+router.delete("/:id", throwsError(async (request: TypedRequest, response) => {
+  const userId = decodeToken(request.token)
+  const { id } = request.params
+  const blogToDelete = await BlogModel.findById(id)
+
+  if (!blogToDelete) {
     throw new NotFoundError(`no blog found with id '${id}'`)
   }
+  if (blogToDelete.user && userId !== blogToDelete.user.toString()) {
+    throw new AuthorizationError()
+  }
+  await blogToDelete.delete()
   return response.status(204).end()
 }))
 

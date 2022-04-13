@@ -60,8 +60,11 @@ export const getRandomUserInDb = async (): Promise<UserDocument> => {
   return users[Math.floor(Math.random() * users.length)] as UserDocument
 }
 
-export const getValidToken = async () => {
-  const { id, username } = await getRandomUserInDb()
+export const getValidToken = async (userId?: string) => {
+  const { id, username } = !userId
+    ? await getRandomUserInDb()
+    : await getUserInDb(userId)
+
   const token = issueToken(id, username)
   return { id, token }
 }

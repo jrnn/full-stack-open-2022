@@ -1,9 +1,6 @@
 import { Request } from "express"
 
-export interface RequestWithToken extends Request {
-  token?: string
-}
-
-export interface TypedRequest<T> extends RequestWithToken {
+export interface TypedRequest<T = unknown> extends Request {
   body: T
+  token?: string
 }

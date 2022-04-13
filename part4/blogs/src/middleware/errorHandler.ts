@@ -9,6 +9,11 @@ const translateError = (error: Error) => {
         status: 401,
         message
       }
+    case "AuthorizationError":
+      return {
+        status: 403,
+        message
+      }
     case "CastError":
       return {
         status: 400,
