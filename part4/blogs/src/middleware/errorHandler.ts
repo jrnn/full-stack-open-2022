@@ -14,6 +14,11 @@ const translateError = (error: Error) => {
         status: 400,
         message: "The given id is not a valid MongoDB ObjectId"
       }
+    case "JsonWebTokenError":
+      return {
+        status: 401,
+        message: "invalid or missing JSON web token"
+      }
     case "NotFoundError":
       return {
         status: 404,

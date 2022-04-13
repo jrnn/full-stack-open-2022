@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 import { SECRET_KEY } from "../config"
 import { ValidationError } from "../errors/errors"
 
@@ -20,6 +20,16 @@ export const verifyPassword = async (password = "", hash: string): Promise<boole
   return await bcrypt.compare(password, hash)
 }
 
-export const issueToken = (id: string, username: string): string => {
-  return jwt.sign({ id, username }, SECRET_KEY)
+export const issueToken = (id: string, username: string, key = SECRET_KEY): string => {
+  return jwt.sign({ id, username }, key)
+}
+
+interface UserPayload extends JwtPayload {
+  id: string
+  username: string
+}
+
+export const decodeToken = (token = ""): string => {
+  const { id } = <UserPayload>jwt.verify(token, SECRET_KEY)
+  return id
 }

@@ -1,6 +1,7 @@
 import { FilterQuery } from "mongoose"
 import { BlogDocument, BlogModel } from "../../src/models/blog"
 import { UserDocument, UserModel } from "../../src/models/user"
+import { issueToken } from "../../src/utils/security"
 import { blogs as initialBlogs, users as initialUsers } from "../testdata"
 
 export const BLOGS_ROOT_URI = "/api/blogs"
@@ -57,4 +58,16 @@ export const getUserInDb = async (id: string): Promise<UserDocument> => {
 export const getRandomUserInDb = async (): Promise<UserDocument> => {
   const users = await UserModel.find({})
   return users[Math.floor(Math.random() * users.length)] as UserDocument
+}
+
+export const getValidToken = async () => {
+  const { id, username } = await getRandomUserInDb()
+  const token = issueToken(id, username)
+  return { id, token }
+}
+
+export const getInvalidToken = async () => {
+  const { id, username } = await getRandomUserInDb()
+  const token = issueToken(id, username, "thisIsNotTheCorrectSecretKey")
+  return { id, token }
 }
