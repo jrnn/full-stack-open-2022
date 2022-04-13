@@ -2,7 +2,7 @@ import { Router } from "express"
 import { throwsError } from "../errors/errors"
 import { UserModel, UserRequest } from "../models/user"
 import { TypedRequest } from "../types"
-import { hash } from "../utils/security"
+import { hashPassword } from "../utils/security"
 
 const router = Router()
 
@@ -16,7 +16,7 @@ router.get("/", throwsError(async (_, response) => {
 
 router.post("/", throwsError(async (request: TypedRequest<UserRequest>, response) => {
   const { username, name, password } = request.body
-  const pwHash = await hash(password)
+  const pwHash = await hashPassword(password)
   const schema = {
     username,
     name,

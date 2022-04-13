@@ -5,7 +5,7 @@ import { countUsersInDb, getRandomUserInDb, getUserInDb, getUsersInDb, initDb, U
 const newUser: UserRequest = {
   username: "boaty",
   name: "Boaty McBoatface",
-  password: "letmein"
+  password: "qwerty123"
 }
 
 beforeEach(async () => {
@@ -66,12 +66,12 @@ describe(`When POST ${USERS_ROOT_URI}`, () => {
     })
 
     it("is shorter than 3 characters Then returns 400 without adding user to database", async () => {
-      const withShortPassword = { ...newUser, password: "le" }
+      const withShortPassword = { ...newUser, password: "qw" }
       await postAndExpectErrorWithoutNewUserInDb(withShortPassword)
     })
 
     it("is exactly 3 characters Then adds user to database", async () => {
-      const withShortPassword = { ...newUser, password: "let" }
+      const withShortPassword = { ...newUser, password: "qwe" }
       await postAndExpectNewUserInDb(withShortPassword)
     })
   })

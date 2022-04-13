@@ -4,6 +4,11 @@ import logger from "./logger"
 const translateError = (error: Error) => {
   const { name, message } = error
   switch (name) {
+    case "AuthenticationError":
+      return {
+        status: 401,
+        message
+      }
     case "CastError":
       return {
         status: 400,

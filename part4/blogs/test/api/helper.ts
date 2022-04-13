@@ -4,6 +4,7 @@ import { UserDocument, UserModel } from "../../src/models/user"
 import { blogs as initialBlogs, users as initialUsers } from "../testdata"
 
 export const BLOGS_ROOT_URI = "/api/blogs"
+export const LOGIN_ROOT_URI = "/api/login"
 export const USERS_ROOT_URI = "/api/users"
 
 export const initDb = async (): Promise<void> => {

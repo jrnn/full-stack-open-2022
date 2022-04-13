@@ -56,13 +56,13 @@ export const users: Array<UserSchema> = [
   {
     username: "spongebob",
     name: "Spongebob Squarepants",
-    pwHash: "$2a$10$pjJZKnMRH.pU3qYyugjokuTwOUQZPSukyPlaMRj0th7I/T.cxuVlm",  // qwerty
+    pwHash: "$2a$10$G3PibHySjCjHksyBdWV7vORitpn8OBWQHouN35nOHvWUZACPJGjeO",  // qwerty123
     blogs: []
   },
   {
     username: "cnorris",
     name: "Chuck Norris",
-    pwHash: "$2a$10$kl8WWW1DHIjQ8YtGyI4HXu0uVU/hPcVtneUH/hz7sc4/RlixAmIRy",  // trustno1
+    pwHash: "$2a$10$u7WE1.VQ14CgUzbdq4ZlYuzEryH75V6cI0CgTXSG5pQmHi4gXwsFW",  // qwerty123
     blogs: []
   }
 ]
