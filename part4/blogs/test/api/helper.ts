@@ -6,21 +6,23 @@ import { blogs as initialBlogs, users as initialUsers } from "../testdata"
 export const BLOGS_ROOT_URI = "/api/blogs"
 export const USERS_ROOT_URI = "/api/users"
 
-export const initBlogs = async (): Promise<void> => {
+export const initDb = async (): Promise<void> => {
   await BlogModel.deleteMany({})
-  await Promise.all(initialBlogs.map(blog => new BlogModel(blog).save()))
-}
-
-export const initUsers = async (): Promise<void> => {
   await UserModel.deleteMany({})
   await Promise.all(initialUsers.map(user => new UserModel(user).save()))
+  await Promise.all(initialBlogs.map(async blog => {
+    const user = await getRandomUserInDb()
+    const newBlog = await new BlogModel({ ...blog, user: user._id }).save()
+    user.blogs.push(newBlog._id)
+    await user.save()
+  }))
 }
 
 export const countBlogsInDb = async (): Promise<number> => {
   return BlogModel.countDocuments({})
 }
 
-export const getBlogsInDb = async (filter: FilterQuery<unknown> = {}) => {
+export const getBlogsInDb = async (filter: FilterQuery<unknown> = {}): Promise<Array<BlogDocument>> => {
   return BlogModel.find(filter).sort({ _id: -1 })
 }
 

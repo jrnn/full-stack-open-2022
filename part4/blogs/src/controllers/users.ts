@@ -7,7 +7,10 @@ import { hash } from "../utils/security"
 const router = Router()
 
 router.get("/", throwsError(async (_, response) => {
-  const users = await UserModel.find({})
+  const users = await UserModel
+    .find({})
+    .populate("blogs", { user: 0 })
+
   return response.status(200).json(users)
 }))
 

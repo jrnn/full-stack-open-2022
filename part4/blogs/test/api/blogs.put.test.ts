@@ -1,8 +1,8 @@
 import { api } from "../jest.setup"
-import { Blog, BlogDocument } from "../../src/models/blog"
-import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogInDb, getBlogsInDb, getRandomBlogInDb, initBlogs } from "./helper"
+import { BlogRequest, BlogDocument } from "../../src/models/blog"
+import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogInDb, getBlogsInDb, getRandomBlogInDb, initDb } from "./helper"
 
-const newBlog: Blog = {
+const newBlog: BlogRequest = {
   title: "All About Plumbuses",
   author: "Plumbusy McPlumbusface",
   url: "http://all.about.plumb.us",
@@ -10,7 +10,7 @@ const newBlog: Blog = {
 }
 
 beforeEach(async () => {
-  await initBlogs()
+  await initDb()
 })
 
 describe(`When PUT ${BLOGS_ROOT_URI}/:id`, () => {
@@ -86,7 +86,7 @@ describe(`When PUT ${BLOGS_ROOT_URI}/:id`, () => {
   })
 })
 
-const putAndExpectOk = async (id: string, blog: Partial<Blog>): Promise<void> => {
+const putAndExpectOk = async (id: string, blog: Partial<BlogRequest>): Promise<void> => {
   await api
     .put(`${BLOGS_ROOT_URI}/${id}`)
     .send(blog)
@@ -94,7 +94,7 @@ const putAndExpectOk = async (id: string, blog: Partial<Blog>): Promise<void> =>
     .expect("Content-Type", /application\/json/)
 }
 
-const putAndGetFromDb = async (id: string, blog: Partial<Blog>): Promise<BlogDocument> => {
+const putAndGetFromDb = async (id: string, blog: Partial<BlogRequest>): Promise<BlogDocument> => {
   await putAndExpectOk(id, blog)
   return await getBlogInDb(id)
 }

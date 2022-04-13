@@ -1,6 +1,6 @@
 import { api } from "../jest.setup"
 import { UserDocument, UserRequest, UserResponse } from "../../src/models/user"
-import { countUsersInDb, getRandomUserInDb, getUserInDb, getUsersInDb, initUsers, USERS_ROOT_URI } from "./helper"
+import { countUsersInDb, getRandomUserInDb, getUserInDb, getUsersInDb, initDb, USERS_ROOT_URI } from "./helper"
 
 const newUser: UserRequest = {
   username: "boaty",
@@ -9,7 +9,7 @@ const newUser: UserRequest = {
 }
 
 beforeEach(async () => {
-  await initUsers()
+  await initDb()
 })
 
 describe(`When POST ${USERS_ROOT_URI}`, () => {

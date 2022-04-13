@@ -1,6 +1,7 @@
-import { HydratedDocument, model, Model, Schema } from "mongoose"
+import { HydratedDocument, model, Model, Schema, Types } from "mongoose"
+import { BlogResponse } from "./blog"
 
-export interface User {
+interface User {
   username: string
   name: string
 }
@@ -11,10 +12,12 @@ export interface UserRequest extends User {
 
 export interface UserResponse extends User {
   id: string
+  blogs: Array<BlogResponse>
 }
 
 export interface UserSchema extends User {
   pwHash: string
+  blogs: Array<Types.ObjectId>
 }
 
 export type UserDocument = HydratedDocument<UserSchema>
@@ -36,7 +39,13 @@ const schema = new Schema({
   pwHash: {
     type: String,
     required: true
-  }
+  },
+  blogs: [
+    {
+      type: Types.ObjectId,
+      ref: "Blog"
+    }
+  ]
 })
 
 schema.set("toJSON", {

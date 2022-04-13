@@ -1,20 +1,28 @@
-import { model, Model, Schema, Types } from "mongoose"
+import { HydratedDocument, model, Model, Schema, Types } from "mongoose"
+import { UserResponse } from "./user"
 
-interface Document {
-  _id: Types.ObjectId
-  id: string
-}
-
-export interface Blog {
+interface Blog {
   title: string
   author: string
   url: string
-  likes: number
 }
 
-export interface BlogDocument extends Blog {
-  id: string
+export interface BlogRequest extends Blog {
+  likes?: number | undefined
 }
+
+export interface BlogResponse extends Blog {
+  id: string
+  likes: number
+  user: UserResponse
+}
+
+export interface BlogSchema extends Blog {
+  likes: number
+  user?: Types.ObjectId
+}
+
+export type BlogDocument = HydratedDocument<BlogSchema>
 
 const schema = new Schema({
   title: {
@@ -44,15 +52,19 @@ const schema = new Schema({
   likes: {
     type: Number,
     default: 0
+  },
+  user: {
+    type: Types.ObjectId,
+    ref: "User"
   }
 })
 
 schema.set("toJSON", {
   versionKey: false,
-  transform: (doc: Document, ret: Partial<Document>) => {
+  transform: (doc: BlogDocument, ret: Partial<BlogDocument>) => {
     ret.id = doc._id.toString()
     delete ret._id
   }
 })
 
-export const BlogModel: Model<Blog> = model("Blog", schema)
+export const BlogModel: Model<BlogSchema> = model("Blog", schema)

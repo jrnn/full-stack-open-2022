@@ -1,8 +1,8 @@
 import { api } from "../jest.setup"
-import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogsInDb, getRandomBlogInDb, initBlogs } from "./helper"
+import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogsInDb, getRandomBlogInDb, initDb } from "./helper"
 
 beforeEach(async () => {
-  await initBlogs()
+  await initDb()
 })
 
 describe(`When DELETE ${BLOGS_ROOT_URI}/:id`, () => {

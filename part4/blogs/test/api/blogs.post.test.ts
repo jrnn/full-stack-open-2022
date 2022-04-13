@@ -1,8 +1,8 @@
 import { api } from "../jest.setup"
-import { Blog, BlogDocument } from "../../src/models/blog"
-import { BLOGS_ROOT_URI, countBlogsInDb, getBlogInDb, getBlogsInDb, initBlogs } from "./helper"
+import { BlogDocument, BlogRequest, BlogResponse } from "../../src/models/blog"
+import { BLOGS_ROOT_URI, countBlogsInDb, getBlogInDb, getBlogsInDb, initDb } from "./helper"
 
-const newBlog: Blog = {
+const newBlog: BlogRequest = {
   title: "All About Plumbuses",
   author: "Plumbusy McPlumbusface",
   url: "http://all.about.plumb.us",
@@ -10,7 +10,7 @@ const newBlog: Blog = {
 }
 
 beforeEach(async () => {
-  await initBlogs()
+  await initDb()
 })
 
 describe(`When POST ${BLOGS_ROOT_URI}`, () => {
@@ -79,17 +79,17 @@ describe(`When POST ${BLOGS_ROOT_URI}`, () => {
   })
 })
 
-const postAndExpectOk = async (blog: Partial<Blog>): Promise<BlogDocument> => {
+const postAndExpectOk = async (blog: Partial<BlogRequest>): Promise<BlogResponse> => {
   const response = await api
     .post(BLOGS_ROOT_URI)
     .send(blog)
     .expect(201)
     .expect("Content-Type", /application\/json/)
 
-  return response.body as BlogDocument
+  return response.body as BlogResponse
 }
 
-const postAndExpectError = async (blog: Partial<Blog>): Promise<void> => {
+const postAndExpectError = async (blog: Partial<BlogRequest>): Promise<void> => {
   await api
     .post(BLOGS_ROOT_URI)
     .send(blog)
@@ -97,19 +97,19 @@ const postAndExpectError = async (blog: Partial<Blog>): Promise<void> => {
     .expect("Content-Type", /application\/json/)
 }
 
-const postAndGetFromDb = async (blog: Partial<Blog>): Promise<BlogDocument> => {
+const postAndGetFromDb = async (blog: Partial<BlogRequest>): Promise<BlogDocument> => {
   const { id } = await postAndExpectOk(blog)
   return await getBlogInDb(id)
 }
 
-const postAndExpectNewBlogInDb = async (blog: Partial<Blog>): Promise<void> => {
+const postAndExpectNewBlogInDb = async (blog: Partial<BlogRequest>): Promise<void> => {
   const blogCountBefore = await countBlogsInDb()
   await postAndExpectOk(blog)
   const blogCountAfter = await countBlogsInDb()
   expect(blogCountAfter).toEqual(blogCountBefore + 1)
 }
 
-const postAndExpectErrorWithoutNewBlogInDb = async (blog: Partial<Blog>): Promise<void> => {
+const postAndExpectErrorWithoutNewBlogInDb = async (blog: Partial<BlogRequest>): Promise<void> => {
   const blogsBefore = await getBlogsInDb()
   await postAndExpectError(blog)
   const blogsAfter = await getBlogsInDb()

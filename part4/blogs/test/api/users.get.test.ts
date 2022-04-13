@@ -1,9 +1,9 @@
 import { api } from "../jest.setup"
 import { UserModel } from "../../src/models/user"
-import { countUsersInDb, initUsers, USERS_ROOT_URI } from "./helper"
+import { countUsersInDb, initDb, USERS_ROOT_URI } from "./helper"
 
 beforeEach(async () => {
-  await initUsers()
+  await initDb()
 })
 
 describe(`When GET ${USERS_ROOT_URI}`, () => {

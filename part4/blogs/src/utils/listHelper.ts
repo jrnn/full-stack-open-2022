@@ -1,5 +1,5 @@
 import logger from "../middleware/logger"
-import { Blog } from "../models/blog"
+import { BlogSchema } from "../models/blog"
 
 const summingBy = <T>(elements: Array<T>, mapper: (t: T) => [ string, number ]) => {
   return elements
@@ -16,27 +16,27 @@ const getMax = (stats: Record<string, number>): [ string, number ] => {
     .reduce((prev, next) => prev[1] < next[1] ? next : prev)
 }
 
-export const dummy = (blogs: Array<Blog>): number => {
+export const dummy = (blogs: Array<BlogSchema>): number => {
   logger.info(blogs)
   return 1
 }
 
-export const totalLikes = (blogs: Array<Blog>): number => {
+export const totalLikes = (blogs: Array<BlogSchema>): number => {
   return blogs
     .map(blog => blog.likes)
     .reduce((prev, next) => prev + next, 0)
 }
 
-export const favoriteBlog = (blogs: Array<Blog>): Blog => {
+export const favoriteBlog = (blogs: Array<BlogSchema>): BlogSchema => {
   if (blogs.length === 0) {
     throw new Error("can't pick a favorite from nothing")
   } else if (blogs.length === 1) {
-    return blogs[0] as Blog
+    return blogs[0] as BlogSchema
   }
-  return [ ...blogs ].sort((p, q) => q.likes - p.likes)[0] as Blog
+  return [ ...blogs ].sort((p, q) => q.likes - p.likes)[0] as BlogSchema
 }
 
-export const mostBlogs = (blogs: Array<Blog>) => {
+export const mostBlogs = (blogs: Array<BlogSchema>) => {
   if (blogs.length === 0) {
     throw new Error("can't pick author with most blogs from nothing")
   }
@@ -45,7 +45,7 @@ export const mostBlogs = (blogs: Array<Blog>) => {
   return { author, blogs: totalBlogs }
 }
 
-export const mostLikes = (blogs: Array<Blog>) => {
+export const mostLikes = (blogs: Array<BlogSchema>) => {
   if (blogs.length === 0) {
     throw new Error("can't pick author with most likes from nothing")
   }

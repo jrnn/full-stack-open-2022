@@ -1,9 +1,9 @@
 import { api } from "../jest.setup"
 import { BlogModel } from "../../src/models/blog"
-import { BLOGS_ROOT_URI, countBlogsInDb, initBlogs } from "./helper"
+import { BLOGS_ROOT_URI, countBlogsInDb, initDb } from "./helper"
 
 beforeEach(async () => {
-  await initBlogs()
+  await initDb()
 })
 
 describe(`When GET ${BLOGS_ROOT_URI}`, () => {
