@@ -17,7 +17,7 @@ export const initUsers = async (): Promise<void> => {
 }
 
 export const countBlogsInDb = async (): Promise<number> => {
-  return BlogModel.count({})
+  return BlogModel.countDocuments({})
 }
 
 export const getBlogsInDb = async (filter: FilterQuery<unknown> = {}) => {
@@ -40,9 +40,18 @@ export const deleteRandomBlogInDb = async (): Promise<string> => {
 }
 
 export const countUsersInDb = async (): Promise<number> => {
-  return UserModel.count({})
+  return UserModel.countDocuments({})
+}
+
+export const getUsersInDb = async (filter: FilterQuery<unknown> = {}): Promise<Array<UserDocument>> => {
+  return await UserModel.find(filter).sort({ _id: -1 })
 }
 
 export const getUserInDb = async (id: string): Promise<UserDocument> => {
   return await UserModel.findById(id) as UserDocument
+}
+
+export const getRandomUserInDb = async (): Promise<UserDocument> => {
+  const users = await UserModel.find({})
+  return users[Math.floor(Math.random() * users.length)] as UserDocument
 }

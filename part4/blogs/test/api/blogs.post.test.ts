@@ -1,6 +1,6 @@
 import { api } from "../jest.setup"
 import { Blog, BlogDocument } from "../../src/models/blog"
-import { BLOGS_ROOT_URI, countBlogsInDb, getBlogInDb, initBlogs } from "./helper"
+import { BLOGS_ROOT_URI, countBlogsInDb, getBlogInDb, getBlogsInDb, initBlogs } from "./helper"
 
 const newBlog: Blog = {
   title: "All About Plumbuses",
@@ -110,8 +110,8 @@ const postAndExpectNewBlogInDb = async (blog: Partial<Blog>): Promise<void> => {
 }
 
 const postAndExpectErrorWithoutNewBlogInDb = async (blog: Partial<Blog>): Promise<void> => {
-  const blogCountBefore = await countBlogsInDb()
+  const blogsBefore = await getBlogsInDb()
   await postAndExpectError(blog)
-  const blogCountAfter = await countBlogsInDb()
-  expect(blogCountAfter).toEqual(blogCountBefore)
+  const blogsAfter = await getBlogsInDb()
+  expect(blogsBefore).toEqual(blogsAfter)
 }

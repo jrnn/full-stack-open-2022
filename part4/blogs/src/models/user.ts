@@ -20,9 +20,23 @@ export interface UserSchema extends User {
 export type UserDocument = HydratedDocument<UserSchema>
 
 const schema = new Schema({
-  username: String,
-  name: String,
-  pwHash: String
+  username: {
+    type: String,
+    required: [
+      true,
+      "Property 'username' cannot be empty"
+    ],
+    minlength: 3,
+    trim: true
+  },
+  name: {
+    type: String,
+    default: ""
+  },
+  pwHash: {
+    type: String,
+    required: true
+  }
 })
 
 schema.set("toJSON", {
@@ -32,6 +46,17 @@ schema.set("toJSON", {
     delete ret._id
     delete ret.pwHash
   }
+})
+
+schema.pre<UserDocument>("validate", async function(next) {
+  const countOfUsersWithSameUsername = await this.model("User")
+    .countDocuments({ username: this.username })
+    .where({ _id: { $ne: this._id }})
+
+  if (countOfUsersWithSameUsername > 0) {
+    this.invalidate("username", "Username is already in use", this.username)
+  }
+  next()
 })
 
 export const UserModel: Model<UserSchema> = model("User", schema)

@@ -1,16 +1,10 @@
-import { Request, RequestHandler, Response, Router } from "express"
+import { Router } from "express"
 import { Blog, BlogModel } from "../models/blog"
-import { NotFoundError } from "../errors/errors"
+import { NotFoundError, throwsError } from "../errors/errors"
 import { TypedRequest } from "../types"
 
 const router = Router()
 const updateOpts = { new: true, runValidators: true }
-
-const throwsError = (throwingHandler: (req: Request, res: Response) => Promise<unknown>): RequestHandler => {
-  return (request, response, next) => {
-    return throwingHandler(request, response).catch(next)
-  }
-}
 
 router.get("/", throwsError(async (_, response) => {
   const blogs = await BlogModel.find({})
