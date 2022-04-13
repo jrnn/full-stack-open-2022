@@ -1,4 +1,5 @@
 import { Blog } from "../src/models/blog"
+import { UserSchema } from "../src/models/user"
 
 export const blogs: Array<Blog> = [
   {
@@ -51,6 +52,15 @@ export const blogs: Array<Blog> = [
   }
 ]
 
-export const randomBlog = (): Blog => {
-  return blogs[Math.floor(Math.random() * blogs.length)] as Blog
-}
+export const users: Array<UserSchema> = [
+  {
+    username: "spongebob",
+    name: "Spongebob Squarepants",
+    pwHash: "$2a$10$pjJZKnMRH.pU3qYyugjokuTwOUQZPSukyPlaMRj0th7I/T.cxuVlm",  // qwerty
+  },
+  {
+    username: "cnorris",
+    name: "Chuck Norris",
+    pwHash: "$2a$10$kl8WWW1DHIjQ8YtGyI4HXu0uVU/hPcVtneUH/hz7sc4/RlixAmIRy",  // trustno1
+  }
+]

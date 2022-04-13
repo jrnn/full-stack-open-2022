@@ -1,13 +1,10 @@
 import { Request, RequestHandler, Response, Router } from "express"
 import { Blog, BlogModel } from "../models/blog"
 import { NotFoundError } from "../errors/errors"
+import { TypedRequest } from "../types"
 
 const router = Router()
 const updateOpts = { new: true, runValidators: true }
-
-interface TypedRequest<T> extends Request {
-  body: T
-}
 
 const throwsError = (throwingHandler: (req: Request, res: Response) => Promise<unknown>): RequestHandler => {
   return (request, response, next) => {

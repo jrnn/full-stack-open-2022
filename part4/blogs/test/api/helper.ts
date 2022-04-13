@@ -1,12 +1,19 @@
 import { FilterQuery } from "mongoose"
 import { BlogDocument, BlogModel } from "../../src/models/blog"
-import { blogs as initialBlogs } from "../testblogs"
+import { UserDocument, UserModel } from "../../src/models/user"
+import { blogs as initialBlogs, users as initialUsers } from "../testdata"
 
 export const BLOGS_ROOT_URI = "/api/blogs"
+export const USERS_ROOT_URI = "/api/users"
 
 export const initBlogs = async (): Promise<void> => {
   await BlogModel.deleteMany({})
   await Promise.all(initialBlogs.map(blog => new BlogModel(blog).save()))
+}
+
+export const initUsers = async (): Promise<void> => {
+  await UserModel.deleteMany({})
+  await Promise.all(initialUsers.map(user => new UserModel(user).save()))
 }
 
 export const countBlogsInDb = async (): Promise<number> => {
@@ -30,4 +37,12 @@ export const deleteRandomBlogInDb = async (): Promise<string> => {
   const { id } = await getRandomBlogInDb()
   await BlogModel.findByIdAndDelete(id)
   return id
+}
+
+export const countUsersInDb = async (): Promise<number> => {
+  return UserModel.count({})
+}
+
+export const getUserInDb = async (id: string): Promise<UserDocument> => {
+  return await UserModel.findById(id) as UserDocument
 }

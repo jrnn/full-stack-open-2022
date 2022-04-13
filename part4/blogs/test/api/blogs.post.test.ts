@@ -21,22 +21,22 @@ describe(`When POST ${BLOGS_ROOT_URI}`, () => {
 
     describe("And sets the new blog's", () => {
       it("'title' to the given 'title'", async () => {
-        const { title } = await postAndGet(newBlog)
+        const { title } = await postAndGetFromDb(newBlog)
         expect(title).toEqual(newBlog.title)
       })
 
       it("'author' to the given 'author'", async () => {
-        const { author } = await postAndGet(newBlog)
+        const { author } = await postAndGetFromDb(newBlog)
         expect(author).toEqual(newBlog.author)
       })
 
       it("'url' to the given 'url'", async () => {
-        const { url } = await postAndGet(newBlog)
+        const { url } = await postAndGetFromDb(newBlog)
         expect(url).toEqual(newBlog.url)
       })
 
       it("'likes' to the given 'likes'", async () => {
-        const { likes } = await postAndGet(newBlog)
+        const { likes } = await postAndGetFromDb(newBlog)
         expect(likes).toEqual(newBlog.likes)
       })
     })
@@ -72,7 +72,7 @@ describe(`When POST ${BLOGS_ROOT_URI}`, () => {
 
     describe("And sets the new blog's", () => {
       it("'likes' to 0 by default", async () => {
-        const { likes } = await postAndGet(withoutLikes)
+        const { likes } = await postAndGetFromDb(withoutLikes)
         expect(likes).toEqual(0)
       })
     })
@@ -97,7 +97,7 @@ const postAndExpectError = async (blog: Partial<Blog>): Promise<void> => {
     .expect("Content-Type", /application\/json/)
 }
 
-const postAndGet = async (blog: Partial<Blog>): Promise<BlogDocument> => {
+const postAndGetFromDb = async (blog: Partial<Blog>): Promise<BlogDocument> => {
   const { id } = await postAndExpectOk(blog)
   return await getBlogInDb(id)
 }
