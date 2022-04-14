@@ -7,11 +7,13 @@ interface Props {
   incrementLikes: (blog: BlogEntity) => void
 }
 
+const sortByLikes = (p: BlogEntity, q: BlogEntity) => q.likes - p.likes
+
 export const BlogList: FunctionComponent<Props> = ({ blogs, incrementLikes }) => {
   return (
     <div>
       <h3>Please peruse blogs</h3>
-      {blogs.map(blog =>
+      {blogs.sort(sortByLikes).map(blog =>
         <BlogEntry
           key={blog.id}
           blog={blog}
