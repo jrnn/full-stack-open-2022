@@ -5,12 +5,15 @@ interface Logger {
   info: (...args: unknown[]) => void
 }
 
+const prefix = "[blogs-api]"
+const now = () => new Date().toISOString()
+
 const consoleLogger: Logger = {
   error: (...args) => {
-    console.error(...args)
+    console.error(prefix, now(), "--", ...args)
   },
   info: (...args) => {
-    console.log(...args)
+    console.log(prefix, now(), "--", ...args)
   }
 }
 

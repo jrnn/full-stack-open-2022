@@ -1,7 +1,9 @@
 import React, { FormEvent, FunctionComponent, useState } from "react"
+import { LoginCredentials } from "../types"
+import { FormInput } from "./FormInput"
 
 interface Props {
-  handleLogin: (username: string, password: string) => Promise<boolean>
+  handleLogin: (credentials: LoginCredentials, onSuccess: () => void) => Promise<void>
 }
 
 export const LoginForm: FunctionComponent<Props> = ({ handleLogin }) => {
@@ -10,39 +12,33 @@ export const LoginForm: FunctionComponent<Props> = ({ handleLogin }) => {
 
   const editUsername = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUsername(currentTarget.value)
   const editPassword = ({ currentTarget }: FormEvent<HTMLInputElement>) => setPassword(currentTarget.value)
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const resetForm = () => {
+    setUsername("")
+    setPassword("")
+  }
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const isSuccessful = await handleLogin(username, password)
-    if (isSuccessful) {
-      setUsername("")
-      setPassword("")
-    }
+    handleLogin({ username, password }, resetForm)
   }
 
   return (
     <div>
       <h3>Please provide credentials</h3>
-      <form onSubmit={handleSubmit}>
-        <section>
-          <label htmlFor="username">Username:</label>
-          <input
-            id="username"
-            onChange={editUsername}
-            value={username}
-          />
-        </section>
-        <section>
-          <label htmlFor="password">Password:</label>
-          <input
-            id="password"
-            onChange={editPassword}
-            type="password"
-            value={password}
-          />
-        </section>
-        <section>
+      <form onSubmit={onSubmit}>
+        <FormInput
+          label="Username"
+          handleChange={editUsername}
+          value={username}
+        />
+        <FormInput
+          label="Password"
+          handleChange={editPassword}
+          value={password}
+          type="password"
+        />
+        <div>
           <button type="submit">Login</button>
-        </section>
+        </div>
       </form>
     </div>
   )

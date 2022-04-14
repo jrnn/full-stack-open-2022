@@ -1,8 +1,9 @@
 import React, { FormEvent, FunctionComponent, useState } from "react"
 import { BlogDto } from "../types"
+import { FormInput } from "./FormInput"
 
 interface Props {
-  createBlog: (blog: BlogDto) => Promise<boolean>
+  createBlog: (blog: BlogDto, onSuccess: () => void) => Promise<void>
 }
 
 export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
@@ -13,48 +14,38 @@ export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
   const editTitle = ({ currentTarget }: FormEvent<HTMLInputElement>) => setTitle(currentTarget.value)
   const editAuthor = ({ currentTarget }: FormEvent<HTMLInputElement>) => setAuthor(currentTarget.value)
   const editUrl = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUrl(currentTarget.value)
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const resetForm = () => {
+    setTitle("")
+    setAuthor("")
+    setUrl("")
+  }
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const isSuccessful = await createBlog({ title, author, url })
-    if (isSuccessful) {
-      setTitle("")
-      setAuthor("")
-      setUrl("")
-    }
+    createBlog({ title, author, url }, resetForm)
   }
 
   return (
     <div>
       <h3>Add new blog</h3>
       <form onSubmit={handleSubmit}>
-        <section>
-          <label htmlFor="title">Title:</label>
-          <input
-            id="title"
-            onChange={editTitle}
-            value={title}
-          />
-        </section>
-        <section>
-          <label htmlFor="author">Author:</label>
-          <input
-            id="author"
-            onChange={editAuthor}
-            value={author}
-          />
-        </section>
-        <section>
-          <label htmlFor="url">URL:</label>
-          <input
-            id="url"
-            onChange={editUrl}
-            value={url}
-          />
-        </section>
-        <section>
+        <FormInput
+          label="Title"
+          handleChange={editTitle}
+          value={title}
+        />
+        <FormInput
+          label="Author"
+          handleChange={editAuthor}
+          value={author}
+        />
+        <FormInput
+          label="URL"
+          handleChange={editUrl}
+          value={url}
+        />
+        <div>
           <button type="submit">Add</button>
-        </section>
+        </div>
       </form>
     </div>
   )
