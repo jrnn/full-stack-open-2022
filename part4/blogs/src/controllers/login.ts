@@ -22,7 +22,11 @@ router.post("/", throwsError(async ({ body }: TypedRequest<Credentials>, respons
     throw new AuthenticationError()
   }
   const token = issueToken(user._id.toString(), username)
-  return response.status(200).json({ token })
+  return response.status(200).json({
+    token,
+    name: user.name,
+    username: user.username
+  })
 }))
 
 export default router
