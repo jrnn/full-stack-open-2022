@@ -1,5 +1,5 @@
 {
-  "name": "part1-feedback",
+  "name": "part5-blogs-client",
   "main": "./src/index.tsx",
   "scripts": {
     "build": "npm run lint && rm -rf ./dist && webpack --mode production",
@@ -8,6 +8,7 @@
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
   "dependencies": {
+    "axios": "0.26.1",
     "react": "18.0.0",
     "react-dom": "18.0.0"
   },

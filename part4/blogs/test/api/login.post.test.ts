@@ -10,27 +10,31 @@ beforeEach(async () => {
 
 describe(`When POST ${LOGIN_ROOT_URI}`, () => {
   describe("Given valid credentials", () => {
-    it("Then returns 200 and issues a JSON web token", async () => {
-      const { username } = await getRandomUserInDb()
-      const { body } = await api
-        .post(LOGIN_ROOT_URI)
-        .send({ username, password: "qwerty123" })
-        .expect(200)
-        .expect("Content-Type", /application\/json/)
+    describe("Then returns 200 and the response body", () => {
+      it("contains a JSON web token", async () => {
+        const { username } = await getRandomUserInDb()
+        const { body } = await post(username, "qwerty123", 200)
+        expect(body.token).toBeDefined()
+      })
 
-      expect(body.token).toBeDefined()
+      it("contains the user's 'name'", async () => {
+        const { name, username } = await getRandomUserInDb()
+        const { body } = await post(username, "qwerty123", 200)
+        expect(body.name).toEqual(name)
+      })
+
+      it("contains the user's 'username'", async () => {
+        const { username } = await getRandomUserInDb()
+        const { body } = await post(username, "qwerty123", 200)
+        expect(body.username).toEqual(username)
+      })
     })
   })
 
   describe("Given invalid 'username'", () => {
     it("Then returns 401 and no token", async () => {
       const { username } = await getRandomUserInDb()
-      const { body } = await api
-        .post(LOGIN_ROOT_URI)
-        .send({ username: username.substring(1), password: "qwerty123" })
-        .expect(401)
-        .expect("Content-Type", /application\/json/)
-
+      const { body } = await post(username.substring(1), "qwerty123", 401)
       expect(body.token).toBeUndefined()
     })
   })
@@ -38,13 +42,16 @@ describe(`When POST ${LOGIN_ROOT_URI}`, () => {
   describe("Given invalid 'password'", () => {
     it("Then returns 401 and no token", async () => {
       const { username } = await getRandomUserInDb()
-      const { body } = await api
-        .post(LOGIN_ROOT_URI)
-        .send({ username, password: "qwerty124" })
-        .expect(401)
-        .expect("Content-Type", /application\/json/)
-
+      const { body } = await post(username, "qwerty124", 401)
       expect(body.token).toBeUndefined()
     })
   })
 })
+
+const post = async (username: string, password: string, status: number) => {
+  return await api
+    .post(LOGIN_ROOT_URI)
+    .send({ username, password })
+    .expect(status)
+    .expect("Content-Type", /application\/json/)
+}
