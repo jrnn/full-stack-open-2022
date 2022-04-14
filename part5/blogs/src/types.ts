@@ -1,4 +1,10 @@
-export interface BlogResponse {
+export interface BlogDto {
+  title: string
+  author: string
+  url: string
+}
+
+export interface BlogEntity {
   id: string
   title: string
   author: string

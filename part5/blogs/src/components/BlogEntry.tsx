@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react"
-import { BlogResponse } from "../types"
+import { BlogEntity } from "../types"
 
 interface Props {
-  blog: BlogResponse
+  blog: BlogEntity
 }
 
 export const BlogEntry: FunctionComponent<Props> = ({ blog }) => {

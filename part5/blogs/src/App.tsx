@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { BlogList } from "./components/BlogList"
+import { BlogMain } from "./components/BlogMain"
 import { LoginForm } from "./components/LoginForm"
 import { getUserFromLocal, login, removeUserFromLocal } from "./services/login"
 import { UserAuth } from "./types"
@@ -27,9 +27,10 @@ export const App = () => {
 
   return (
     <>
+      <h2>Blogs</h2>
       {!user
         ? <LoginForm handleLogin={handleLogin} />
-        : <BlogList
+        : <BlogMain
           user={user}
           handleLogout={handleLogout}
         />

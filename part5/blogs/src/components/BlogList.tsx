@@ -1,33 +1,15 @@
-import React, { FunctionComponent, useEffect, useState } from "react"
-import { getAllBlogs } from "../services/blogs"
-import { BlogResponse, UserAuth } from "../types"
+import React, { FunctionComponent } from "react"
+import { BlogEntity } from "../types"
 import { BlogEntry } from "./BlogEntry"
 
 interface Props {
-  user: UserAuth
-  handleLogout: () => void
+  blogs: Array<BlogEntity>
 }
 
-export const BlogList: FunctionComponent<Props> = ({ user, handleLogout }) => {
-  const [ blogs, setBlogs ] = useState<Array<BlogResponse>>([])
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const _blogs = await getAllBlogs()
-        setBlogs(_blogs)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetch()
-  }, [])
-
+export const BlogList: FunctionComponent<Props> = ({ blogs }) => {
   return (
     <div>
-      <h2>Please peruse blogs</h2>
-      <p>Logged in as {user.name}</p>
-      <button onClick={handleLogout}>Logout</button>
+      <h3>Please peruse blogs</h3>
       <ul>
         {blogs.map(blog =>
           <BlogEntry
