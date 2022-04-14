@@ -10,14 +10,12 @@ export const BlogList: FunctionComponent<Props> = ({ blogs }) => {
   return (
     <div>
       <h3>Please peruse blogs</h3>
-      <ul>
-        {blogs.map(blog =>
-          <BlogEntry
-            key={blog.id}
-            blog={blog}
-          />
-        )}
-      </ul>
+      {blogs.map(blog =>
+        <BlogEntry
+          key={blog.id}
+          blog={blog}
+        />
+      )}
     </div>
   )
 }
