@@ -5,9 +5,10 @@ import { BlogEntry } from "./BlogEntry"
 
 interface Props {
   user: UserAuth
+  handleLogout: () => void
 }
 
-export const BlogList: FunctionComponent<Props> = ({ user }) => {
+export const BlogList: FunctionComponent<Props> = ({ user, handleLogout }) => {
   const [ blogs, setBlogs ] = useState<Array<BlogResponse>>([])
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export const BlogList: FunctionComponent<Props> = ({ user }) => {
     <div>
       <h2>Please peruse blogs</h2>
       <p>Logged in as {user.name}</p>
+      <button onClick={handleLogout}>Logout</button>
       <ul>
         {blogs.map(blog =>
           <BlogEntry

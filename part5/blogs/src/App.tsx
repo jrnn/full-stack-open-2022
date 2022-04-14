@@ -1,10 +1,14 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { BlogList } from "./components/BlogList"
 import { LoginForm } from "./components/LoginForm"
-import { login } from "./services/login"
+import { getUserFromLocal, login, removeUserFromLocal } from "./services/login"
 import { UserAuth } from "./types"
 
 export const App = () => {
+  useEffect(() => {
+    setUser(getUserFromLocal())
+  }, [])
+
   const [ user, setUser ] = useState<UserAuth>()
   const handleLogin = async (username: string, password: string): Promise<boolean> => {
     try {
@@ -16,12 +20,19 @@ export const App = () => {
       return false
     }
   }
+  const handleLogout = () => {
+    setUser(undefined)
+    removeUserFromLocal()
+  }
 
   return (
     <>
       {!user
         ? <LoginForm handleLogin={handleLogin} />
-        : <BlogList user={user} />
+        : <BlogList
+          user={user}
+          handleLogout={handleLogout}
+        />
       }
     </>
   )
