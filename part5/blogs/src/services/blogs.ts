@@ -13,6 +13,11 @@ export const postBlog = async (blog: BlogDto, token: string): Promise<BlogEntity
   return data
 }
 
+export const putBlog = async (blog: Partial<BlogEntity>): Promise<BlogEntity> => {
+  const { data } = await axios.put<BlogEntity>(`${rootUri}/${blog.id}`, blog)
+  return data
+}
+
 const bearer = (token: string) => {
   return {
     headers: {

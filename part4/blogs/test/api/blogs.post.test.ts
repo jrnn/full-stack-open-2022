@@ -66,6 +66,13 @@ describe(`When POST ${BLOGS_ROOT_URI}`, () => {
           expect(user).toEqual(tokenUser._id)
         })
       })
+
+      it("And adds the new blog to the user's 'blogs'", async () => {
+        const { id, token } = await getValidToken()
+        const blog = await postAndGetFromDb(newBlog, token)
+        const tokenUser = await getUserInDb(id)
+        expect(tokenUser.blogs.map(_id => _id.toString())).toContain(blog._id.toString())
+      })
     })
 
     describe("Given no 'title'", () => {

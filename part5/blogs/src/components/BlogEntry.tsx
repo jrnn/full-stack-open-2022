@@ -3,6 +3,7 @@ import { BlogEntity } from "../types"
 
 interface Props {
   blog: BlogEntity
+  incrementLikes: (blog: BlogEntity) => void
 }
 
 const style: CSSProperties = {
@@ -11,9 +12,10 @@ const style: CSSProperties = {
   padding: 4
 }
 
-export const BlogEntry: FunctionComponent<Props> = ({ blog }) => {
+export const BlogEntry: FunctionComponent<Props> = ({ blog, incrementLikes }) => {
   const [ detailed, setDetailed ] = useState(false)
   const toggle = () => setDetailed(!detailed)
+  const handleLike = () => incrementLikes(blog)
 
   return (
     <div style={style}>
@@ -25,7 +27,7 @@ export const BlogEntry: FunctionComponent<Props> = ({ blog }) => {
         <div>URL: {blog.url}</div>
         <div>
           <span>Likes: {blog.likes} </span>
-          <button>Like!</button>
+          <button onClick={handleLike}>Like!</button>
         </div>
         <div>Added by: {blog.user.name}</div>
       </div>

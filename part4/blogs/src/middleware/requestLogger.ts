@@ -16,11 +16,7 @@ const hidePassword = (body: Body) => {
 
 const requestLogger: RequestHandler = (request: TypedRequest<Body>, _, next) => {
   const { method, path } = request
-  if (method === "POST") {
-    logger.info(`${method} ${path} ${JSON.stringify(hidePassword(request.body))}`)
-  } else {
-    logger.info(`${method} ${path}`)
-  }
+  logger.info(`${method} ${path} ${JSON.stringify(hidePassword(request.body))}`)
   return next()
 }
 

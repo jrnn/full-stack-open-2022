@@ -7,24 +7,34 @@ import userExtractor from "../middleware/userExtractor"
 
 const router = Router()
 const updateOpts = { new: true, runValidators: true }
+const populateOpts = { blogs: 0 }
 
 router.get("/", throwsError(async (_, response) => {
   const blogs = await BlogModel
     .find({})
-    .populate("user", { blogs: 0 })
+    .populate("user", populateOpts)
 
   return response.status(200).json(blogs)
 }))
 
 router.post("/", userExtractor, throwsError(async ({ body, user }: TypedRequest<BlogRequest>, response) => {
-  const userId = (user as UserDocument)._id
-  const blog = await new BlogModel({ ...body, user: userId }).save()
+  const { _id } = await new BlogModel({ ...body, user: user?._id }).save()
+  user?.blogs.push(_id)
+  await user?.save()
+
+  const blog = await BlogModel
+    .findById(_id)
+    .populate("user", populateOpts)
+
   return response.status(201).json(blog)
 }))
 
 router.put("/:id", throwsError(async ({ body, params }, response) => {
   const { id } = params
-  const updatedBlog = await BlogModel.findByIdAndUpdate(id, body, updateOpts)
+  const updatedBlog = await BlogModel
+    .findByIdAndUpdate(id, body, updateOpts)
+    .populate("user", populateOpts)
+
   if (!updatedBlog) {
     throw new NotFoundError(`no blog found with id '${id}'`)
   }
