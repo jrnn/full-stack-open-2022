@@ -1,6 +1,6 @@
 import { UserDocument, UserModel } from "../../src/models/user"
 import { api } from "../jest.setup"
-import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogsInDb, getInvalidToken, getRandomBlogInDb, getValidToken, initDb } from "./helper"
+import { BLOGS_ROOT_URI, deleteRandomBlogInDb, getBlogsInDb, getInvalidToken, getRandomBlogInDb, getUserInDb, getValidToken, initDb } from "./helper"
 
 beforeEach(async () => {
   await initDb()
@@ -47,6 +47,17 @@ describe(`When DELETE ${BLOGS_ROOT_URI}/:id`, () => {
           await _delete(id, token, 204)
           const blogsAfter = await getBlogsInDb()
           expect(otherBlogsBefore).toEqual(blogsAfter)
+        })
+
+        it("Then that blog is also removed from the user's 'blogs'", async () => {
+          const { id, user } = await getRandomBlogInDb()
+          const { token } = await getValidToken(user?.toString())
+          const userBefore = await getUserInDb(user?.toString() as string)
+          expect(userBefore.blogs.map(blog => blog._id.toString())).toContain(id)
+
+          await _delete(id, token, 204)
+          const userAfter = await getUserInDb(user?.toString() as string)
+          expect(userAfter.blogs.map(blog => blog._id.toString())).not.toContain(id)
         })
       })
 

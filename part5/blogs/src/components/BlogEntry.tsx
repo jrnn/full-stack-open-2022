@@ -1,9 +1,11 @@
 import React, { CSSProperties, FunctionComponent, useState } from "react"
-import { BlogEntity } from "../types"
+import { BlogEntity, UserAuth } from "../types"
 
 interface Props {
+  user: UserAuth
   blog: BlogEntity
   incrementLikes: (blog: BlogEntity) => void
+  removeBlog: (blog: BlogEntity) => void
 }
 
 const style: CSSProperties = {
@@ -12,10 +14,16 @@ const style: CSSProperties = {
   padding: 4
 }
 
-export const BlogEntry: FunctionComponent<Props> = ({ blog, incrementLikes }) => {
+export const BlogEntry: FunctionComponent<Props> = ({ user, blog, incrementLikes, removeBlog }) => {
   const [ detailed, setDetailed ] = useState(false)
   const toggle = () => setDetailed(!detailed)
   const handleLike = () => incrementLikes(blog)
+  const handleRemove = () => {
+    if (window.confirm("Sure you wanna do that?")) {
+      removeBlog(blog)
+    }
+  }
+  const isBlogOwner = user.username === blog.user.username
 
   return (
     <div style={style}>
@@ -30,6 +38,11 @@ export const BlogEntry: FunctionComponent<Props> = ({ blog, incrementLikes }) =>
           <button onClick={handleLike}>Like!</button>
         </div>
         <div>Added by: {blog.user.name}</div>
+        {isBlogOwner &&
+          <div>
+            <button onClick={handleRemove}>Remove</button>
+          </div>
+        }
       </div>
     </div>
   )

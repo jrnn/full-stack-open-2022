@@ -18,9 +18,10 @@ router.get("/", throwsError(async (_, response) => {
 }))
 
 router.post("/", userExtractor, throwsError(async ({ body, user }: TypedRequest<BlogRequest>, response) => {
-  const { _id } = await new BlogModel({ ...body, user: user?._id }).save()
-  user?.blogs.push(_id)
-  await user?.save()
+  const certainlyUser = user as UserDocument
+  const { _id } = await new BlogModel({ ...body, user: certainlyUser._id }).save()
+  certainlyUser.blogs.push(_id)
+  await certainlyUser.save()
 
   const blog = await BlogModel
     .findById(_id)
@@ -43,16 +44,19 @@ router.put("/:id", throwsError(async ({ body, params }, response) => {
 
 router.delete("/:id", userExtractor, throwsError(async ({ params, user }: TypedRequest, response) => {
   const { id } = params
-  const userId = (user as UserDocument)._id
+  const certainlyUser = user as UserDocument
   const blogToDelete = await BlogModel.findById(id)
 
   if (!blogToDelete) {
     throw new NotFoundError(`no blog found with id '${id}'`)
   }
-  if (blogToDelete.user && userId.toString() !== blogToDelete.user.toString()) {
+  if (blogToDelete.user && blogToDelete.user.toString() !== certainlyUser._id.toString()) {
     throw new AuthorizationError()
   }
+  certainlyUser.blogs = certainlyUser.blogs.filter(({ _id }) => _id.toString() !== id)
+  await certainlyUser.save()
   await blogToDelete.delete()
+
   return response.status(204).end()
 }))
 

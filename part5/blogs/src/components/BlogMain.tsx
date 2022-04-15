@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import { getAllBlogs, postBlog, putBlog } from "../services/blogs"
+import { deleteBlog, getAllBlogs, postBlog, putBlog } from "../services/blogs"
 import { BlogDto, BlogEntity, NotifyDispatch, UserAuth } from "../types"
 import { BlogForm } from "./BlogForm"
 import { BlogList } from "./BlogList"
@@ -31,15 +31,24 @@ export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout, notify 
       notify("Oops, couldn't add! Please check the inputs?", "error")
     }
   }
-  const incrementLikes = async (blog: BlogEntity) => {
+  const incrementLikes = async ({ id, likes }: BlogEntity) => {
     try {
-      const { id, likes } = blog
       const payload = { id, likes: likes + 1 }
       const updatedBlog = await putBlog(payload)
       setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
     } catch (error) {
       console.error(error)
       notify("Oops, couldn't add that like! Too bad!", "error")
+    }
+  }
+  const removeBlog = async ({ id }: BlogEntity) => {
+    try {
+      await deleteBlog(id, user.token)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+      notify("You just removed a blog. Uhh... Hooray...?", "info")
+    } catch (error) {
+      console.error(error)
+      notify("Oh no, couldn't remove that blog! Such a sad day!", "error")
     }
   }
 
@@ -64,8 +73,10 @@ export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout, notify 
         <BlogForm createBlog={createBlog} />
       </TogglableElement>
       <BlogList
+        user={user}
         blogs={blogs}
         incrementLikes={incrementLikes}
+        removeBlog={removeBlog}
       />
     </div>
   )

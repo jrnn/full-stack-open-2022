@@ -18,6 +18,10 @@ export const putBlog = async (blog: Partial<BlogEntity>): Promise<BlogEntity> =>
   return data
 }
 
+export const deleteBlog = async (id: string, token: string): Promise<void> => {
+  await axios.delete(`${rootUri}/${id}`, bearer(token))
+}
+
 const bearer = (token: string) => {
   return {
     headers: {
