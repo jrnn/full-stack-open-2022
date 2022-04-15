@@ -20,3 +20,5 @@ export const TogglableElement = forwardRef(({ children, label }: Props, ref) => 
     </>
   )
 })
+
+TogglableElement.displayName = "Togglable"

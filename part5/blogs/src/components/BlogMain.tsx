@@ -59,7 +59,6 @@ export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout, notify 
         setBlogs(blogsFromApi)
       } catch (error) {
         console.error(error)
-        notify("Couldn't fetch blogs from the server, maybe try again in a while?", "error")
       }
     }
     fetch()

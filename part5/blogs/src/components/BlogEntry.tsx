@@ -27,7 +27,7 @@ export const BlogEntry: FunctionComponent<Props> = ({ user, blog, incrementLikes
 
   return (
     <div style={style}>
-      <span>{blog.author}: "{blog.title}" </span>
+      <span>{blog.author}: &quot;{blog.title}&quot; </span>
       <button onClick={toggle}>
         {detailed ? "Hide" : "Show details"}
       </button>
