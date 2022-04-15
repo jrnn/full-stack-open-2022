@@ -35,7 +35,7 @@ export const BlogEntry: FunctionComponent<Props> = ({ user, blog, incrementLikes
         <div>
           <div>URL: {blog.url}</div>
           <div>
-            <span>Likes: {blog.likes} </span>
+            <span>Likes: {blog.likes}</span>
             <button onClick={handleLike}>Like!</button>
           </div>
           <div>Added by: {blog.user.name}</div>

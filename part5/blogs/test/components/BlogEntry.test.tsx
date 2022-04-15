@@ -1,5 +1,6 @@
 import React from "react"
 import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { BlogEntry } from "../../src/components/BlogEntry"
 
 const defaultProps = {
@@ -34,23 +35,37 @@ describe("<BlogEntry />", () => {
   describe("once rendered", () => {
     beforeEach(() => renderBlogEntry())
 
-    it("'title' is displayed by default", () => {
-      screen.getByText("blog.title", { exact: false })
+    it("'title' is displayed by default", () =>
+      expect(screen.getByText(/blog.title/i)).toBeInTheDocument())
+
+    it("'author' is displayed by default", () =>
+      expect(screen.getByText(/blog.author/i)).toBeInTheDocument())
+
+    it("'url' is not displayed by default", () =>
+      expect(screen.queryByText(/blog.url/i)).not.toBeInTheDocument())
+
+    it("'likes' is not displayed by default", () =>
+      expect(screen.queryByText(/1337/i)).not.toBeInTheDocument())
+  })
+
+  describe("after clicking 'Show details'", () => {
+    beforeEach(async () => {
+      renderBlogEntry()
+      const button = screen.getByText("Show details")
+      await userEvent.click(button)
     })
 
-    it("'author' is displayed by default", () => {
-      screen.getByText("blog.author", { exact: false })
-    })
+    it("'title' is still displayed", async () =>
+      expect(screen.getByText(/blog.title/i)).toBeInTheDocument())
 
-    it("'url' is not displayed by default", () => {
-      const element = screen.queryByText("blog.url", { exact: false })
-      expect(element).toBeNull()
-    })
+    it("'author' is still displayed", () =>
+      expect(screen.getByText(/blog.author/i)).toBeInTheDocument())
 
-    it("'likes' is not displayed by default", () => {
-      const element = screen.queryByText("1337", { exact: false })
-      expect(element).toBeNull()
-    })
+    it("'url' is now displayed too", () =>
+      expect(screen.getByText(/blog.url/i)).toBeInTheDocument())
+
+    it("'likes' is now displayed too", () =>
+      expect(screen.getByText(/1337/i)).toBeInTheDocument())
   })
 })
 
