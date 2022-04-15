@@ -31,19 +31,21 @@ export const BlogEntry: FunctionComponent<Props> = ({ user, blog, incrementLikes
       <button onClick={toggle}>
         {detailed ? "Hide" : "Show details"}
       </button>
-      <div style={{ display: detailed ? "" : "none" }}>
-        <div>URL: {blog.url}</div>
+      {detailed &&
         <div>
-          <span>Likes: {blog.likes} </span>
-          <button onClick={handleLike}>Like!</button>
-        </div>
-        <div>Added by: {blog.user.name}</div>
-        {isBlogOwner &&
+          <div>URL: {blog.url}</div>
           <div>
-            <button onClick={handleRemove}>Remove</button>
+            <span>Likes: {blog.likes} </span>
+            <button onClick={handleLike}>Like!</button>
           </div>
-        }
-      </div>
+          <div>Added by: {blog.user.name}</div>
+          {isBlogOwner &&
+            <div>
+              <button onClick={handleRemove}>Remove</button>
+            </div>
+          }
+        </div>
+      }
     </div>
   )
 }
