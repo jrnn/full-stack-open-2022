@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { BlogEntry } from "../../src/components/BlogEntry"
 
-const defaultProps = {
+const props = {
   user: {
     token: "user.token",
     name: "user.name",
@@ -22,19 +22,14 @@ const defaultProps = {
       username: "blog.user.username"
     }
   },
-  incrementLikes: () => {
-    // do nothing
-  },
-  removeBlog: () => {
-    // do nothing
-  }
+  incrementLikes: (_: unknown): void => { _ },
+  removeBlog: (_: unknown): void => { _ }
 }
-type Props = Partial<typeof defaultProps>
 
 describe("<BlogEntry />", () => {
-  describe("once rendered", () => {
-    beforeEach(() => renderBlogEntry())
+  beforeEach(() => render(<BlogEntry {...props} />))
 
+  describe("once rendered", () => {
     it("'title' is displayed by default", () =>
       expect(screen.getByText(/blog.title/i)).toBeInTheDocument())
 
@@ -50,7 +45,6 @@ describe("<BlogEntry />", () => {
 
   describe("after clicking 'Show details'", () => {
     beforeEach(async () => {
-      renderBlogEntry()
       const button = screen.getByText("Show details")
       await userEvent.click(button)
     })
@@ -66,9 +60,28 @@ describe("<BlogEntry />", () => {
 
     it("'likes' is now displayed too", () =>
       expect(screen.getByText(/1337/i)).toBeInTheDocument())
+
+    describe("then, on clicking 'Like!'", () => {
+
+      const spy = jest.spyOn(props, "incrementLikes")
+
+      it("once, then the given 'incrementLikes' is called once with the current 'blog'", async () => {
+        const button = screen.getByText("Like!")
+        await userEvent.click(button)
+        expect(spy).toHaveBeenCalledTimes(1)
+        expect(spy).toHaveBeenCalledWith(props.blog)
+      })
+
+      it("twice, then the given 'incrementLikes' is called twice with the current 'blog'", async () => {
+        const button = screen.getByText("Like!")
+        await userEvent.click(button)
+        await userEvent.click(button)
+        expect(spy).toHaveBeenCalledTimes(2)
+        expect(spy).toHaveBeenNthCalledWith(1, props.blog)
+        expect(spy).toHaveBeenNthCalledWith(2, props.blog)
+      })
+    })
   })
 })
 
-const renderBlogEntry = (props: Props = {}) => {
-  return render(<BlogEntry {...defaultProps} {...props} />)
-}
+afterEach(() => jest.clearAllMocks())
