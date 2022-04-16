@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const FormInput: FunctionComponent<Props> = ({ label, value, handleChange, type }) => {
-  const id = `${label.toLowerCase()}_input`
+  const id = `${label.toLowerCase()}-input`
   return (
     <div>
       <label htmlFor={id}>{label} </label>
