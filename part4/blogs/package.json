@@ -5,7 +5,8 @@
     "build": "npm run lint && rm -rf ./dist && tsc --project ./tsconfig.json",
     "dev": "nodemon --watch src ./src/index.ts",
     "lint": "eslint .",
-    "start": "npm run build && node ./dist/index.js",
+    "start": "npm run build && node ./dist/src/index.js",
+    "start:test": "npm run build && cross-env NODE_ENV=test node ./dist/src/index.js",
     "test": "jest",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
@@ -27,6 +28,7 @@
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "5.19.0",
     "@typescript-eslint/parser": "5.19.0",
+    "cross-env": "7.0.3",
     "eslint": "8.13.0",
     "jest": "27.5.1",
     "mongodb-memory-server": "8.4.2",
