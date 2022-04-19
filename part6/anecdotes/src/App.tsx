@@ -1,5 +1,5 @@
 import React, { FormEvent, useReducer, useState } from "react"
-import { anecdoteReducer, initialAnecdotes } from "./reducers/anecdotes"
+import { addAnecdote, anecdoteReducer, initialAnecdotes, voteForAnecdote } from "./reducers/anecdotes"
 
 export const App = () => {
   const [ content, setContent ] = useState("")
@@ -10,11 +10,11 @@ export const App = () => {
   }
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    dispatch({ type: "ADD", content })
+    dispatch(addAnecdote(content))
     setContent("")
   }
   const vote = (id: number) => {
-    dispatch({ type: "VOTE", id })
+    dispatch(voteForAnecdote(id))
   }
   return (
     <div>

@@ -21,21 +21,30 @@ interface Anecdote {
   votes: number
 }
 
+enum ActionType {
+  ADD = "ADD_ANECDOTE",
+  VOTE = "VOTE_FOR_ANECDOTE"
+}
+
 type AnecdoteAction = Readonly<{
-  type: "VOTE",
-  id: number
-}> | Readonly<{
-  type: "ADD",
+  type: ActionType.ADD,
   content: string
+}> | Readonly<{
+  type: ActionType.VOTE,
+  id: number
 }>
 
 type AnecdoteState = ReadonlyArray<Anecdote>
 
+export const addAnecdote = (content: string): AnecdoteAction => ({ type: ActionType.ADD, content })
+
+export const voteForAnecdote = (id: number): AnecdoteAction => ({ type: ActionType.VOTE, id })
+
 export const anecdoteReducer = (state: AnecdoteState, action: AnecdoteAction): AnecdoteState => {
   switch (action.type) {
-    case "ADD":
+    case ActionType.ADD:
       return state.concat(toAnecdote(action.content))
-    case "VOTE":
+    case ActionType.VOTE:
       return state.map(anecdote => anecdote.id !== action.id
         ? anecdote
         : { ...anecdote, votes: anecdote.votes + 1 })
