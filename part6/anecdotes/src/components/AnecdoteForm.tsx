@@ -1,19 +1,19 @@
-import React, { FormEvent, FunctionComponent, useState } from "react"
+import React, { FormEvent, useState } from "react"
+import { addAnecdote } from "../reducers/anecdotes"
+import { useAppDispatch } from "../store"
 
-interface Props {
-  addAnecdote: (content: string) => void
-}
-
-export const AnecdoteForm: FunctionComponent<Props> = ({ addAnecdote }) => {
+export const AnecdoteForm = () => {
+  const dispatch = useAppDispatch()
   const [ content, setContent ] = useState("")
 
-  const editContent = (event: FormEvent<HTMLInputElement>) => setContent(event.currentTarget.value)
+  const editContent = ({ currentTarget }: FormEvent<HTMLInputElement>) => setContent(currentTarget.value)
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    addAnecdote(content)
+    dispatch(addAnecdote(content))
     setContent("")
   }
+
   return (
     <form onSubmit={handleSubmit}>
       <div>

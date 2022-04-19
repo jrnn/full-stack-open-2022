@@ -1,12 +1,11 @@
-import React, { FunctionComponent } from "react"
-import { Anecdote } from "../types"
+import React from "react"
+import { voteAnecdote } from "../reducers/anecdotes"
+import { useAppDispatch, useAppSelector } from "../store"
 
-interface Props {
-  anecdotes: ReadonlyArray<Anecdote>
-  voteForAnecdote: (id: number) => void
-}
+export const AnecdoteList = () => {
+  const anecdotes = useAppSelector(state => state.anecdotes)
+  const dispatch = useAppDispatch()
 
-export const AnecdoteList: FunctionComponent<Props> = ({ anecdotes, voteForAnecdote }) => {
   return (
     <div>
       {anecdotes.map(({ id, content, votes }) =>
@@ -16,7 +15,7 @@ export const AnecdoteList: FunctionComponent<Props> = ({ anecdotes, voteForAnecd
           </div>
           <div>
             has {votes} votes
-            <button onClick={() => voteForAnecdote(id)}>vote</button>
+            <button onClick={() => dispatch(voteAnecdote(id))}>vote</button>
           </div>
         </div>
       )}
