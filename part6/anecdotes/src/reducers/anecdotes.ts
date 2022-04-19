@@ -1,3 +1,5 @@
+import { Anecdote } from "../types"
+
 const toAnecdote = (content: string): Anecdote => ({
   id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
   content,
@@ -14,12 +16,6 @@ export const initialAnecdotes: Array<Anecdote> = [
   "Premature optimization is the root of all evil.",
   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it."
 ].map(toAnecdote)
-
-interface Anecdote {
-  id: number
-  content: string
-  votes: number
-}
 
 enum ActionType {
   ADD = "ADD_ANECDOTE",
