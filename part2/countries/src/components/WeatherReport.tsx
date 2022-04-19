@@ -1,25 +1,24 @@
 import React, { FunctionComponent, useEffect, useState } from "react"
 import { getWeatherData } from "../services/weather"
-import { CountryData, WeatherData } from "../types"
+import { WeatherData } from "../types"
 
 interface Props {
-  country: CountryData
+  capital: string
+  coordinates: {
+    latitude: number
+    longitude: number
+  }
 }
 
-const WeatherReport: FunctionComponent<Props> = ({ country }) => {
-  const { capital, capitalCoordinates } = country
-
-  if (!capital || !capitalCoordinates) {
-    return null
-  }
+const WeatherReport: FunctionComponent<Props> = ({ capital, coordinates }) => {
   const [ weather, setWeather ] = useState<WeatherData>()
 
   useEffect(() => {
-    const { latitude, longitude } = capitalCoordinates
+    const { latitude, longitude } = coordinates
     getWeatherData(latitude, longitude)
       .then(setWeather)
       .catch(error => console.error(error))
-  }, [])
+  }, [ coordinates ])
 
   if (!weather) {
     return <p>(Trying to fetch weather data ...)</p>

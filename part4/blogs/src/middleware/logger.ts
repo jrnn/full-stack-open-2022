@@ -1,5 +1,3 @@
-import { MODE } from "../config"
-
 interface Logger {
   error: (...args: unknown[]) => void
   info: (...args: unknown[]) => void
@@ -26,7 +24,7 @@ const quietLogger: Logger = {
   }
 }
 
-const logger: Logger = MODE === "test"
+const logger: Logger = process.env["NODE_ENV"] === "test"
   ? quietLogger
   : consoleLogger
 

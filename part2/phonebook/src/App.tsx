@@ -26,7 +26,7 @@ const App = () => {
     contactService
       .getAllContacts()
       .then(initialContacts => setContacts(initialContacts))
-      .catch(handleError)
+      .catch(error => console.error(error))
   }, [])
 
   const editName = (event: FormEvent<HTMLInputElement>) =>
