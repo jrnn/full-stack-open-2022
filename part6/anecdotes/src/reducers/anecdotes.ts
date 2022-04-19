@@ -1,3 +1,9 @@
+const toAnecdote = (content: string): Anecdote => ({
+  id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
+  content,
+  votes: 0
+})
+
 export const initialAnecdotes: Array<Anecdote> = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -5,11 +11,7 @@ export const initialAnecdotes: Array<Anecdote> = [
   "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
   "Premature optimization is the root of all evil.",
   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it."
-].map(content => ({
-  id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
-  content,
-  votes: 0
-}))
+].map(toAnecdote)
 
 interface Anecdote {
   id: number
@@ -20,12 +22,17 @@ interface Anecdote {
 type AnecdoteAction = Readonly<{
   type: "VOTE",
   id: number
+}> | Readonly<{
+  type: "ADD",
+  content: string
 }>
 
 type AnecdoteState = ReadonlyArray<Anecdote>
 
 export const anecdoteReducer = (state: AnecdoteState, action: AnecdoteAction): AnecdoteState => {
   switch (action.type) {
+    case "ADD":
+      return state.concat(toAnecdote(action.content))
     case "VOTE":
       return state.map(anecdote => anecdote.id !== action.id
         ? anecdote
