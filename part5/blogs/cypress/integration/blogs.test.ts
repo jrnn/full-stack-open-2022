@@ -16,7 +16,8 @@ const boatBlog = {
 const coffeeBlog = {
   title: "All About Coffee",
   author: "Beany McBeanface",
-  url: "http://all.about.kovfefe"
+  url: "http://all.about.kovfefe",
+  likes: 1
 }
 
 describe("Blogs app", function() {
@@ -94,9 +95,9 @@ describe("Blogs app", function() {
 
     it("a blog can be liked", function() {
       cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
-      cy.get("@coffeeBlog").should("contain", "Likes: 0")
-      cy.get("@coffeeBlog").contains("Like!").click()
       cy.get("@coffeeBlog").should("contain", "Likes: 1")
+      cy.get("@coffeeBlog").contains("Like!").click()
+      cy.get("@coffeeBlog").should("contain", "Likes: 2")
     })
 
     describe("deleting a blog", function() {
@@ -112,6 +113,20 @@ describe("Blogs app", function() {
         cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
         cy.get("@coffeeBlog").should("not.contain", "Remove")
       })
+    })
+
+    it("blogs are sorted (desc) by number of likes", function() {
+      cy.createBlog(boatBlog).visit("http://localhost:8080")
+      cy.get(".blog-entry").then(entries => expect(entries).to.have.lengthOf(2))
+      cy.get(".blog-entry:first").should("contain", coffeeBlog.title)
+      cy.get(".blog-entry:last").should("contain", boatBlog.title)
+
+      cy.getBlogEntryAs("boatBlog", boatBlog).contains("Show details").click()
+      cy.get("@boatBlog").contains("Like!").click()
+      cy.get("@boatBlog").contains("Like!").click()
+
+      cy.get(".blog-entry:first").should("contain", boatBlog.title)
+      cy.get(".blog-entry:last").should("contain", coffeeBlog.title)
     })
   })
 })

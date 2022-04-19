@@ -4,6 +4,7 @@ interface Blog {
   title: string
   author: string
   url: string
+  likes?: number
 }
 interface User {
   name: string
@@ -44,7 +45,10 @@ Cypress.Commands.add("createUser", user => {
 })
 
 Cypress.Commands.add("getBlogEntryAs", (alias, { title, author }) => {
-  cy.contains(`${author}: "${title}"`).parent().as(alias)
+  cy.get(".blog-entry")
+    .contains(`${author}: "${title}"`)
+    .parent()
+    .as(alias)
 })
 
 Cypress.Commands.add("login", ({ username, password }) => {
