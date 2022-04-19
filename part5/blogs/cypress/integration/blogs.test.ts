@@ -3,14 +3,26 @@ const user = {
   name: "Spengeblerb Squrupunts",
   password: "qwerty123"
 }
+const coffeeBlog = {
+  title: "All About Coffee",
+  author: "Beany McBeanface",
+  url: "http://all.about.kovfefe"
+}
 
 describe("Blogs app", function() {
 
   const { name, username, password } = user
 
   beforeEach(function() {
-    cy.request("POST", "http://localhost:3003/api/testing/reset")
-    cy.request("POST", "http://localhost:3003/api/users", user)
+    cy.request({
+      url: "http://localhost:3003/api/testing/reset",
+      method: "POST"
+    })
+    cy.request({
+      url: "http://localhost:3003/api/users",
+      method: "POST",
+      body: user
+    })
     cy.visit("http://localhost:8080")
   })
 
@@ -55,9 +67,10 @@ describe("Blogs app", function() {
   describe("when logged in", function() {
     beforeEach(function () {
       cy.login({ username, password })
+      cy.createBlog(coffeeBlog)
     })
 
-    it("a blog can be created by (and for) the logged-in user", function() {
+    it("a blog can be created", function() {
       cy.contains("Click here to add new blog").click()
       cy.get("#title-input").type("All About Boats")
       cy.get("#author-input").type("Boaty McBoatface")
@@ -78,6 +91,21 @@ describe("Blogs app", function() {
       cy.get("#author-input").should("not.be.visible")
       cy.get("#url-input").should("not.be.visible")
       cy.get("#createBlog-button").should("not.be.visible")
+    })
+
+    it("a blog can be liked", function() {
+      cy.contains(`${coffeeBlog.author}: "${coffeeBlog.title}"`)
+        .parent()
+        .as("existingBlog")
+        .contains("Show details")
+        .click()
+
+      cy.get("@existingBlog").should("contain", "Likes: 0")
+      cy.get("@existingBlog")
+        .contains("Like!")
+        .click()
+
+      cy.get("@existingBlog").should("contain", "Likes: 1")
     })
   })
 })
