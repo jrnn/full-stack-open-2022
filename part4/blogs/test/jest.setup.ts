@@ -1,7 +1,6 @@
 import { MODE } from "../src/config"
-import { MongoMemoryServer } from "mongodb-memory-server"
 import app from "../src/app"
-import db from "../src/db"
+import { db } from "../src/config"
 import supertest from "supertest"
 
 if (MODE !== "test") {
@@ -11,14 +10,6 @@ if (MODE !== "test") {
 
 export const api = supertest(app)
 
-let dbServer: MongoMemoryServer
+beforeAll(async () => await db.connect("dummy"))
 
-beforeAll(async () => {
-  dbServer = await MongoMemoryServer.create()
-  await db.connect(dbServer.getUri())
-})
-
-afterAll(async () => {
-  await db.disconnect()
-  await dbServer.stop()
-})
+afterAll(async () => await db.disconnect())

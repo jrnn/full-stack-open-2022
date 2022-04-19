@@ -21,7 +21,10 @@ export const Notification: FunctionComponent<NotificationType> = ({ message, typ
   type === "none"
     ? null
     :
-    <div style={type === "info" ? infoStyle : errorStyle}>
+    <div
+      id={`notification-${type}`}
+      style={type === "info" ? infoStyle : errorStyle}
+    >
       {message}
     </div>
 )

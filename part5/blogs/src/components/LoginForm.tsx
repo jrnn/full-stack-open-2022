@@ -37,7 +37,12 @@ export const LoginForm: FunctionComponent<Props> = ({ handleLogin }) => {
           type="password"
         />
         <div>
-          <button type="submit">Login</button>
+          <button
+            id="login-button"
+            type="submit"
+          >
+            Login
+          </button>
         </div>
       </form>
     </div>

@@ -25,6 +25,10 @@ module.exports = {
     "static"
   ],
   rules: {
+    "@typescript-eslint/no-namespace": [
+      "error",
+      { allowDeclarations: true }
+    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       { ignoreRestSiblings: true }

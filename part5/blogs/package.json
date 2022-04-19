@@ -3,9 +3,11 @@
   "main": "./src/index.tsx",
   "scripts": {
     "build": "npm run lint && rm -rf ./dist && webpack --mode production",
+    "cypress": "cypress open",
     "lint": "eslint .",
     "start": "webpack-dev-server --mode development",
     "test": "jest",
+    "test:e2e": "cypress run",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
   "dependencies": {
@@ -22,6 +24,7 @@
     "@types/react-dom": "18.0.0",
     "@typescript-eslint/eslint-plugin": "5.19.0",
     "@typescript-eslint/parser": "5.19.0",
+    "cypress": "9.5.4",
     "eslint": "8.13.0",
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-react-hooks": "4.4.0",

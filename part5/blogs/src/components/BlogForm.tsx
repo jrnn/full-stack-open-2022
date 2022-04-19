@@ -44,7 +44,12 @@ export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
           value={url}
         />
         <div>
-          <button type="submit">Add</button>
+          <button
+            id="createBlog-button"
+            type="submit"
+          >
+            Add
+          </button>
         </div>
       </form>
     </div>

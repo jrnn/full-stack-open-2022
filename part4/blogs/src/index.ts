@@ -1,6 +1,5 @@
 import app from "./app"
-import { DB_URI, MODE, PORT } from "./config"
-import db from "./db"
+import { DB_URI, MODE, PORT, db } from "./config"
 import logger from "./middleware/logger"
 
 app.listen(PORT, async () => {
