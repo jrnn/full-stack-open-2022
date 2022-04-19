@@ -1,14 +1,15 @@
 import React, { FunctionComponent } from "react"
+import { FeedbackState } from "../reducers/feedback"
 import { StatisticLine } from "./StatisticLine"
 
 interface Props {
-  good: number
-  neutral: number
-  bad: number
+  feedback: FeedbackState
 }
 
-export const Statistics: FunctionComponent<Props> = ({ good, neutral, bad }) => {
+export const Statistics: FunctionComponent<Props> = ({ feedback }) => {
+  const { good, neutral, bad } = feedback
   const total = good + neutral + bad
+
   if (total === 0) {
     return (
       <p>

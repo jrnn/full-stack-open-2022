@@ -1,40 +1,34 @@
-import React, { useState } from "react"
+import React, { useReducer } from "react"
 import { Button } from "./components/Button"
 import { Header } from "./components/Header"
 import { Statistics } from "./components/Statistics"
+import { feedbackReducer, FeedbackState } from "./reducers/feedback"
 
-const incrementState = (state: number, setState: (n: number) => void) => {
-  return () => setState(state + 1)
+const initialFeedback: FeedbackState = {
+  good: 0,
+  neutral: 0,
+  bad: 0
 }
 
-const App = () => {
-  const [ good, setGood ] = useState(0)
-  const [ neutral, setNeutral ] = useState(0)
-  const [ bad, setBad ] = useState(0)
-
+export const App = () => {
+  const [ feedback, dispatch ] = useReducer(feedbackReducer, initialFeedback)
   return (
     <>
       <Header header="Give feedback" />
       <Button
         label="good"
-        handleClick={incrementState(good, setGood)}
+        handleClick={() => dispatch({ type: "INCREMENT_GOOD" })}
       />
       <Button
         label="neutral"
-        handleClick={incrementState(neutral, setNeutral)}
+        handleClick={() => dispatch({ type: "INCREMENT_NEUTRAL" })}
       />
       <Button
         label="bad"
-        handleClick={incrementState(bad, setBad)}
+        handleClick={() => dispatch({ type: "INCREMENT_BAD" })}
       />
       <Header header="Statistics" />
-      <Statistics
-        good={good}
-        neutral={neutral}
-        bad={bad}
-      />
+      <Statistics feedback={feedback} />
     </>
   )
 }
-
-export default App
