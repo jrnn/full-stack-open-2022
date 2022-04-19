@@ -1,54 +1,60 @@
-module.exports = {
-  root: true,
-  env: {
-    node: true
+{
+  "root": true,
+  "env": {
+    "node": true
   },
-  parser: "@typescript-eslint/parser",
-  extends: [
+  "parser": "@typescript-eslint/parser",
+  "extends": [
     "eslint:recommended"
   ],
-  overrides: [
+  "overrides": [
     {
-      files: [ "*.ts", "*.tsx" ],
-      plugins: [
+      "files": [ "*.ts", "*.tsx" ],
+      "plugins": [
         "@typescript-eslint"
       ],
-      extends: [
+      "extends": [
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended"
       ]
     }
   ],
-  ignorePatterns: [
+  "ignorePatterns": [
     "dist",
     "node_modules",
     "static"
   ],
-  rules: {
+  "rules": {
     "@typescript-eslint/no-namespace": [
       "error",
-      { allowDeclarations: true }
+      {
+        "allowDeclarations": true
+      }
     ],
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { ignoreRestSiblings: true }
+      {
+        "ignoreRestSiblings": true
+      }
     ],
-    camelcase: "error",
-    curly: "error",
+    "camelcase": "error",
+    "curly": "error",
     "default-case": "error",
-    eqeqeq: "error",
-    indent: [
+    "eqeqeq": "error",
+    "indent": [
       "error",
       2,
-      { SwitchCase: 1 }
+      {
+        "SwitchCase": 1
+      }
     ],
     "no-trailing-spaces": "error",
     "no-var": "error",
-    quotes: [
+    "quotes": [
       "error",
       "double"
     ],
-    semi: [
+    "semi": [
       "error",
       "never"
     ]

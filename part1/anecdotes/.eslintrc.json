@@ -1,11 +1,11 @@
-module.exports = {
-  extends: [
+{
+  "extends": [
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
   ],
-  settings: {
-    react: {
-      version: "detect"
+  "settings": {
+    "react": {
+      "version": "detect"
     }
   }
 }

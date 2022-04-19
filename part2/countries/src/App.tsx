@@ -22,7 +22,7 @@ const App = () => {
     const _filter = filter.trim().toLowerCase()
     const countries = allCountries.filter(({ name }) => name.toLowerCase().includes(_filter))
     setMatchingCountries(countries)
-  }, [ filter ])
+  }, [ allCountries, filter ])
 
   const editFilter = (event: FormEvent<HTMLInputElement>) =>
     setFilter(event.currentTarget.value)
