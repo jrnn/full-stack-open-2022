@@ -4,6 +4,8 @@ const toAnecdote = (content: string): Anecdote => ({
   votes: 0
 })
 
+const sortByVotes = (p: Anecdote, q: Anecdote) => q.votes - p.votes
+
 export const initialAnecdotes: Array<Anecdote> = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -37,6 +39,7 @@ export const anecdoteReducer = (state: AnecdoteState, action: AnecdoteAction): A
       return state.map(anecdote => anecdote.id !== action.id
         ? anecdote
         : { ...anecdote, votes: anecdote.votes + 1 })
+        .sort(sortByVotes)
     default:
       throw new Error()
   }
