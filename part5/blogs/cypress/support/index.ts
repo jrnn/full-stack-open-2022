@@ -1,10 +1,23 @@
 /// <reference types="cypress" />
 
+interface Blog {
+  title: string
+  author: string
+  url: string
+}
+interface User {
+  name: string
+  username: string
+  password: string
+}
+
 declare global {
   namespace Cypress {
     interface Chainable {
-      createBlog(blog: { title: string, author: string, url: string}): Chainable<Element>
-      login(credentials: { username: string, password: string }): Chainable<Element>
+      createBlog(blog: Blog): Chainable<Element>
+      createUser(user: User): Chainable<Element>
+      getBlogEntryAs(alias: string, blog: Blog): Chainable<Element>
+      login(credentials: User): Chainable<Element>
     }
   }
 }
@@ -22,11 +35,23 @@ Cypress.Commands.add("createBlog", blog => {
   })
 })
 
-Cypress.Commands.add("login", credentials => {
+Cypress.Commands.add("createUser", user => {
+  cy.request({
+    url: "http://localhost:3003/api/users",
+    method: "POST",
+    body: user
+  })
+})
+
+Cypress.Commands.add("getBlogEntryAs", (alias, { title, author }) => {
+  cy.contains(`${author}: "${title}"`).parent().as(alias)
+})
+
+Cypress.Commands.add("login", ({ username, password }) => {
   cy.request({
     url: "http://localhost:3003/api/login",
     method: "POST",
-    body: credentials
+    body: { username, password }
   })
     .then(({ body }) => localStorage.setItem(userAuthKey, JSON.stringify(body)))
     .then(() => cy.visit("http://localhost:8080"))

@@ -1,7 +1,17 @@
-const user = {
+const cnorris = {
+  username: "cnorris",
+  name: "Chuck Norris",
+  password: "trustno1"
+}
+const spongebob = {
   username: "spongebob",
   name: "Spengeblerb Squrupunts",
   password: "qwerty123"
+}
+const boatBlog = {
+  title: "All About Boats",
+  author: "Boaty McBoatface",
+  url: "http://all.about.beaowts"
 }
 const coffeeBlog = {
   title: "All About Coffee",
@@ -10,19 +20,12 @@ const coffeeBlog = {
 }
 
 describe("Blogs app", function() {
-
-  const { name, username, password } = user
-
   beforeEach(function() {
     cy.request({
       url: "http://localhost:3003/api/testing/reset",
       method: "POST"
     })
-    cy.request({
-      url: "http://localhost:3003/api/users",
-      method: "POST",
-      body: user
-    })
+    cy.createUser(spongebob)
     cy.visit("http://localhost:8080")
   })
 
@@ -33,6 +36,9 @@ describe("Blogs app", function() {
   })
 
   describe("logging in", function() {
+
+    const { name, username, password } = spongebob
+
     it ("succeeds with correct credentials", function() {
       cy.get("#username-input").type(username)
       cy.get("#password-input").type(password)
@@ -55,7 +61,7 @@ describe("Blogs app", function() {
 
       cy.get("#notification-error").should("contain", "Invalid username or password")
       cy.get("html")
-        .should("not.contain", "Logged in as Spengeblerb Squrupunts")
+        .should("not.contain", `Logged in as ${name}`)
         .and("not.contain", "Please peruse blogs")
 
       cy.get("#username-input").should("be.visible")
@@ -66,26 +72,19 @@ describe("Blogs app", function() {
 
   describe("when logged in", function() {
     beforeEach(function () {
-      cy.login({ username, password })
-      cy.createBlog(coffeeBlog)
+      cy.login(spongebob).createBlog(coffeeBlog)
     })
 
     it("a blog can be created", function() {
       cy.contains("Click here to add new blog").click()
-      cy.get("#title-input").type("All About Boats")
-      cy.get("#author-input").type("Boaty McBoatface")
-      cy.get("#url-input").type("http://all.about.beaowts")
+      cy.get("#title-input").type(boatBlog.title)
+      cy.get("#author-input").type(boatBlog.author)
+      cy.get("#url-input").type(boatBlog.url)
       cy.get("#createBlog-button").click()
 
-      cy.get("#notification-info").should("contain", "You just added a new blog 'All About Boats', hooray!")
-      cy.contains("Boaty McBoatface: \"All About Boats\"")
-        .parent()
-        .as("newBlog")
-        .find("button")
-        .should("contain", "Show details")
-        .click()
-
-      cy.get("@newBlog").should("contain", `Added by: ${name}`)
+      cy.get("#notification-info").should("contain", `You just added a new blog '${boatBlog.title}', hooray!`)
+      cy.getBlogEntryAs("boatBlog", boatBlog).contains("Show details").click()
+      cy.get("@boatBlog").should("contain", `Added by: ${spongebob.name}`)
 
       cy.get("#title-input").should("not.be.visible")
       cy.get("#author-input").should("not.be.visible")
@@ -94,18 +93,25 @@ describe("Blogs app", function() {
     })
 
     it("a blog can be liked", function() {
-      cy.contains(`${coffeeBlog.author}: "${coffeeBlog.title}"`)
-        .parent()
-        .as("existingBlog")
-        .contains("Show details")
-        .click()
+      cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
+      cy.get("@coffeeBlog").should("contain", "Likes: 0")
+      cy.get("@coffeeBlog").contains("Like!").click()
+      cy.get("@coffeeBlog").should("contain", "Likes: 1")
+    })
 
-      cy.get("@existingBlog").should("contain", "Likes: 0")
-      cy.get("@existingBlog")
-        .contains("Like!")
-        .click()
+    describe("deleting a blog", function() {
+      it("succeeds when logged in as the blog's owner", function() {
+        cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
+        cy.get("@coffeeBlog").contains("Remove").click()
+        cy.get("#notification-info").should("contain", "You just removed a blog. Uhh... Hooray...?")
+        cy.get("html").should("not.contain", `${coffeeBlog.author}: "${coffeeBlog.title}"`)
+      })
 
-      cy.get("@existingBlog").should("contain", "Likes: 1")
+      it("is not possible when logged in as someone else", function() {
+        cy.createUser(cnorris).login(cnorris)
+        cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
+        cy.get("@coffeeBlog").should("not.contain", "Remove")
+      })
     })
   })
 })
