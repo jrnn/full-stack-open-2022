@@ -1,30 +1,23 @@
-import React from "react"
-
-const anecdotes = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it."
-]
+import React, { useReducer } from "react"
+import { anecdoteReducer, initialAnecdotes } from "./reducers/anecdotes"
 
 export const App = () => {
-  const vote = (id: unknown) => {
-    console.log("vote", id)
-  }
+  const [ anecdotes, dispatch ] = useReducer(anecdoteReducer, initialAnecdotes)
 
+  const vote = (id: number) => {
+    dispatch({ type: "VOTE", id })
+  }
   return (
     <div>
       <h2>Anecdotes</h2>
       {anecdotes.map(anecdote =>
-        <div key={anecdote}>
+        <div key={anecdote.id}>
           <div>
-            {anecdote}
+            {anecdote.content}
           </div>
           <div>
-            has 0 votes
-            <button onClick={() => vote(anecdote)}>vote</button>
+            has {anecdote.votes} votes
+            <button onClick={() => vote(anecdote.id)}>vote</button>
           </div>
         </div>
       )}
