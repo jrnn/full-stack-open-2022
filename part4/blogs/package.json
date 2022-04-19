@@ -5,7 +5,7 @@
     "build": "npm run lint && rm -rf ./dist && tsc --project ./tsconfig.json",
     "dev": "nodemon --watch src ./src/index.ts",
     "lint": "eslint .",
-    "start": "npm run build && node ./dist/src/index.js",
+    "start": "npm run build && cross-env NODE_ENV=production node ./dist/src/index.js",
     "start:test": "npm run build && cross-env NODE_ENV=test node ./dist/src/index.js",
     "test": "jest",
     "types": "tsc --noEmit --project ./tsconfig.json"
