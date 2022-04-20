@@ -31,12 +31,12 @@ const slice = createSlice({
 
 const { setInfo, setError, reset } = slice.actions
 
-export const notifySuccess = (message: string): AppThunkAction => dispatch => {
-  setTimeout(() => dispatch(reset()), 5000)
+export const notifySuccess = (message: string, seconds = 5): AppThunkAction => dispatch => {
+  setTimeout(() => dispatch(reset()), seconds * 1000)
   dispatch(setInfo(message))
 }
-export const notifyError = (message: string): AppThunkAction => dispatch => {
-  setTimeout(() => dispatch(reset()), 5000)
+export const notifyError = (message: string, seconds = 5): AppThunkAction => dispatch => {
+  setTimeout(() => dispatch(reset()), seconds * 1000)
   dispatch(setError(message))
 }
 
