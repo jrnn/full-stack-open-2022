@@ -1,5 +1,6 @@
 import React, { CSSProperties } from "react"
-import { useAppSelector } from "../store"
+import { connect, ConnectedProps } from "react-redux"
+import { AppState } from "../store"
 
 const notificationStyle: CSSProperties = {
   color: "white",
@@ -17,8 +18,13 @@ const errorStyle: CSSProperties = {
   backgroundColor: "maroon"
 }
 
-export const Notification = () => {
-  const { type, message } = useAppSelector(state => state.notification)
+const mapStateToProps = (state: AppState) => state.notification
+const connector = connect(mapStateToProps)
+
+type Props = ConnectedProps<typeof connector>
+
+export const Notification = connector(({ type, message }: Props) => {
+  // const { type, message } = useAppSelector(state => state.notification)
   return (
     type === "none"
       ? null
@@ -30,4 +36,4 @@ export const Notification = () => {
         {message}
       </div>
   )
-}
+})
