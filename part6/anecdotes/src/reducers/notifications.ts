@@ -2,25 +2,39 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AppThunkAction } from "../store"
 import { NotificationType } from "../types"
 
-const initialState: Readonly<NotificationType> = {
+type NotificationState = Readonly<
+  NotificationType & { previousTimer: number | undefined }
+>
+
+type Payload = Readonly<{
+  message: string,
+  timer?: number
+}>
+
+const initialState: NotificationState = {
   type: "none",
-  message: ""
+  message: "",
+  previousTimer: undefined
 }
 
 const slice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    setInfo: (_, { payload: message }: PayloadAction<string>) => {
+    setInfo: ({ previousTimer }, { payload }: PayloadAction<Payload>) => {
+      clearTimeout(previousTimer)
       return {
         type: "info",
-        message
+        message: payload.message,
+        previousTimer: payload.timer
       }
     },
-    setError: (_, { payload: message }: PayloadAction<string>) => {
+    setError: ({ previousTimer }, { payload }: PayloadAction<Payload>) => {
+      clearTimeout(previousTimer)
       return {
         type: "error",
-        message
+        message: payload.message,
+        previousTimer: payload.timer
       }
     },
     reset: () => {
@@ -32,12 +46,12 @@ const slice = createSlice({
 const { setInfo, setError, reset } = slice.actions
 
 export const notifySuccess = (message: string, seconds = 5): AppThunkAction => dispatch => {
-  setTimeout(() => dispatch(reset()), seconds * 1000)
-  dispatch(setInfo(message))
+  const timer = window.setTimeout(() => dispatch(reset()), seconds * 1000)
+  dispatch(setInfo({ message, timer }))
 }
 export const notifyError = (message: string, seconds = 5): AppThunkAction => dispatch => {
-  setTimeout(() => dispatch(reset()), seconds * 1000)
-  dispatch(setError(message))
+  const timer = window.setTimeout(() => dispatch(reset()), seconds * 1000)
+  dispatch(setError({ message, timer }))
 }
 
 export default slice.reducer

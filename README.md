@@ -16,6 +16,5 @@ material:
     and just gave up.
 - I'm using Docker to facilitate the Heroku deployment in parts 3-4.
 - In part 4, I chose to use `mongodb-memory-server` in tests.
-- In part 6, tried to "avoid" `redux` and see instead what can be done with `useReducer` & co.
 
 The phonebook app built in parts 3-4 can be found [here](https://fso-2022-phonebook.herokuapp.com/)
