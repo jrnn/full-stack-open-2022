@@ -1,6 +1,5 @@
 import React, { FormEvent, useState } from "react"
-import { addAnecdote } from "../reducers/anecdotes"
-import { notifySuccess } from "../reducers/notifications"
+import { createAnecdote } from "../reducers/anecdotes"
 import { useAppDispatch } from "../store"
 
 export const AnecdoteForm = () => {
@@ -11,8 +10,7 @@ export const AnecdoteForm = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    dispatch(addAnecdote(content))
-    dispatch(notifySuccess(`You created a new anecdote "${content}"`))
+    dispatch(createAnecdote(content))
     setContent("")
   }
 
