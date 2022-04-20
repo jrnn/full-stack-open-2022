@@ -16,17 +16,16 @@ const slice = createSlice({
     addAnecdote: (state, { payload: newAnecdote }: PayloadAction<Anecdote>) => {
       return state.concat(newAnecdote)
     },
-    voteAnecdote: (state, { payload: id }: PayloadAction<number>) => {
+    replaceAnecdote: (state, { payload: newAnecdote }: PayloadAction<Anecdote>) => {
+      const { id } = newAnecdote
       return state.map(anecdote => anecdote.id !== id
         ? anecdote
-        : { ...anecdote, votes: anecdote.votes + 1 })
-        .sort((p, q) => q.votes - p.votes)
+        : newAnecdote)
     }
   }
 })
 
-const { setAnecdotes, addAnecdote } = slice.actions
-export const { voteAnecdote } = slice.actions
+const { setAnecdotes, addAnecdote, replaceAnecdote } = slice.actions
 
 export const fetchAnecdotes = (): AppThunkAction => async dispatch => {
   try {
@@ -42,10 +41,24 @@ export const createAnecdote = (content: string): AppThunkAction => async dispatc
   try {
     const newAnecdote = await api.postAnecdote(content)
     dispatch(addAnecdote(newAnecdote))
-    dispatch(notifySuccess(`Hooray! You created a new anecdote "${content}".`))
+    dispatch(notifySuccess(`Hooray! You created a new anecdote "${content}"`))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't create new anecdote. Too bad!"))
+  }
+}
+
+export const voteAnecdote = (anecdote: Anecdote): AppThunkAction => async dispatch => {
+  try {
+    const updatedAnecdote = await api.updateAnecdote({
+      ...anecdote,
+      votes: anecdote.votes + 1
+    })
+    dispatch(replaceAnecdote(updatedAnecdote))
+    dispatch(notifySuccess(`Hooray! You gave a vote to "${updatedAnecdote.content}"`))
+  } catch (error) {
+    console.error(error)
+    dispatch(notifyError("Oops! Couldn't register your vote. Democracy is dead!"))
   }
 }
 

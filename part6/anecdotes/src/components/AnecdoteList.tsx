@@ -1,32 +1,29 @@
 import React, { useEffect } from "react"
 import { fetchAnecdotes, voteAnecdote } from "../reducers/anecdotes"
-import { notifySuccess } from "../reducers/notifications"
 import { useAppDispatch, useAppSelector } from "../store"
 
 export const AnecdoteList = () => {
+  const dispatch = useAppDispatch()
   const anecdotes = useAppSelector(({ anecdotes, filters }) => {
     const filter = filters.anecdotes.toLowerCase().trim()
-    return anecdotes.filter(({ content }) => content.includes(filter))
+    return anecdotes
+      .filter(({ content }) => content.includes(filter))
+      .sort((p, q) => q.votes - p.votes)
   })
-  const dispatch = useAppDispatch()
-  const vote = (id: number, content: string) => {
-    dispatch(voteAnecdote(id))
-    dispatch(notifySuccess(`You gave a vote to "${content}"`))
-  }
   useEffect(() => {
     dispatch(fetchAnecdotes())
   }, [ dispatch ])
 
   return (
     <div>
-      {anecdotes.map(({ id, content, votes }) =>
-        <div key={id}>
+      {anecdotes.map(anecdote =>
+        <div key={anecdote.id}>
           <div>
-            {content}
+            {anecdote.content}
           </div>
           <div>
-            has {votes} votes
-            <button onClick={() => vote(id, content)}>vote</button>
+            has {anecdote.votes} votes
+            <button onClick={() => dispatch(voteAnecdote(anecdote))}>vote</button>
           </div>
         </div>
       )}
