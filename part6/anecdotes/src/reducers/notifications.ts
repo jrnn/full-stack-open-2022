@@ -1,29 +1,43 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { AppDispatch } from "../store"
 import { NotificationType } from "../types"
 
 const initialState: Readonly<NotificationType> = {
-  type: "info",
-  message: "the owls are not what they seem"
+  type: "none",
+  message: ""
 }
 
 const slice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    notifySuccess: (_, { payload: message }: PayloadAction<string>) => {
+    setInfo: (_, { payload: message }: PayloadAction<string>) => {
       return {
         type: "info",
         message
       }
     },
-    notifyError: (_, { payload: message }: PayloadAction<string>) => {
+    setError: (_, { payload: message }: PayloadAction<string>) => {
       return {
         type: "error",
         message
       }
+    },
+    reset: () => {
+      return initialState
     }
   }
 })
 
-export const { notifySuccess, notifyError } = slice.actions
+const { setInfo, setError, reset } = slice.actions
+
+export const notifySuccess = (message: string) => (dispatch: AppDispatch) => {
+  setTimeout(() => dispatch(reset()), 5000)
+  dispatch(setInfo(message))
+}
+export const notifyError = (message: string) => (dispatch: AppDispatch) => {
+  setTimeout(() => dispatch(reset()), 5000)
+  dispatch(setError(message))
+}
+
 export default slice.reducer
