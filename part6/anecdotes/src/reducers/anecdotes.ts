@@ -7,7 +7,7 @@ const toAnecdote = (content: string): Anecdote => ({
   votes: 0
 })
 
-export const initialState: ReadonlyArray<Anecdote> = [
+const initialState: ReadonlyArray<Anecdote> = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
   "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
@@ -16,7 +16,7 @@ export const initialState: ReadonlyArray<Anecdote> = [
   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it."
 ].map(toAnecdote)
 
-const anecdoteSlice = createSlice({
+const slice = createSlice({
   name: "anecdotes",
   initialState,
   reducers: {
@@ -32,6 +32,5 @@ const anecdoteSlice = createSlice({
   }
 })
 
-export const { addAnecdote, voteAnecdote } = anecdoteSlice.actions
-
-export default anecdoteSlice.reducer
+export const { addAnecdote, voteAnecdote } = slice.actions
+export default slice.reducer

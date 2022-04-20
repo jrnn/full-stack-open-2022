@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux"
 import anecdotesReducer from "./reducers/anecdotes"
+import notificationReducer from "./reducers/notifications"
 
 export const store = configureStore({
   reducer: {
-    anecdotes: anecdotesReducer
+    anecdotes: anecdotesReducer,
+    notification: notificationReducer
   }
 })
 
