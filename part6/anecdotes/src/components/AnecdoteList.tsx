@@ -1,5 +1,5 @@
-import React from "react"
-import { voteAnecdote } from "../reducers/anecdotes"
+import React, { useEffect } from "react"
+import { fetchAnecdotes, voteAnecdote } from "../reducers/anecdotes"
 import { notifySuccess } from "../reducers/notifications"
 import { useAppDispatch, useAppSelector } from "../store"
 
@@ -13,6 +13,9 @@ export const AnecdoteList = () => {
     dispatch(voteAnecdote(id))
     dispatch(notifySuccess(`You gave a vote to "${content}"`))
   }
+  useEffect(() => {
+    dispatch(fetchAnecdotes())
+  }, [ dispatch ])
 
   return (
     <div>

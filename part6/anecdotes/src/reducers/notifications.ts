@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AppDispatch } from "../store"
+import { AppThunkAction } from "../store"
 import { NotificationType } from "../types"
 
 const initialState: Readonly<NotificationType> = {
@@ -31,11 +31,11 @@ const slice = createSlice({
 
 const { setInfo, setError, reset } = slice.actions
 
-export const notifySuccess = (message: string) => (dispatch: AppDispatch) => {
+export const notifySuccess = (message: string): AppThunkAction => dispatch => {
   setTimeout(() => dispatch(reset()), 5000)
   dispatch(setInfo(message))
 }
-export const notifyError = (message: string) => (dispatch: AppDispatch) => {
+export const notifyError = (message: string): AppThunkAction => dispatch => {
   setTimeout(() => dispatch(reset()), 5000)
   dispatch(setError(message))
 }
