@@ -1,0 +1,14 @@
+{
+  "name": "@config/webpack-config",
+  "description": "Shared base Webpack configuration",
+  "main": "index.ts",
+  "devDependencies": {
+    "clean-webpack-plugin": "4.0.0",
+    "html-webpack-plugin": "5.5.0",
+    "ts-loader": "9.2.8",
+    "typescript": "4.6.3",
+    "webpack": "5.72.0",
+    "webpack-dev-server": "4.8.1",
+    "webpack-merge": "5.8.0"
+  }
+}

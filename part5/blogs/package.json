@@ -2,10 +2,10 @@
   "name": "part5-blogs-client",
   "main": "./src/index.tsx",
   "scripts": {
-    "build": "npm run lint && rm -rf ./dist && webpack --mode production",
+    "build": "npm run lint && webpack --mode production",
     "cypress": "cypress open",
     "lint": "eslint .",
-    "start": "webpack-dev-server --mode development",
+    "start": "webpack serve --mode development",
     "test": "jest",
     "test:e2e": "cypress run",
     "types": "tsc --noEmit --project ./tsconfig.json"
@@ -16,6 +16,7 @@
     "react-dom": "18.0.0"
   },
   "devDependencies": {
+    "@config/webpack-config": "*",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.1.1",
     "@testing-library/user-event": "14.1.1",
@@ -28,10 +29,8 @@
     "eslint": "8.13.0",
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-react-hooks": "4.4.0",
-    "html-webpack-plugin": "5.5.0",
     "jest": "27.5.1",
     "ts-jest": "27.1.4",
-    "ts-loader": "9.2.8",
     "typescript": "4.6.3",
     "webpack": "5.72.0",
     "webpack-cli": "4.9.2",

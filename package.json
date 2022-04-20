@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Full Stack Open 2022 exercises",
   "workspaces": [
+    "config/*",
     "part1/*",
     "part2/*",
     "part3/*",
