@@ -1,21 +1,29 @@
-import React from "react"
-import { voteAnecdote } from "../reducers/anecdotes"
+import React, { useEffect } from "react"
+import { fetchAnecdotes, voteAnecdote } from "../reducers/anecdotes"
 import { useAppDispatch, useAppSelector } from "../store"
 
 export const AnecdoteList = () => {
-  const anecdotes = useAppSelector(state => state.anecdotes)
   const dispatch = useAppDispatch()
+  const anecdotes = useAppSelector(({ anecdotes, filters }) => {
+    const filter = filters.anecdotes.toLowerCase().trim()
+    return anecdotes
+      .filter(({ content }) => content.includes(filter))
+      .sort((p, q) => q.votes - p.votes)
+  })
+  useEffect(() => {
+    dispatch(fetchAnecdotes())
+  }, [ dispatch ])
 
   return (
     <div>
-      {anecdotes.map(({ id, content, votes }) =>
-        <div key={id}>
+      {anecdotes.map(anecdote =>
+        <div key={anecdote.id}>
           <div>
-            {content}
+            {anecdote.content}
           </div>
           <div>
-            has {votes} votes
-            <button onClick={() => dispatch(voteAnecdote(id))}>vote</button>
+            has {anecdote.votes} votes
+            <button onClick={() => dispatch(voteAnecdote(anecdote))}>vote</button>
           </div>
         </div>
       )}

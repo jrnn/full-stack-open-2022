@@ -1,37 +1,65 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import * as api from "../services/anecdotes"
+import { AppThunkAction } from "../store"
 import { Anecdote } from "../types"
+import { notifyError, notifySuccess } from "./notifications"
 
-const toAnecdote = (content: string): Anecdote => ({
-  id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
-  content,
-  votes: 0
-})
+const initialState: ReadonlyArray<Anecdote> = []
 
-export const initialState: ReadonlyArray<Anecdote> = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it."
-].map(toAnecdote)
-
-const anecdoteSlice = createSlice({
+const slice = createSlice({
   name: "anecdotes",
   initialState,
   reducers: {
-    addAnecdote: (state, { payload: content }: PayloadAction<string>) => {
-      return state.concat(toAnecdote(content))
+    setAnecdotes: (_, { payload: anecdotes }: PayloadAction<Array<Anecdote>>) => {
+      return anecdotes
     },
-    voteAnecdote: (state, { payload: id }: PayloadAction<number>) => {
+    addAnecdote: (state, { payload: newAnecdote }: PayloadAction<Anecdote>) => {
+      return state.concat(newAnecdote)
+    },
+    replaceAnecdote: (state, { payload: newAnecdote }: PayloadAction<Anecdote>) => {
+      const { id } = newAnecdote
       return state.map(anecdote => anecdote.id !== id
         ? anecdote
-        : { ...anecdote, votes: anecdote.votes + 1 })
-        .sort((p, q) => q.votes - p.votes)
+        : newAnecdote)
     }
   }
 })
 
-export const { addAnecdote, voteAnecdote } = anecdoteSlice.actions
+const { setAnecdotes, addAnecdote, replaceAnecdote } = slice.actions
 
-export default anecdoteSlice.reducer
+export const fetchAnecdotes = (): AppThunkAction => async dispatch => {
+  try {
+    const anecdotes = await api.fetchAnecdotes()
+    dispatch(setAnecdotes(anecdotes))
+  } catch (error) {
+    console.error(error)
+    dispatch(notifyError("Oops! Couldn't get anecdotes from server. Too bad!"))
+  }
+}
+
+export const createAnecdote = (content: string): AppThunkAction => async dispatch => {
+  try {
+    const newAnecdote = await api.postAnecdote(content)
+    dispatch(addAnecdote(newAnecdote))
+    dispatch(notifySuccess(`Hooray! You created a new anecdote "${content}"`))
+  } catch (error) {
+    console.error(error)
+    dispatch(notifyError("Oops! Couldn't create new anecdote. Too bad!"))
+  }
+}
+
+export const voteAnecdote = (anecdote: Anecdote): AppThunkAction => async dispatch => {
+  try {
+    const updatedAnecdote = await api.updateAnecdote({
+      ...anecdote,
+      votes: anecdote.votes + 1
+    })
+    dispatch(replaceAnecdote(updatedAnecdote))
+    dispatch(notifySuccess(`Hooray! You gave a vote to "${updatedAnecdote.content}"`))
+  } catch (error) {
+    console.error(error)
+    dispatch(notifyError("Oops! Couldn't register your vote. Democracy is dead!"))
+  }
+}
+
+export default slice.reducer

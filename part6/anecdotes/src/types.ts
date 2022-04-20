@@ -3,3 +3,8 @@ export interface Anecdote {
   content: string
   votes: number
 }
+
+export interface NotificationType {
+  type: "info" | "error" | "none"
+  message: string
+}
