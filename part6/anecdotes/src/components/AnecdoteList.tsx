@@ -4,7 +4,10 @@ import { notifySuccess } from "../reducers/notifications"
 import { useAppDispatch, useAppSelector } from "../store"
 
 export const AnecdoteList = () => {
-  const anecdotes = useAppSelector(state => state.anecdotes)
+  const anecdotes = useAppSelector(({ anecdotes, filters }) => {
+    const filter = filters.anecdotes.toLowerCase().trim()
+    return anecdotes.filter(({ content }) => content.includes(filter))
+  })
   const dispatch = useAppDispatch()
   const vote = (id: number, content: string) => {
     dispatch(voteAnecdote(id))
