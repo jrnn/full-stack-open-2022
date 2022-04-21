@@ -7,9 +7,9 @@ export const AnecdoteForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const content = useField()
-  const author = useField()
-  const info = useField()
+  const { reset: resetContent, ...content } = useField()
+  const { reset: resetAuthor, ...author } = useField()
+  const { reset: resetInfo, ...info } = useField()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -18,9 +18,14 @@ export const AnecdoteForm = () => {
       author: author.value,
       info: info.value
     }))
-    dispatch(notifySuccess(`You added a new anecdote "${content}"`))
+    dispatch(notifySuccess(`You added a new anecdote "${content.value}"`))
     setTimeout(() => dispatch(resetNotification()), 5000)
     navigate("/", { replace: true })
+  }
+  const handleReset = () => {
+    resetContent()
+    resetAuthor()
+    resetInfo()
   }
 
   return (
@@ -40,6 +45,12 @@ export const AnecdoteForm = () => {
           <input id="info-input" { ...info } />
         </div>
         <button>Add</button>
+        <button
+          onClick={handleReset}
+          type="button"
+        >
+          Reset
+        </button>
       </form>
     </div>
   )
