@@ -14,7 +14,9 @@ material:
   - I also gave [parcel](https://parceljs.org/) a try but didn't like it as much. I hit a wall when
     trying to set up API proxying on a package-to-package basis, but found no acceptable workaround
     and just gave up.
-- I'm using Docker to facilitate the Heroku deployment in parts 3-4.
+- I'm using Docker to facilitate the Heroku deployment in part 3.
 - In part 4, I chose to use `mongodb-memory-server` in tests.
+- The "anecdotes" exercises in part 7 provided a nice opportunity to try and mimic a mini Redux
+  setup using React's own `useContext` and `useReducer`.
 
-The phonebook app built in parts 3-4 can be found [here](https://fso-2022-phonebook.herokuapp.com/)
+The phonebook app built in parts 2-3 can be found [here](https://fso-2022-phonebook.herokuapp.com/)
