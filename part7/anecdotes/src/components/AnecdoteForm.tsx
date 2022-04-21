@@ -1,18 +1,23 @@
-import React, { FormEvent, useState } from "react"
+import React, { FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
+import { useField } from "../hooks"
 import { addAnecdote, notifySuccess, resetNotification, useDispatch } from "../store"
 
 export const AnecdoteForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const [ content, setContent ] = useState("")
-  const [ author, setAuthor ] = useState("")
-  const [ info, setInfo ] = useState("")
+  const content = useField()
+  const author = useField()
+  const info = useField()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(addAnecdote({ content, author, info }))
+    dispatch(addAnecdote({
+      content: content.value,
+      author: author.value,
+      info: info.value
+    }))
     dispatch(notifySuccess(`You added a new anecdote "${content}"`))
     setTimeout(() => dispatch(resetNotification()), 5000)
     navigate("/", { replace: true })
@@ -24,27 +29,15 @@ export const AnecdoteForm = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="content-input">Content: </label>
-          <input
-            id="content-input"
-            onChange={({ currentTarget }) => setContent(currentTarget.value)}
-            value={content}
-          />
+          <input id="content-input" { ...content } />
         </div>
         <div>
           <label htmlFor="author-input">Author: </label>
-          <input
-            id="author-input"
-            onChange={({ currentTarget }) => setAuthor(currentTarget.value)}
-            value={author}
-          />
+          <input id="author-input" { ...author } />
         </div>
         <div>
           <label htmlFor="info-input">URL for more info: </label>
-          <input
-            id="info-input"
-            onChange={({ currentTarget }) => setInfo(currentTarget.value)}
-            value={info}
-          />
+          <input id="info-input" { ...info } />
         </div>
         <button>Add</button>
       </form>
