@@ -1,16 +1,9 @@
 import React, { FormEvent, useState } from "react"
 import { Route, Routes } from "react-router-dom"
+import { AnecdoteDetails } from "./components/AnecdoteDetails"
+import { AnecdoteList } from "./components/AnecdoteList"
 import { Menu } from "./components/Menu"
 import { Anecdote } from "./types"
-
-const AnecdoteList = ({ anecdotes }: { anecdotes: Array<Anecdote> }) => (
-  <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
-    </ul>
-  </div>
-)
 
 const About = () => (
   <div>
@@ -121,6 +114,10 @@ export const App = () => {
       <Menu />
       <Routes>
         <Route
+          path="/anecdotes/:id"
+          element={<AnecdoteDetails />}
+        />
+        <Route
           path="/create"
           element={<CreateNew addNew={addNew} />}
         />
@@ -130,7 +127,7 @@ export const App = () => {
         />
         <Route
           path="/"
-          element={<AnecdoteList anecdotes={anecdotes} />}
+          element={<AnecdoteList />}
         />
       </Routes>
       <Footer />
