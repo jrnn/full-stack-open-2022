@@ -1,44 +1,14 @@
-import React, { FormEvent, useState } from "react"
-
-const useField = (type = "text") => {
-  const [ value, setValue ] = useState("")
-  const onChange = ({ currentTarget }: FormEvent<HTMLInputElement>) => {
-    setValue(currentTarget.value)
-  }
-  return {
-    type,
-    value,
-    onChange
-  }
-}
-
-const useResource = (baseUri: string): [ any[], { create: (_: unknown) => void } ] => {
-  console.log(baseUri)
-  const [ resources, ] = useState([])
-
-  // ...
-
-  const create = (resource: unknown) => {
-    console.log(resource)
-    // ...
-  }
-
-  const service = {
-    create
-  }
-
-  return [
-    resources, service
-  ]
-}
+import React, { FormEvent } from "react"
+import { useField, useResource } from "./hooks"
+import { Note, Person } from "./types"
 
 export const App = () => {
   const content = useField()
   const name = useField()
   const number = useField()
 
-  const [ notes, noteService ] = useResource("http://localhost:3005/notes")
-  const [ persons, personService ] = useResource("http://localhost:3005/persons")
+  const [ notes, noteService ] = useResource<Note>("http://localhost:3005/notes")
+  const [ persons, personService ] = useResource<Person>("http://localhost:3005/persons")
 
   const handleNoteSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -46,7 +16,7 @@ export const App = () => {
   }
   const handlePersonSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    personService.create({ name: name.value, number: number.value})
+    personService.create({ name: name.value, number: number.value })
   }
 
   return (
