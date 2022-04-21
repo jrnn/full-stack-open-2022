@@ -1,9 +1,24 @@
-import React, { createContext, PropsWithChildren, useContext, useReducer } from "react"
-import { Anecdote } from "./types"
+import React, { createContext, Dispatch, PropsWithChildren, useContext, useReducer } from "react"
+import { Anecdote, AnecdoteDto } from "./types"
 
-interface AppState {
-  anecdotes: ReadonlyArray<Anecdote>
-}
+type Notification = Readonly<{
+  type: "info" | "error" | "none",
+  message: string
+}>
+
+type AppAction = Readonly<{
+  type: "ADD_ANECDOTE",
+  payload: AnecdoteDto
+} | {
+  type: "SET_NOTIFICATION",
+  payload: Notification
+}>
+
+type AppDispatch = Dispatch<AppAction>
+type AppState = Readonly<{
+  anecdotes: ReadonlyArray<Anecdote>,
+  notification: Notification
+}>
 
 const initialState: AppState = {
   anecdotes: [
@@ -21,25 +36,69 @@ const initialState: AppState = {
       votes: 0,
       id: 2
     }
-  ]
+  ],
+  notification: {
+    type: "none",
+    message: ""
+  }
 }
 
-const reducer = (state: AppState, action: unknown): AppState => {
-  console.log("just logging these for now, to get around eslint errors =", state, action)
-  throw new Error("not implemented yet")
+const reducer = (state: AppState, action: AppAction): AppState => {
+  switch (action.type) {
+    case "ADD_ANECDOTE": {
+      const newAnecdote = {
+        ...action.payload,
+        votes: 0,
+        id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+      }
+      return {
+        ...state,
+        anecdotes: state.anecdotes.concat(newAnecdote)
+      }
+    }
+    case "SET_NOTIFICATION": {
+      const newNotification = action.payload
+      return {
+        ...state,
+        notification: newNotification
+      }
+    }
+    default:
+      throw new Error("unknown action")
+  }
 }
 
-const StoreContext = createContext<AppState>({
-  anecdotes: []
+export const addAnecdote = (anecdote: AnecdoteDto): AppAction => ({
+  type: "ADD_ANECDOTE",
+  payload: anecdote
 })
 
+export const notifySuccess = (message: string): AppAction => ({
+  type: "SET_NOTIFICATION",
+  payload: {
+    type: "info",
+    message
+  }
+})
+
+export const resetNotification = (): AppAction => ({
+  type: "SET_NOTIFICATION",
+  payload: initialState.notification
+})
+
+const DispatchContext = createContext<AppDispatch>({} as AppDispatch)
+const StoreContext = createContext<AppState>({} as AppState)
+
 export const StoreProvider = <P extends object>({ children }: PropsWithChildren<P>) => {
-  const [ state, ] = useReducer(reducer, initialState)
+  const [ state, dispatch ] = useReducer(reducer, initialState)
   return (
-    <StoreContext.Provider value={state}>
-      {children}
-    </StoreContext.Provider>
+    <DispatchContext.Provider value={dispatch}>
+      <StoreContext.Provider value={state}>
+        {children}
+      </StoreContext.Provider>
+    </DispatchContext.Provider>
   )
 }
 
+export const useDispatch = () => useContext(DispatchContext)
 export const useStore = () => useContext(StoreContext)
