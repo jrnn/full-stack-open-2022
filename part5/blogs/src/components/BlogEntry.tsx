@@ -1,10 +1,10 @@
 import React, { CSSProperties, FunctionComponent, useState } from "react"
+import { useAuth } from "../hooks"
 import { useAppDispatch } from "../store"
 import { incrementLikes, removeBlog } from "../store/blogs"
-import { BlogEntity, UserAuth } from "../types"
+import { BlogEntity } from "../types"
 
 interface Props {
-  user: UserAuth
   blog: BlogEntity
 }
 
@@ -14,8 +14,9 @@ const style: CSSProperties = {
   padding: 4
 }
 
-export const BlogEntry: FunctionComponent<Props> = ({ user, blog }) => {
+export const BlogEntry: FunctionComponent<Props> = ({ blog }) => {
   const dispatch = useAppDispatch()
+  const user = useAuth()
   const [ detailed, setDetailed ] = useState(false)
 
   const toggle = () => setDetailed(!detailed)

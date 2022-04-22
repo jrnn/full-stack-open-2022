@@ -1,28 +1,28 @@
-import React, { FunctionComponent, useEffect } from "react"
+import React, { useEffect } from "react"
+import { useAuth } from "../hooks"
 import { useAppDispatch } from "../store"
+import { logout } from "../store/auth"
 import { fetchBlogs } from "../store/blogs"
-import { UserAuth } from "../types"
 import { TogglableBlogForm } from "./BlogForm"
 import { BlogList } from "./BlogList"
 
-interface Props {
-  user: UserAuth
-  handleLogout: () => void
-}
-
-export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout }) => {
+export const BlogMain = () => {
   const dispatch = useAppDispatch()
+  const { name } = useAuth()
 
+  const handleLogout = () => {
+    dispatch(logout())
+  }
   useEffect(() => {
     dispatch(fetchBlogs())
   }, [ dispatch ])
 
   return (
     <div>
-      <p>Logged in as {user.name}</p>
+      <p>Logged in as {name}</p>
       <button onClick={handleLogout}>Logout</button>
-      <TogglableBlogForm token={user.token} />
-      <BlogList user={user} />
+      <TogglableBlogForm />
+      <BlogList />
     </div>
   )
 }

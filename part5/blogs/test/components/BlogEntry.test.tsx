@@ -1,22 +1,10 @@
 import React from "react"
-import { useDispatch } from "react-redux"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { BlogEntry } from "../../src/components/BlogEntry"
 import * as blogThunks from "../../src/store/blogs"
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn()
-}))
-type MockUseDispatch = jest.Mock<typeof useDispatch>
-const mockUseDispatch = useDispatch as MockUseDispatch
-
 const props = {
-  user: {
-    token: "user.token",
-    name: "user.name",
-    username: "user.username"
-  },
   blog: {
     id: "blog.id",
     title: "blog.title",
@@ -31,8 +19,6 @@ const props = {
     }
   }
 }
-
-beforeEach(() => mockUseDispatch.mockImplementation(() => () => null as never))
 
 describe("<BlogEntry />", () => {
   beforeEach(() => render(<BlogEntry {...props} />))
@@ -91,5 +77,3 @@ describe("<BlogEntry />", () => {
     })
   })
 })
-
-afterEach(() => jest.clearAllMocks())

@@ -3,7 +3,8 @@ export default {
     "<rootDir>/test"
   ],
   setupFilesAfterEnv: [
-    "@testing-library/jest-dom/extend-expect"
+    "@testing-library/jest-dom/extend-expect",
+    "<rootDir>/test/setup.jest.ts"
   ],
   testEnvironment: "jsdom",
   transform: {

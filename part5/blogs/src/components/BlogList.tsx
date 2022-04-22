@@ -1,13 +1,8 @@
-import React, { FunctionComponent } from "react"
+import React from "react"
 import { useAppSelector } from "../store"
-import { UserAuth } from "../types"
 import { BlogEntry } from "./BlogEntry"
 
-interface Props {
-  user: UserAuth
-}
-
-export const BlogList: FunctionComponent<Props> = ({ user }) => {
+export const BlogList = () => {
   const blogs = useAppSelector(state => [ ...state.blogs.blogs ]
     .sort((p, q) => q.likes - p.likes))
 
@@ -17,7 +12,6 @@ export const BlogList: FunctionComponent<Props> = ({ user }) => {
       {blogs.map(blog =>
         <BlogEntry
           key={blog.id}
-          user={user}
           blog={blog}
         />
       )}

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AppThunkAction } from "."
-import * as api from "../services/blogs"
+import { accessApi } from "../services/api"
 import { BlogDto, BlogEntity } from "../types"
 import { notifyError, notifySuccess } from "./notification"
 
@@ -45,18 +45,21 @@ const slice = createSlice({
 
 const { set, add, update, remove } = slice.actions
 
+const api = accessApi<BlogEntity>("/api/blogs")
+
 export const fetchBlogs = (): AppThunkAction => async dispatch => {
   try {
-    const blogs = await api.getAllBlogs()
+    const blogs = await api.getAll()
     dispatch(set(blogs))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't fetch blogs from server. Too bad!"))
   }
 }
+
 export const createBlog = (blog: BlogDto, token: string, onSuccess?: () => void): AppThunkAction => async dispatch => {
   try {
-    const newBlog = await api.postBlog(blog, token)
+    const newBlog = await api.post(blog, token)
     dispatch(add(newBlog))
     dispatch(notifySuccess(`Hooray! You just added a new blog "${newBlog.title}"`))
     if (onSuccess) {
@@ -67,19 +70,20 @@ export const createBlog = (blog: BlogDto, token: string, onSuccess?: () => void)
     dispatch(notifyError("Oops! The server says no. Please check the inputs."))
   }
 }
+
 export const incrementLikes = ({ id, likes }: BlogEntity): AppThunkAction => async dispatch => {
   try {
-    const payload = { id, likes: likes + 1 }
-    const updatedBlog = await api.putBlog(payload)
+    const updatedBlog = await api.put({ likes: likes + 1 }, id)
     dispatch(update(updatedBlog))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't add that like. Too bad!"))
   }
 }
+
 export const removeBlog = ({ id }: BlogEntity, token: string): AppThunkAction => async dispatch => {
   try {
-    await api.deleteBlog(id, token)
+    await api.delete(id, token)
     dispatch(remove(id))
     dispatch(notifySuccess("You just removed a blog. Uhh... Hooray...?"))
   } catch (error) {
@@ -87,4 +91,5 @@ export const removeBlog = ({ id }: BlogEntity, token: string): AppThunkAction =>
     dispatch(notifyError("Oops! Couldn't remove that blog. Too bad!"))
   }
 }
+
 export default slice.reducer
