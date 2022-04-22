@@ -1,7 +1,15 @@
 import React from "react"
+import { useDispatch } from "react-redux"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { BlogEntry } from "../../src/components/BlogEntry"
+import * as blogThunks from "../../src/store/blogs"
+
+jest.mock("react-redux", () => ({
+  useDispatch: jest.fn()
+}))
+type MockUseDispatch = jest.Mock<typeof useDispatch>
+const mockUseDispatch = useDispatch as MockUseDispatch
 
 const props = {
   user: {
@@ -21,10 +29,10 @@ const props = {
       name: "blog.user.name",
       username: "blog.user.username"
     }
-  },
-  incrementLikes: (_: unknown): void => { _ },
-  removeBlog: (_: unknown): void => { _ }
+  }
 }
+
+beforeEach(() => mockUseDispatch.mockImplementation(() => () => null as never))
 
 describe("<BlogEntry />", () => {
   beforeEach(() => render(<BlogEntry {...props} />))
@@ -63,7 +71,7 @@ describe("<BlogEntry />", () => {
 
     describe("then, on clicking 'Like!'", () => {
 
-      const spy = jest.spyOn(props, "incrementLikes")
+      const spy = jest.spyOn(blogThunks, "incrementLikes")
 
       it("once, then the given 'incrementLikes' is called once with the current 'blog'", async () => {
         const button = screen.getByText("Like!")

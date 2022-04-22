@@ -4,7 +4,7 @@ interface Props {
   label: string
   value: string
   handleChange: FormEventHandler<HTMLInputElement>
-  type?: HTMLInputTypeAttribute
+  type: HTMLInputTypeAttribute
 }
 
 export const FormInput: FunctionComponent<Props> = ({ label, value, handleChange, type }) => {
@@ -15,7 +15,7 @@ export const FormInput: FunctionComponent<Props> = ({ label, value, handleChange
       <input
         id={id}
         onChange={handleChange}
-        type={type || "text"}
+        type={type}
         value={value}
       />
     </div>

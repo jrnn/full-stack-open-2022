@@ -1,11 +1,11 @@
 import React, { CSSProperties, FunctionComponent, useState } from "react"
+import { useAppDispatch } from "../store"
+import { incrementLikes, removeBlog } from "../store/blogs"
 import { BlogEntity, UserAuth } from "../types"
 
 interface Props {
   user: UserAuth
   blog: BlogEntity
-  incrementLikes: (blog: BlogEntity) => void
-  removeBlog: (blog: BlogEntity) => void
 }
 
 const style: CSSProperties = {
@@ -14,13 +14,15 @@ const style: CSSProperties = {
   padding: 4
 }
 
-export const BlogEntry: FunctionComponent<Props> = ({ user, blog, incrementLikes, removeBlog }) => {
+export const BlogEntry: FunctionComponent<Props> = ({ user, blog }) => {
+  const dispatch = useAppDispatch()
   const [ detailed, setDetailed ] = useState(false)
+
   const toggle = () => setDetailed(!detailed)
-  const handleLike = () => incrementLikes(blog)
+  const handleLike = () => dispatch(incrementLikes(blog))
   const handleRemove = () => {
     if (window.confirm("Sure you wanna do that?")) {
-      removeBlog(blog)
+      dispatch(removeBlog(blog, user.token))
     }
   }
   const isBlogOwner = user.username === blog.user.username

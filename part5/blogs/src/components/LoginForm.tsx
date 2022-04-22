@@ -1,4 +1,5 @@
-import React, { FormEvent, FunctionComponent, useState } from "react"
+import React, { FormEvent, FunctionComponent } from "react"
+import { useFormInput } from "../hooks"
 import { LoginCredentials } from "../types"
 import { FormInput } from "./FormInput"
 
@@ -7,35 +8,26 @@ interface Props {
 }
 
 export const LoginForm: FunctionComponent<Props> = ({ handleLogin }) => {
-  const [ username, setUsername ] = useState("")
-  const [ password, setPassword ] = useState("")
-
-  const editUsername = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUsername(currentTarget.value)
-  const editPassword = ({ currentTarget }: FormEvent<HTMLInputElement>) => setPassword(currentTarget.value)
+  const username = useFormInput("Username")
+  const password = useFormInput("Password", "password")
   const resetForm = () => {
-    setUsername("")
-    setPassword("")
+    username.reset()
+    password.reset()
   }
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    handleLogin({ username, password }, resetForm)
+    handleLogin({
+      username: username.value,
+      password: password.value
+    }, resetForm)
   }
 
   return (
     <div>
       <h3>Please provide credentials</h3>
       <form onSubmit={onSubmit}>
-        <FormInput
-          label="Username"
-          handleChange={editUsername}
-          value={username}
-        />
-        <FormInput
-          label="Password"
-          handleChange={editPassword}
-          value={password}
-          type="password"
-        />
+        <FormInput { ...username } />
+        <FormInput { ...password } />
         <div>
           <button
             id="login-button"

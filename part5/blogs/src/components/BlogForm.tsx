@@ -1,4 +1,5 @@
-import React, { FormEvent, FunctionComponent, useState } from "react"
+import React, { FormEvent, FunctionComponent } from "react"
+import { useFormInput } from "../hooks"
 import { useAppDispatch } from "../store"
 import { createBlog } from "../store/blogs"
 import { FormInput } from "./FormInput"
@@ -8,54 +9,34 @@ interface Props extends TogglableProps {
   token: string
 }
 
-const doNothing = () => { /**/ }
-
-export const BlogForm: FunctionComponent<Props> = ({ token, toggle = doNothing }) => {
+export const BlogForm: FunctionComponent<Props> = ({ token, toggle }) => {
   const dispatch = useAppDispatch()
 
-  const [ title, setTitle ] = useState("")
-  const [ author, setAuthor ] = useState("")
-  const [ url, setUrl ] = useState("")
-
-  const editTitle = ({ currentTarget }: FormEvent<HTMLInputElement>) => setTitle(currentTarget.value)
-  const editAuthor = ({ currentTarget }: FormEvent<HTMLInputElement>) => setAuthor(currentTarget.value)
-  const editUrl = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUrl(currentTarget.value)
+  const title = useFormInput("Title")
+  const author = useFormInput("Author")
+  const url = useFormInput("URL")
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    dispatch(createBlog({ title, author, url }, token))
-    setTitle("")
-    setAuthor("")
-    setUrl("")
-    toggle()
+    dispatch(createBlog({
+      title: title.value,
+      author: author.value,
+      url: url.value
+    }, token, toggle))
+    title.reset()
+    author.reset()
+    url.reset()
   }
 
   return (
     <div>
       <h3>Add new blog</h3>
       <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Title"
-          handleChange={editTitle}
-          value={title}
-        />
-        <FormInput
-          label="Author"
-          handleChange={editAuthor}
-          value={author}
-        />
-        <FormInput
-          label="URL"
-          handleChange={editUrl}
-          value={url}
-        />
+        <FormInput { ...title } />
+        <FormInput { ...author } />
+        <FormInput { ...url } />
         <div>
-          <button
-            id="createBlog-button"
-            type="submit"
-          >
-            Add
-          </button>
+          <button id="createBlog-button">Add</button>
         </div>
       </form>
     </div>
