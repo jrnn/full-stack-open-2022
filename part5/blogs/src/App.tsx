@@ -3,45 +3,42 @@ import { BlogMain } from "./components/BlogMain"
 import { LoginForm } from "./components/LoginForm"
 import { Notification } from "./components/Notification"
 import { getUserFromLocal, login, removeUserFromLocal } from "./services/login"
-import { LoginCredentials, NotificationType, NotifyDispatch, UserAuth } from "./types"
+import { useAppDispatch } from "./store"
+import { notifyError, notifySuccess } from "./store/notification"
+import { LoginCredentials, UserAuth } from "./types"
 
 export const App = () => {
+  const dispatch = useAppDispatch()
+
   const [ user, setUser ] = useState<UserAuth>()
-  const [ notification, setNotification ] = useState<NotificationType>({ type: "none" })
 
   const handleLogin = async (credentials: LoginCredentials, onSuccess: () => void) => {
     try {
       const loggedInUser = await login(credentials)
       setUser(loggedInUser)
       onSuccess()
-      notify("You are now logged in, welcome!", "info")
+      dispatch(notifySuccess("You are now logged in, welcome!"))
     } catch (error) {
       console.error(error)
-      notify("Invalid username or password", "error")
+      dispatch(notifyError("Invalid username or password"))
     }
   }
   const handleLogout = () => {
     setUser(undefined)
     removeUserFromLocal()
-    notify("You are now logged out. We will miss you! :(", "info")
+    dispatch(notifyError("You are now logged out. We will miss you! :("))
   }
-  const notify: NotifyDispatch = (message, type) => {
-    setTimeout(() => setNotification({ type: "none" }), 5000)
-    setNotification({ message, type })
-  }
-
   useEffect(() => setUser(getUserFromLocal()), [])
 
   return (
     <>
-      <Notification {...notification} />
+      <Notification />
       <h2>Blogs</h2>
       {!user
         ? <LoginForm handleLogin={handleLogin} />
         : <BlogMain
           user={user}
           handleLogout={handleLogout}
-          notify={notify}
         />
       }
     </>

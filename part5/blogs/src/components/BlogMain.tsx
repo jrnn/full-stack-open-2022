@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 import { deleteBlog, getAllBlogs, postBlog, putBlog } from "../services/blogs"
-import { BlogDto, BlogEntity, NotifyDispatch, UserAuth } from "../types"
+import { useAppDispatch } from "../store"
+import { notifyError, notifySuccess } from "../store/notification"
+import { BlogDto, BlogEntity, UserAuth } from "../types"
 import { BlogForm } from "./BlogForm"
 import { BlogList } from "./BlogList"
 import { TogglableElement } from "./TogglableElement"
@@ -8,14 +10,15 @@ import { TogglableElement } from "./TogglableElement"
 interface Props {
   user: UserAuth
   handleLogout: () => void
-  notify: NotifyDispatch
 }
 
 interface Togglable {
   toggle: () => void
 }
 
-export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout, notify }) => {
+export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout }) => {
+  const dispatch = useAppDispatch()
+
   const [ blogs, setBlogs ] = useState<Array<BlogEntity>>([])
   const togglableRef = useRef<Togglable>()
 
@@ -25,10 +28,10 @@ export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout, notify 
       setBlogs(blogs.concat(blog))
       onSuccess()
       togglableRef.current?.toggle()
-      notify(`You just added a new blog '${blog.title}', hooray!`, "info")
+      dispatch(notifySuccess(`You just added a new blog '${blog.title}', hooray!`))
     } catch (error) {
       console.error(error)
-      notify("Oops, couldn't add! Please check the inputs?", "error")
+      dispatch(notifyError("Oops, couldn't add! Please check the inputs?"))
     }
   }
   const incrementLikes = async ({ id, likes }: BlogEntity) => {
@@ -38,17 +41,17 @@ export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout, notify 
       setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
     } catch (error) {
       console.error(error)
-      notify("Oops, couldn't add that like! Too bad!", "error")
+      dispatch(notifyError("Oops, couldn't add that like! Too bad!"))
     }
   }
   const removeBlog = async ({ id }: BlogEntity) => {
     try {
       await deleteBlog(id, user.token)
       setBlogs(blogs.filter(blog => blog.id !== id))
-      notify("You just removed a blog. Uhh... Hooray...?", "info")
+      dispatch(notifySuccess("You just removed a blog. Uhh... Hooray...?"))
     } catch (error) {
       console.error(error)
-      notify("Oh no, couldn't remove that blog! Such a sad day!", "error")
+      dispatch(notifyError("Oh no, couldn't remove that blog! Such a sad day!"))
     }
   }
 
