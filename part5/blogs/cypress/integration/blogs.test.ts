@@ -83,7 +83,7 @@ describe("Blogs app", function() {
       cy.get("#url-input").type(boatBlog.url)
       cy.get("#createBlog-button").click()
 
-      cy.get("#notification-info").should("contain", `You just added a new blog '${boatBlog.title}', hooray!`)
+      cy.get("#notification-info").should("contain", `Hooray! You just added a new blog "${boatBlog.title}"`)
       cy.getBlogEntryAs("boatBlog", boatBlog).contains("Show details").click()
       cy.get("@boatBlog").should("contain", `Added by: ${spongebob.name}`)
 

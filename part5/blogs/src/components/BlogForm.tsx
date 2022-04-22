@@ -1,12 +1,18 @@
 import React, { FormEvent, FunctionComponent, useState } from "react"
-import { BlogDto } from "../types"
+import { useAppDispatch } from "../store"
+import { createBlog } from "../store/blogs"
 import { FormInput } from "./FormInput"
+import { togglable, TogglableProps } from "./Togglable"
 
-interface Props {
-  createBlog: (blog: BlogDto, onSuccess: () => void) => Promise<void>
+interface Props extends TogglableProps {
+  token: string
 }
 
-export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
+const doNothing = () => { /**/ }
+
+export const BlogForm: FunctionComponent<Props> = ({ token, toggle = doNothing }) => {
+  const dispatch = useAppDispatch()
+
   const [ title, setTitle ] = useState("")
   const [ author, setAuthor ] = useState("")
   const [ url, setUrl ] = useState("")
@@ -14,14 +20,14 @@ export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
   const editTitle = ({ currentTarget }: FormEvent<HTMLInputElement>) => setTitle(currentTarget.value)
   const editAuthor = ({ currentTarget }: FormEvent<HTMLInputElement>) => setAuthor(currentTarget.value)
   const editUrl = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUrl(currentTarget.value)
-  const resetForm = () => {
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    dispatch(createBlog({ title, author, url }, token))
     setTitle("")
     setAuthor("")
     setUrl("")
-  }
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    createBlog({ title, author, url }, resetForm)
+    toggle()
   }
 
   return (
@@ -55,3 +61,5 @@ export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
     </div>
   )
 }
+
+export const TogglableBlogForm = togglable("Click here to add new blog", BlogForm)

@@ -4,7 +4,7 @@ import { BlogEntry } from "./BlogEntry"
 
 interface Props {
   user: UserAuth
-  blogs: Array<BlogEntity>
+  blogs: ReadonlyArray<BlogEntity>
   incrementLikes: (blog: BlogEntity) => void
   removeBlog: (blog: BlogEntity) => void
 }
@@ -15,7 +15,7 @@ export const BlogList: FunctionComponent<Props> = ({ user, blogs, incrementLikes
   return (
     <div>
       <h3>Please peruse blogs</h3>
-      {blogs.sort(sortByLikes).map(blog =>
+      {[ ...blogs ].sort(sortByLikes).map(blog =>
         <BlogEntry
           key={blog.id}
           user={user}

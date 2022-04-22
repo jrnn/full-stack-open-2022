@@ -1,39 +1,23 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import { deleteBlog, getAllBlogs, postBlog, putBlog } from "../services/blogs"
-import { useAppDispatch } from "../store"
+import React, { FunctionComponent, useEffect, useState } from "react"
+import { deleteBlog, putBlog } from "../services/blogs"
+import { useAppDispatch, useAppSelector } from "../store"
+import { fetchBlogs } from "../store/blogs"
 import { notifyError, notifySuccess } from "../store/notification"
-import { BlogDto, BlogEntity, UserAuth } from "../types"
-import { BlogForm } from "./BlogForm"
+import { BlogEntity, UserAuth } from "../types"
+import { TogglableBlogForm } from "./BlogForm"
 import { BlogList } from "./BlogList"
-import { TogglableElement } from "./TogglableElement"
 
 interface Props {
   user: UserAuth
   handleLogout: () => void
 }
 
-interface Togglable {
-  toggle: () => void
-}
-
 export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout }) => {
   const dispatch = useAppDispatch()
+  const { blogs } = useAppSelector(state => state.blogs)
 
-  const [ blogs, setBlogs ] = useState<Array<BlogEntity>>([])
-  const togglableRef = useRef<Togglable>()
+  const [ , setBlogs ] = useState<Array<BlogEntity>>([])
 
-  const createBlog = async (blogDto: BlogDto, onSuccess: () => void) => {
-    try {
-      const blog = await postBlog(blogDto, user.token)
-      setBlogs(blogs.concat(blog))
-      onSuccess()
-      togglableRef.current?.toggle()
-      dispatch(notifySuccess(`You just added a new blog '${blog.title}', hooray!`))
-    } catch (error) {
-      console.error(error)
-      dispatch(notifyError("Oops, couldn't add! Please check the inputs?"))
-    }
-  }
   const incrementLikes = async ({ id, likes }: BlogEntity) => {
     try {
       const payload = { id, likes: likes + 1 }
@@ -56,24 +40,15 @@ export const BlogMain: FunctionComponent<Props> = ({ user, handleLogout }) => {
   }
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const blogsFromApi = await getAllBlogs()
-        setBlogs(blogsFromApi)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetch()
-  }, [])
+    dispatch(fetchBlogs())
+  }, [ dispatch ])
 
   return (
     <div>
       <p>Logged in as {user.name}</p>
       <button onClick={handleLogout}>Logout</button>
-      <TogglableElement label="Click here to add new blog" ref={togglableRef}>
-        <BlogForm createBlog={createBlog} />
-      </TogglableElement>
+      {}
+      <TogglableBlogForm token={user.token} />
       <BlogList
         user={user}
         blogs={blogs}

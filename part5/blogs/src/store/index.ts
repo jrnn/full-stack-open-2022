@@ -1,9 +1,11 @@
 import { AnyAction, configureStore, ThunkAction } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux"
+import blogsReducer from "./blogs"
 import notificationReducer from "./notification"
 
 export const store = configureStore({
   reducer: {
+    blogs: blogsReducer,
     notification: notificationReducer
   }
 })
