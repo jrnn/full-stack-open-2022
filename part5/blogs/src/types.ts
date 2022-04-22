@@ -10,7 +10,7 @@ export interface BlogEntity {
   author: string
   url: string
   likes: number
-  user: UserEntity
+  user: Omit<UserEntity, "blogs">
 }
 
 export interface LoginCredentials {
@@ -28,4 +28,5 @@ export interface UserEntity {
   id: string
   name: string
   username: string
+  blogs: Array<BlogEntity>
 }

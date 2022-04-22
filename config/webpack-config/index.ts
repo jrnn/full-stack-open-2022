@@ -37,6 +37,7 @@ const devConfig: Configuration = {
   devtool: "inline-source-map",
   devServer: {
     compress: true,
+    historyApiFallback: true,
     port: 8080
   } as DevServerConfiguration
 }

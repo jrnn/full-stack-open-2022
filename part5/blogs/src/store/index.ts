@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux"
 import authReducer from "./auth"
 import blogsReducer from "./blogs"
 import notificationReducer from "./notification"
+import usersReducer from "./users"
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     blogs: blogsReducer,
-    notification: notificationReducer
+    notification: notificationReducer,
+    users: usersReducer
   }
 })
 
