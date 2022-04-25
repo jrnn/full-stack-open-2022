@@ -11,6 +11,8 @@ const defaultInput = {
   url: ""
 }
 
+const anyFn = expect.any(Function)
+
 describe("<BlogForm />", () => {
   describe("on submitting the form", () => {
 
@@ -27,7 +29,7 @@ describe("<BlogForm />", () => {
       await userEvent.click(screen.getByText("Add"))
 
       expect(createBlog).toHaveBeenCalledTimes(1)
-      expect(createBlog).toHaveBeenCalledWith({ ...defaultInput, title: "All About Boats" }, token, toggle)
+      expect(createBlog).toHaveBeenCalledWith({ ...defaultInput, title: "All About Boats" }, token, anyFn)
     })
 
     it("current 'author' value is dispatched with the 'createBlog' thunk", async () => {
@@ -36,7 +38,7 @@ describe("<BlogForm />", () => {
       await userEvent.click(screen.getByText("Add"))
 
       expect(createBlog).toHaveBeenCalledTimes(1)
-      expect(createBlog).toHaveBeenCalledWith({ ...defaultInput, author: "Boaty McBoatface" }, token, toggle)
+      expect(createBlog).toHaveBeenCalledWith({ ...defaultInput, author: "Boaty McBoatface" }, token, anyFn)
     })
 
     it("current 'url' value is dispatched with the 'createBlog' thunk", async () => {
@@ -45,7 +47,7 @@ describe("<BlogForm />", () => {
       await userEvent.click(screen.getByText("Add"))
 
       expect(createBlog).toHaveBeenCalledTimes(1)
-      expect(createBlog).toHaveBeenCalledWith({ ...defaultInput, url: "http://all.about.beaowts" }, token, toggle)
+      expect(createBlog).toHaveBeenCalledWith({ ...defaultInput, url: "http://all.about.beaowts" }, token, anyFn)
     })
   })
 })

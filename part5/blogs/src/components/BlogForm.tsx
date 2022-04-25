@@ -21,10 +21,13 @@ export const BlogForm: FunctionComponent<TogglableProps> = ({ toggle }) => {
       author: author.value,
       url: url.value
     }
-    dispatch(createBlog(blog, token, toggle))
-    title.reset()
-    author.reset()
-    url.reset()
+    const onSuccess = () => {
+      title.reset()
+      author.reset()
+      url.reset()
+      toggle()
+    }
+    dispatch(createBlog(blog, token, onSuccess))
   }
   return (
     <div>

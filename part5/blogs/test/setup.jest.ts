@@ -16,6 +16,9 @@ const mockStore = {
     user: {
       token: "store.auth.user.token"
     }
+  },
+  blogs: {
+    status: "idle"
   }
 }
 

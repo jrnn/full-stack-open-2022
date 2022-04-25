@@ -1,7 +1,7 @@
 import React, { ComponentType, useState } from "react"
 
 export interface TogglableProps {
-  toggle?: () => void
+  toggle: () => void
 }
 
 export const togglable = <P extends TogglableProps = TogglableProps>(
