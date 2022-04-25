@@ -16,7 +16,8 @@ const props = {
       token: "blog.user.token",
       name: "blog.user.name",
       username: "blog.user.username"
-    }
+    },
+    comments: []
   }
 }
 

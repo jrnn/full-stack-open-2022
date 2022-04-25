@@ -40,6 +40,12 @@ export const BlogEntry = () => {
           <button onClick={handleRemove}>Remove</button>
         </div>
       }
+      <h4>Comments</h4>
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={comment}>{comment}</li>
+        )}
+      </ul>
     </div>
   )
 }

@@ -15,11 +15,13 @@ export interface BlogResponse extends Blog {
   id: string
   likes: number
   user: UserResponse
+  comments: Array<string>
 }
 
 export interface BlogSchema extends Blog {
   likes: number
   user?: Types.ObjectId
+  comments: Array<string>
 }
 
 export type BlogDocument = HydratedDocument<BlogSchema>
@@ -56,7 +58,12 @@ const schema = new Schema({
   user: {
     type: Types.ObjectId,
     ref: "User"
-  }
+  },
+  comments: [
+    {
+      type: String
+    }
+  ]
 })
 
 schema.set("toJSON", {

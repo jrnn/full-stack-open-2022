@@ -1,6 +1,5 @@
-import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../store"
-import { checkForAuthInLocal, login, logout } from "../store/auth"
+import { login, logout } from "../store/auth"
 import { Maybe, UserAuth } from "../types"
 import { maybe } from "../util"
 
@@ -13,10 +12,6 @@ type UseAuthHook = Readonly<{
 export const useAuth = (): UseAuthHook => {
   const dispatch = useAppDispatch()
   const { user } = useAppSelector(state => state.auth)
-
-  useEffect(() => {
-    dispatch(checkForAuthInLocal())
-  }, [ dispatch ])
 
   return {
     user: maybe(user),

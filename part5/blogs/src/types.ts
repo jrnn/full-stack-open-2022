@@ -11,6 +11,7 @@ export interface BlogEntity {
   url: string
   likes: number
   user: Omit<UserEntity, "blogs">
+  comments: Array<string>
 }
 
 export interface LoginCredentials {

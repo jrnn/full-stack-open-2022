@@ -60,4 +60,23 @@ router.delete("/:id", userExtractor, throwsError(async ({ params, user }: TypedR
   return response.status(204).end()
 }))
 
+interface CommentRequest {
+  comment: string
+}
+
+router.post("/:id/comments", throwsError(async ({ body, params }: TypedRequest<CommentRequest>, response) => {
+  const { id } = params
+  const blog = await BlogModel.findById(id)
+
+  if (!blog) {
+    throw new NotFoundError(`no blog found with id '${id}'`)
+  }
+  const comments = blog.comments.concat(body.comment)
+  const updatedBlog = await BlogModel
+    .findByIdAndUpdate(id, { comments }, updateOpts)
+    .populate("user", populateOpts)
+
+  return response.status(200).json(updatedBlog)
+}))
+
 export default router

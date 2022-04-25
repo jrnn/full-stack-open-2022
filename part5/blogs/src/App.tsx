@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Link, Navigate, Route, Routes } from "react-router-dom"
 import { BlogEntry } from "./components/BlogEntry"
 import { BlogList } from "./components/BlogList"
@@ -10,6 +10,8 @@ import { UserEntry } from "./components/UserEntry"
 import { UserList } from "./components/UserList"
 import { UserMain } from "./components/UserMain"
 import { useAuth } from "./hooks"
+import { useAppDispatch } from "./store"
+import { checkForAuthInLocal } from "./store/auth"
 
 const UnknownRoute = () => (
   <div>
@@ -22,6 +24,12 @@ const UnknownRoute = () => (
 
 export const App = () => {
   const { user } = useAuth()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(checkForAuthInLocal())
+  }, [ dispatch ])
+
   return (
     <>
       <Notification />
