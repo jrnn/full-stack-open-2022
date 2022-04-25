@@ -4,7 +4,9 @@ import { useAuth } from "../hooks"
 import { useAppDispatch } from "../store"
 import { logout } from "../store/auth"
 import { BlogList } from "./BlogList"
+import { UserEntry } from "./UserEntry"
 import { UserList } from "./UserList"
+import { UserMain } from "./UserMain"
 
 export const Main = () => {
   const dispatch = useAppDispatch()
@@ -20,8 +22,17 @@ export const Main = () => {
       <Routes>
         <Route
           path="/users"
-          element={<UserList />}
-        />
+          element={<UserMain />}
+        >
+          <Route
+            index
+            element={<UserList />}
+          />
+          <Route
+            path=":id"
+            element={<UserEntry />}
+          />
+        </Route>
         <Route
           path="/"
           element={<BlogList />}

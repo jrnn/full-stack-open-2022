@@ -14,7 +14,7 @@ export const App = () => {
   return (
     <>
       <Notification />
-      <h2>Blogs</h2>
+      <h1>Blogs</h1>
       {!user
         ? <LoginForm />
         : <Main />

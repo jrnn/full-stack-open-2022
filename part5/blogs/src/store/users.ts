@@ -4,11 +4,14 @@ import { accessApi } from "../services/api"
 import { UserEntity } from "../types"
 import { notifyError } from "./notification"
 
+type Status = "idle" | "pending"
 type UsersState = Readonly<{
+  status: Status
   users: ReadonlyArray<UserEntity>
 }>
 
 const initialState: UsersState = {
+  status: "idle",
   users: []
 }
 
@@ -16,7 +19,13 @@ const slice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    set: (state, { payload: users }: PayloadAction<Array<UserEntity>>) => {
+    setStatus: (state, { payload: status }: PayloadAction<Status>) => {
+      return {
+        ...state,
+        status
+      }
+    },
+    setUsers: (state, { payload: users }: PayloadAction<Array<UserEntity>>) => {
       return {
         ...state,
         users
@@ -25,17 +34,20 @@ const slice = createSlice({
   }
 })
 
-const { set } = slice.actions
+const { setStatus, setUsers } = slice.actions
 
 const api = accessApi<UserEntity>("/api/users")
 
 export const fetchUsers = (): AppThunkAction => async dispatch => {
+  dispatch(setStatus("pending"))
   try {
     const users = await api.getAll()
-    dispatch(set(users))
+    dispatch(setUsers(users))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't fetch users from server. Too bad!"))
+  } finally {
+    dispatch(setStatus("idle"))
   }
 }
 

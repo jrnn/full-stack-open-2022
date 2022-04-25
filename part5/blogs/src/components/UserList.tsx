@@ -1,15 +1,9 @@
-import React, { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "../store"
-import { fetchUsers } from "../store/users"
+import React from "react"
+import { Link } from "react-router-dom"
+import { useAppSelector } from "../store"
 
 export const UserList = () => {
-  const dispatch = useAppDispatch()
   const { users } = useAppSelector(state => state.users)
-
-  useEffect(() => {
-    dispatch(fetchUsers())
-  }, [ dispatch ])
-
   return (
     <div>
       <h3>Meet our gorgeous users</h3>
@@ -21,10 +15,12 @@ export const UserList = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user =>
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.blogs.length}</td>
+          {users.map(({ id, name, blogs }) =>
+            <tr key={id}>
+              <td>
+                <Link to={`/users/${id}`}>{name}</Link>
+              </td>
+              <td>{blogs.length}</td>
             </tr>
           )}
         </tbody>

@@ -32,7 +32,8 @@ const baseConfig: Configuration = {
 const devConfig: Configuration = {
   mode: "development",
   output: {
-    filename: "bundle.js"
+    filename: "bundle.js",
+    publicPath: "/"
   },
   devtool: "inline-source-map",
   devServer: {

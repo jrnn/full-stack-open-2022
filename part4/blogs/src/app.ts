@@ -1,6 +1,7 @@
 import cors from "cors"
 import express from "express"
 import { MODE } from "./config"
+import artificialDelay from "./middleware/artificialDelay"
 import blogRouter from "./controllers/blogs"
 import errorHandler from "./middleware/errorHandler"
 import loginRouter from "./controllers/login"
@@ -15,6 +16,10 @@ app.use(cors())
 app.use(express.json())
 app.use(tokenExtractor)
 app.use(requestLogger)
+
+if (MODE === "development") {
+  app.use(artificialDelay)
+}
 
 app.use("/api/login", loginRouter)
 app.use("/api/users", userRouter)
