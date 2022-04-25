@@ -1,3 +1,4 @@
+import axios from "axios"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AppThunkAction } from "."
 import { accessApi } from "../services/api"
@@ -113,6 +114,19 @@ export const removeBlog = ({ id }: BlogEntity, token: string, onSuccess?: () => 
     dispatch(notifyError("Oops! Couldn't remove that blog. Too bad!"))
   } finally {
     dispatch(setStatus("idle"))
+  }
+}
+
+export const addComment = ({ id }: BlogEntity, comment: string, onSuccess?: () => void): AppThunkAction => async dispatch => {
+  try {
+    const response = await axios.post<BlogEntity>(`/api/blogs/${id}/comments`, { comment })
+    dispatch(update(response.data))
+    if (onSuccess) {
+      onSuccess()
+    }
+  } catch (error) {
+    console.error(error)
+    dispatch(notifyError("Oops! Couldn't add that like. Too bad!"))
   }
 }
 

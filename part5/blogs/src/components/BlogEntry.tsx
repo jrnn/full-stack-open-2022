@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth, useParamsId } from "../hooks"
 import { useAppDispatch, useAppSelector } from "../store"
 import { incrementLikes, removeBlog } from "../store/blogs"
+import { CommentForm } from "./CommentForm"
 
 export const BlogEntry = () => {
   const id = useParamsId()
@@ -41,6 +42,7 @@ export const BlogEntry = () => {
         </div>
       }
       <h4>Comments</h4>
+      <CommentForm blog={blog} />
       <ul>
         {blog.comments.map(comment =>
           <li key={comment}>{comment}</li>
