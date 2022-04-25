@@ -1,29 +1,37 @@
-import React, { FunctionComponent } from "react"
-import { BlogEntity, UserAuth } from "../types"
-import { BlogEntry } from "./BlogEntry"
+import React from "react"
+import { Link } from "react-router-dom"
+import { useAppSelector } from "../store"
+import { TogglableBlogForm } from "./BlogForm"
 
-interface Props {
-  user: UserAuth
-  blogs: Array<BlogEntity>
-  incrementLikes: (blog: BlogEntity) => void
-  removeBlog: (blog: BlogEntity) => void
-}
+export const BlogList = () => {
+  const blogs = useAppSelector(state => [ ...state.blogs.blogs ]
+    .sort((p, q) => q.likes - p.likes))
 
-const sortByLikes = (p: BlogEntity, q: BlogEntity) => q.likes - p.likes
-
-export const BlogList: FunctionComponent<Props> = ({ user, blogs, incrementLikes, removeBlog }) => {
   return (
     <div>
+      <TogglableBlogForm />
       <h3>Please peruse blogs</h3>
-      {blogs.sort(sortByLikes).map(blog =>
-        <BlogEntry
-          key={blog.id}
-          user={user}
-          blog={blog}
-          incrementLikes={incrementLikes}
-          removeBlog={removeBlog}
-        />
-      )}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          {blogs.map(blog =>
+            <tr
+              className="blog-entry"
+              key={blog.id}
+            >
+              <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </td>
+              <td>{blog.author}</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   )
 }

@@ -1,54 +1,53 @@
-import React, { CSSProperties, FunctionComponent, useState } from "react"
-import { BlogEntity, UserAuth } from "../types"
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import { useAuth, useParamsId } from "../hooks"
+import { useAppDispatch, useAppSelector } from "../store"
+import { incrementLikes, removeBlog } from "../store/blogs"
+import { CommentForm } from "./CommentForm"
 
-interface Props {
-  user: UserAuth
-  blog: BlogEntity
-  incrementLikes: (blog: BlogEntity) => void
-  removeBlog: (blog: BlogEntity) => void
-}
+export const BlogEntry = () => {
+  const id = useParamsId()
+  const user = useAuth().user.orElseThrow()
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const { blogs, status } = useAppSelector(state => state.blogs)
+  const blog = blogs.find(blog => blog.id === id)
 
-const style: CSSProperties = {
-  marginBottom: 4,
-  outline: "thin solid",
-  padding: 4
-}
-
-export const BlogEntry: FunctionComponent<Props> = ({ user, blog, incrementLikes, removeBlog }) => {
-  const [ detailed, setDetailed ] = useState(false)
-  const toggle = () => setDetailed(!detailed)
-  const handleLike = () => incrementLikes(blog)
+  if (!blog) {
+    return (
+      <h2>No blog found with id {id}!</h2>
+    )
+  }
+  const handleLike = () => dispatch(incrementLikes(blog))
   const handleRemove = () => {
     if (window.confirm("Sure you wanna do that?")) {
-      removeBlog(blog)
+      dispatch(removeBlog(blog, user.token, () => navigate(-1)))
     }
   }
-  const isBlogOwner = user.username === blog.user.username
 
   return (
-    <div
-      className="blog-entry"
-      style={style}
-    >
-      <span>{blog.author}: &quot;{blog.title}&quot; </span>
-      <button onClick={toggle}>
-        {detailed ? "Hide" : "Show details"}
-      </button>
-      {detailed &&
+    <div>
+      <h3>{blog.title}</h3>
+      <h4>Written by {blog.author}</h4>
+      {status === "posting" && <div>WAIT FOR IT... WAIT FOR IT...</div>}
+      <div>URL: <a href={blog.url}>{blog.url}</a></div>
+      <div>
+        <span>Likes: {blog.likes}</span>
+        <button onClick={handleLike}>Like!</button>
+      </div>
+      <div>Added by: {blog.user.name}</div>
+      {user.username === blog.user.username &&
         <div>
-          <div>URL: {blog.url}</div>
-          <div>
-            <span>Likes: {blog.likes}</span>
-            <button onClick={handleLike}>Like!</button>
-          </div>
-          <div>Added by: {blog.user.name}</div>
-          {isBlogOwner &&
-            <div>
-              <button onClick={handleRemove}>Remove</button>
-            </div>
-          }
+          <button onClick={handleRemove}>Remove</button>
         </div>
       }
+      <h4>Comments</h4>
+      <CommentForm blog={blog} />
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={comment}>{comment}</li>
+        )}
+      </ul>
     </div>
   )
 }

@@ -1,57 +1,48 @@
-import React, { FormEvent, FunctionComponent, useState } from "react"
-import { BlogDto } from "../types"
+import React, { FormEvent, FunctionComponent } from "react"
+import { useAuth, useFormInput } from "../hooks"
+import { useAppDispatch, useAppSelector } from "../store"
+import { createBlog } from "../store/blogs"
 import { FormInput } from "./FormInput"
+import { togglable, TogglableProps } from "./Togglable"
 
-interface Props {
-  createBlog: (blog: BlogDto, onSuccess: () => void) => Promise<void>
-}
+export const BlogForm: FunctionComponent<TogglableProps> = ({ toggle }) => {
+  const dispatch = useAppDispatch()
+  const { status } = useAppSelector(state => state.blogs)
+  const { token } = useAuth().user.orElseThrow()
 
-export const BlogForm: FunctionComponent<Props> = ({ createBlog }) => {
-  const [ title, setTitle ] = useState("")
-  const [ author, setAuthor ] = useState("")
-  const [ url, setUrl ] = useState("")
+  const title = useFormInput("Title")
+  const author = useFormInput("Author")
+  const url = useFormInput("URL")
 
-  const editTitle = ({ currentTarget }: FormEvent<HTMLInputElement>) => setTitle(currentTarget.value)
-  const editAuthor = ({ currentTarget }: FormEvent<HTMLInputElement>) => setAuthor(currentTarget.value)
-  const editUrl = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUrl(currentTarget.value)
-  const resetForm = () => {
-    setTitle("")
-    setAuthor("")
-    setUrl("")
-  }
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    createBlog({ title, author, url }, resetForm)
+    const blog = {
+      title: title.value,
+      author: author.value,
+      url: url.value
+    }
+    const onSuccess = () => {
+      title.reset()
+      author.reset()
+      url.reset()
+      toggle()
+    }
+    dispatch(createBlog(blog, token, onSuccess))
   }
-
   return (
     <div>
       <h3>Add new blog</h3>
+      {status === "posting" && <div>HOLD YOUR HORSES, ALMOST THERE ...</div>}
       <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Title"
-          handleChange={editTitle}
-          value={title}
-        />
-        <FormInput
-          label="Author"
-          handleChange={editAuthor}
-          value={author}
-        />
-        <FormInput
-          label="URL"
-          handleChange={editUrl}
-          value={url}
-        />
+        <FormInput { ...title } />
+        <FormInput { ...author } />
+        <FormInput { ...url } />
         <div>
-          <button
-            id="createBlog-button"
-            type="submit"
-          >
-            Add
-          </button>
+          <button id="createBlog-button">Add</button>
         </div>
       </form>
     </div>
   )
 }
+
+export const TogglableBlogForm = togglable("Click here to add new blog", BlogForm)

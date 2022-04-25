@@ -1,5 +1,5 @@
-import React, { CSSProperties, FunctionComponent } from "react"
-import { NotificationType } from "../types"
+import React, { CSSProperties } from "react"
+import { useAppSelector } from "../store"
 
 const notificationStyle: CSSProperties = {
   color: "white",
@@ -17,14 +17,17 @@ const errorStyle: CSSProperties = {
   backgroundColor: "maroon"
 }
 
-export const Notification: FunctionComponent<NotificationType> = ({ message, type }) => (
-  type === "none"
-    ? null
-    :
-    <div
-      id={`notification-${type}`}
-      style={type === "info" ? infoStyle : errorStyle}
-    >
-      {message}
-    </div>
-)
+export const Notification = () => {
+  const { type, message } = useAppSelector(state => state.notification)
+  return (
+    type === "none"
+      ? null
+      :
+      <div
+        id={`notification-${type}`}
+        style={type === "info" ? infoStyle : errorStyle}
+      >
+        {message}
+      </div>
+  )
+}

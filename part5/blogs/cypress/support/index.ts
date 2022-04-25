@@ -17,7 +17,6 @@ declare global {
     interface Chainable {
       createBlog(blog: Blog): Chainable<Element>
       createUser(user: User): Chainable<Element>
-      getBlogEntryAs(alias: string, blog: Blog): Chainable<Element>
       login(credentials: User): Chainable<Element>
     }
   }
@@ -42,13 +41,6 @@ Cypress.Commands.add("createUser", user => {
     method: "POST",
     body: user
   })
-})
-
-Cypress.Commands.add("getBlogEntryAs", (alias, { title, author }) => {
-  cy.get(".blog-entry")
-    .contains(`${author}: "${title}"`)
-    .parent()
-    .as(alias)
 })
 
 Cypress.Commands.add("login", ({ username, password }) => {

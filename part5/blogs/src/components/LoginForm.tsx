@@ -1,48 +1,27 @@
-import React, { FormEvent, FunctionComponent, useState } from "react"
-import { LoginCredentials } from "../types"
+import React, { FormEvent } from "react"
+import { useAuth, useFormInput } from "../hooks"
+import { useAppSelector } from "../store"
 import { FormInput } from "./FormInput"
 
-interface Props {
-  handleLogin: (credentials: LoginCredentials, onSuccess: () => void) => Promise<void>
-}
+export const LoginForm = () => {
+  const { login } = useAuth()
+  const { status } = useAppSelector(state => state.auth)
+  const username = useFormInput("Username")
+  const password = useFormInput("Password", "password")
 
-export const LoginForm: FunctionComponent<Props> = ({ handleLogin }) => {
-  const [ username, setUsername ] = useState("")
-  const [ password, setPassword ] = useState("")
-
-  const editUsername = ({ currentTarget }: FormEvent<HTMLInputElement>) => setUsername(currentTarget.value)
-  const editPassword = ({ currentTarget }: FormEvent<HTMLInputElement>) => setPassword(currentTarget.value)
-  const resetForm = () => {
-    setUsername("")
-    setPassword("")
-  }
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    handleLogin({ username, password }, resetForm)
+    login(username.value, password.value)
   }
-
   return (
     <div>
       <h3>Please provide credentials</h3>
+      {status === "posting" && <div>TRYING TO LOG YOU IN, HOLD ON...</div>}
       <form onSubmit={onSubmit}>
-        <FormInput
-          label="Username"
-          handleChange={editUsername}
-          value={username}
-        />
-        <FormInput
-          label="Password"
-          handleChange={editPassword}
-          value={password}
-          type="password"
-        />
+        <FormInput { ...username } />
+        <FormInput { ...password } />
         <div>
-          <button
-            id="login-button"
-            type="submit"
-          >
-            Login
-          </button>
+          <button id="login-button">Login</button>
         </div>
       </form>
     </div>

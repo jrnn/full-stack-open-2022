@@ -83,35 +83,35 @@ describe("Blogs app", function() {
       cy.get("#url-input").type(boatBlog.url)
       cy.get("#createBlog-button").click()
 
-      cy.get("#notification-info").should("contain", `You just added a new blog '${boatBlog.title}', hooray!`)
-      cy.getBlogEntryAs("boatBlog", boatBlog).contains("Show details").click()
-      cy.get("@boatBlog").should("contain", `Added by: ${spongebob.name}`)
-
-      cy.get("#title-input").should("not.be.visible")
-      cy.get("#author-input").should("not.be.visible")
-      cy.get("#url-input").should("not.be.visible")
-      cy.get("#createBlog-button").should("not.be.visible")
+      cy.get("#notification-info").should("contain", `Hooray! You just added a new blog "${boatBlog.title}"`)
+      cy.get(".blog-entry").contains(boatBlog.title).click()
+      cy.get("html")
+        .should("contain", boatBlog.title)
+        .should("contain", `Written by ${boatBlog.author}`)
+        .should("contain", `Added by: ${spongebob.name}`)
     })
 
     it("a blog can be liked", function() {
-      cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
-      cy.get("@coffeeBlog").should("contain", "Likes: 1")
-      cy.get("@coffeeBlog").contains("Like!").click()
-      cy.get("@coffeeBlog").should("contain", "Likes: 2")
+      cy.get(".blog-entry").contains(coffeeBlog.title).click()
+      cy.get("html").should("contain", "Likes: 1")
+      cy.get("html").contains("Like!").click()
+      cy.get("html").should("contain", "Likes: 2")
     })
 
     describe("deleting a blog", function() {
       it("succeeds when logged in as the blog's owner", function() {
-        cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
-        cy.get("@coffeeBlog").contains("Remove").click()
+        cy.get(".blog-entry").contains(coffeeBlog.title).click()
+        cy.get("html").contains("Remove").click()
         cy.get("#notification-info").should("contain", "You just removed a blog. Uhh... Hooray...?")
-        cy.get("html").should("not.contain", `${coffeeBlog.author}: "${coffeeBlog.title}"`)
+        cy.get("html")
+          .should("not.contain", coffeeBlog.title)
+          .should("not.contain", coffeeBlog.author)
       })
 
       it("is not possible when logged in as someone else", function() {
         cy.createUser(cnorris).login(cnorris)
-        cy.getBlogEntryAs("coffeeBlog", coffeeBlog).contains("Show details").click()
-        cy.get("@coffeeBlog").should("not.contain", "Remove")
+        cy.get(".blog-entry").contains(coffeeBlog.title).click()
+        cy.get("html").should("not.contain", "Remove")
       })
     })
 
@@ -121,10 +121,11 @@ describe("Blogs app", function() {
       cy.get(".blog-entry:first").should("contain", coffeeBlog.title)
       cy.get(".blog-entry:last").should("contain", boatBlog.title)
 
-      cy.getBlogEntryAs("boatBlog", boatBlog).contains("Show details").click()
-      cy.get("@boatBlog").contains("Like!").click()
-      cy.get("@boatBlog").contains("Like!").click()
+      cy.get(".blog-entry").contains(boatBlog.title).click()
+      cy.get("html").contains("Like!").click()
+      cy.get("html").contains("Like!").click()
 
+      cy.go("back")
       cy.get(".blog-entry:first").should("contain", boatBlog.title)
       cy.get(".blog-entry:last").should("contain", coffeeBlog.title)
     })

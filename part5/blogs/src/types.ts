@@ -10,7 +10,8 @@ export interface BlogEntity {
   author: string
   url: string
   likes: number
-  user: UserEntity
+  user: Omit<UserEntity, "blogs">
+  comments: Array<string>
 }
 
 export interface LoginCredentials {
@@ -18,12 +19,11 @@ export interface LoginCredentials {
   password: string
 }
 
-export interface NotificationType {
-  message?: string
-  type: "info" | "error" | "none"
+export interface Maybe<T> {
+  isEmpty: () => boolean
+  isPresent: () => boolean
+  orElseThrow: () => T
 }
-
-export type NotifyDispatch = (message: string, type: "info" | "error") => void
 
 export interface UserAuth {
   token: string
@@ -35,4 +35,5 @@ export interface UserEntity {
   id: string
   name: string
   username: string
+  blogs: Array<BlogEntity>
 }

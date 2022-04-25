@@ -1,14 +1,10 @@
 import React from "react"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { BlogEntry } from "../../src/components/BlogEntry"
+import { BlogEntry } from "../../src/components/OldBlogEntry"
+import * as blogThunks from "../../src/store/blogs"
 
 const props = {
-  user: {
-    token: "user.token",
-    name: "user.name",
-    username: "user.username"
-  },
   blog: {
     id: "blog.id",
     title: "blog.title",
@@ -20,10 +16,9 @@ const props = {
       token: "blog.user.token",
       name: "blog.user.name",
       username: "blog.user.username"
-    }
-  },
-  incrementLikes: (_: unknown): void => { _ },
-  removeBlog: (_: unknown): void => { _ }
+    },
+    comments: []
+  }
 }
 
 describe("<BlogEntry />", () => {
@@ -63,7 +58,7 @@ describe("<BlogEntry />", () => {
 
     describe("then, on clicking 'Like!'", () => {
 
-      const spy = jest.spyOn(props, "incrementLikes")
+      const spy = jest.spyOn(blogThunks, "incrementLikes")
 
       it("once, then the given 'incrementLikes' is called once with the current 'blog'", async () => {
         const button = screen.getByText("Like!")
@@ -83,5 +78,3 @@ describe("<BlogEntry />", () => {
     })
   })
 })
-
-afterEach(() => jest.clearAllMocks())
