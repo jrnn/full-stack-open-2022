@@ -1,21 +1,21 @@
 import React, { useEffect } from "react"
 import { Outlet } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../store"
-import { fetchUsers } from "../store/users"
+import { fetchBlogs } from "../store/blogs"
 
-export const UserMain = () => {
+export const BlogMain = () => {
   const dispatch = useAppDispatch()
-  const { status } = useAppSelector(state => state.users)
+  const { status } = useAppSelector(state => state.blogs)
 
   useEffect(() => {
-    dispatch(fetchUsers())
+    dispatch(fetchBlogs())
   }, [ dispatch ])
 
   return status === "fetching"
     ? <div>... LOADING ...</div>
     :
     <div>
-      <h2>Users</h2>
+      <h2>Blogs</h2>
       <Outlet />
     </div>
 }

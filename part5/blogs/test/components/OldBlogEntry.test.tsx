@@ -1,7 +1,7 @@
 import React from "react"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { BlogEntry } from "../../src/components/BlogEntry"
+import { BlogEntry } from "../../src/components/OldBlogEntry"
 import * as blogThunks from "../../src/store/blogs"
 
 const props = {

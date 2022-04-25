@@ -6,17 +6,27 @@ import { notifyError, notifySuccess } from "./notification"
 
 const USER_AUTH_KEY = "FSO22_PART5_BLOGS_WEB_CLIENT_USER_AUTH"
 
+type Status = "idle" | "posting"
 type AuthState = Readonly<{
+  status: Status
   user?: UserAuth
 }>
 
-const initialState: AuthState = {}
+const initialState: AuthState = {
+  status: "idle"
+}
 
 const slice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    set: (state, { payload: user }: PayloadAction<UserAuth>) => {
+    setStatus: (state, { payload: status }: PayloadAction<Status>) => {
+      return {
+        ...state,
+        status
+      }
+    },
+    setUser: (state, { payload: user }: PayloadAction<UserAuth>) => {
       return {
         ...state,
         user
@@ -28,26 +38,29 @@ const slice = createSlice({
   }
 })
 
-const { set, reset } = slice.actions
+const { setStatus, setUser, reset } = slice.actions
 
 const api = accessApi<UserAuth>("/api/login")
 
 export const checkForAuthInLocal = (): AppThunkAction => dispatch => {
   const auth = window.localStorage.getItem(USER_AUTH_KEY)
   if (auth) {
-    dispatch(set(JSON.parse(auth)))
+    dispatch(setUser(JSON.parse(auth)))
   }
 }
 
 export const login = (credentials: LoginCredentials): AppThunkAction => async dispatch => {
+  dispatch(setStatus("posting"))
   try {
     const user = await api.post(credentials)
-    dispatch(set(user))
+    dispatch(setUser(user))
     dispatch(notifySuccess("You are now logged in, welcome!"))
     window.localStorage.setItem(USER_AUTH_KEY, JSON.stringify(user))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Invalid username or password"))
+  } finally {
+    dispatch(setStatus("idle"))
   }
 }
 

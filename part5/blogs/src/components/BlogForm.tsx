@@ -1,13 +1,14 @@
 import React, { FormEvent, FunctionComponent } from "react"
 import { useAuth, useFormInput } from "../hooks"
-import { useAppDispatch } from "../store"
+import { useAppDispatch, useAppSelector } from "../store"
 import { createBlog } from "../store/blogs"
 import { FormInput } from "./FormInput"
 import { togglable, TogglableProps } from "./Togglable"
 
 export const BlogForm: FunctionComponent<TogglableProps> = ({ toggle }) => {
   const dispatch = useAppDispatch()
-  const { token } = useAuth()
+  const { status } = useAppSelector(state => state.blogs)
+  const { token } = useAuth().user.orElseThrow()
 
   const title = useFormInput("Title")
   const author = useFormInput("Author")
@@ -28,6 +29,7 @@ export const BlogForm: FunctionComponent<TogglableProps> = ({ toggle }) => {
   return (
     <div>
       <h3>Add new blog</h3>
+      {status === "posting" && <div>HOLD YOUR HORSES, ALMOST THERE ...</div>}
       <form onSubmit={handleSubmit}>
         <FormInput { ...title } />
         <FormInput { ...author } />

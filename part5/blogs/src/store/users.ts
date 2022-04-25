@@ -4,7 +4,7 @@ import { accessApi } from "../services/api"
 import { UserEntity } from "../types"
 import { notifyError } from "./notification"
 
-type Status = "idle" | "pending"
+type Status = "idle" | "fetching"
 type UsersState = Readonly<{
   status: Status
   users: ReadonlyArray<UserEntity>
@@ -39,7 +39,7 @@ const { setStatus, setUsers } = slice.actions
 const api = accessApi<UserEntity>("/api/users")
 
 export const fetchUsers = (): AppThunkAction => async dispatch => {
-  dispatch(setStatus("pending"))
+  dispatch(setStatus("fetching"))
   try {
     const users = await api.getAll()
     dispatch(setUsers(users))

@@ -1,28 +1,37 @@
-import React, { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "../store"
-import { fetchBlogs } from "../store/blogs"
-import { BlogEntry } from "./BlogEntry"
+import React from "react"
+import { Link } from "react-router-dom"
+import { useAppSelector } from "../store"
 import { TogglableBlogForm } from "./BlogForm"
 
 export const BlogList = () => {
-  const dispatch = useAppDispatch()
   const blogs = useAppSelector(state => [ ...state.blogs.blogs ]
     .sort((p, q) => q.likes - p.likes))
-
-  useEffect(() => {
-    dispatch(fetchBlogs())
-  }, [ dispatch ])
 
   return (
     <div>
       <TogglableBlogForm />
       <h3>Please peruse blogs</h3>
-      {blogs.map(blog =>
-        <BlogEntry
-          key={blog.id}
-          blog={blog}
-        />
-      )}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          {blogs.map(blog =>
+            <tr
+              className="blog-entry"
+              key={blog.id}
+            >
+              <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </td>
+              <td>{blog.author}</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   )
 }

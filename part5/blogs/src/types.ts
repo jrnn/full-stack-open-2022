@@ -18,6 +18,12 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface Maybe<T> {
+  isEmpty: () => boolean
+  isPresent: () => boolean
+  orElseThrow: () => T
+}
+
 export interface UserAuth {
   token: string
   name: string

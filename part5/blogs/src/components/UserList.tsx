@@ -16,7 +16,10 @@ export const UserList = () => {
         </thead>
         <tbody>
           {users.map(({ id, name, blogs }) =>
-            <tr key={id}>
+            <tr
+              className="user-entry"
+              key={id}
+            >
               <td>
                 <Link to={`/users/${id}`}>{name}</Link>
               </td>
