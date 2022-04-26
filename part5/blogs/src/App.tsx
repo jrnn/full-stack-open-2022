@@ -1,3 +1,4 @@
+import Container from "@mui/material/Container"
 import React, { useEffect } from "react"
 import { Link, Navigate, Route, Routes } from "react-router-dom"
 import { BlogEntry } from "./components/BlogEntry"
@@ -9,8 +10,7 @@ import { Notification } from "./components/Notification"
 import { UserEntry } from "./components/UserEntry"
 import { UserList } from "./components/UserList"
 import { UserMain } from "./components/UserMain"
-import { useAuth } from "./hooks"
-import { useAppDispatch } from "./store"
+import { useAppDispatch, useAppSelector } from "./store"
 import { checkForAuthInLocal } from "./store/auth"
 
 const UnknownRoute = () => (
@@ -23,18 +23,18 @@ const UnknownRoute = () => (
 )
 
 export const App = () => {
-  const { user } = useAuth()
   const dispatch = useAppDispatch()
+  const { user } = useAppSelector(state => state.auth)
 
   useEffect(() => {
     dispatch(checkForAuthInLocal())
   }, [ dispatch ])
 
   return (
-    <>
+    <Container maxWidth="sm">
       <Notification />
       <h1>Best-of-breed Blogs Galore</h1>
-      {user.isEmpty()
+      {!user
         ? <LoginForm />
         : <>
           <NavBar />
@@ -52,6 +52,6 @@ export const App = () => {
           </Routes>
         </>
       }
-    </>
+    </Container>
   )
 }

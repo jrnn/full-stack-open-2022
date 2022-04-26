@@ -16,7 +16,7 @@ const style: CSSProperties = {
 
 export const BlogEntry: FunctionComponent<Props> = ({ blog }) => {
   const dispatch = useAppDispatch()
-  const user = useAuth().user.orElseThrow()
+  const user = useAuth()
   const [ detailed, setDetailed ] = useState(false)
 
   const toggle = () => setDetailed(!detailed)

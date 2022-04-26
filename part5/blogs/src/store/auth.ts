@@ -6,7 +6,7 @@ import { notifyError, notifySuccess } from "./notification"
 
 const USER_AUTH_KEY = "FSO22_PART5_BLOGS_WEB_CLIENT_USER_AUTH"
 
-type Status = "idle" | "posting"
+type Status = "idle" | "loggingIn"
 type AuthState = Readonly<{
   status: Status
   user?: UserAuth
@@ -50,7 +50,7 @@ export const checkForAuthInLocal = (): AppThunkAction => dispatch => {
 }
 
 export const login = (credentials: LoginCredentials): AppThunkAction => async dispatch => {
-  dispatch(setStatus("posting"))
+  dispatch(setStatus("loggingIn"))
   try {
     const user = await api.post(credentials)
     dispatch(setUser(user))

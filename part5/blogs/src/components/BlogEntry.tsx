@@ -3,15 +3,18 @@ import { useNavigate } from "react-router-dom"
 import { useAuth, useParamsId } from "../hooks"
 import { useAppDispatch, useAppSelector } from "../store"
 import { incrementLikes, removeBlog } from "../store/blogs"
-import { CommentForm } from "./CommentForm"
+import { Button } from "./Button"
+import { TogglableCommentForm } from "./CommentForm"
 
 export const BlogEntry = () => {
   const id = useParamsId()
-  const user = useAuth().user.orElseThrow()
+  const user = useAuth()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { blogs, status } = useAppSelector(state => state.blogs)
-  const blog = blogs.find(blog => blog.id === id)
+  const { blog, isLoading } = useAppSelector(({ blogs }) => ({
+    blog: blogs.blogs[id],
+    isLoading: blogs.status === "posting"
+  }))
 
   if (!blog) {
     return (
@@ -29,25 +32,20 @@ export const BlogEntry = () => {
     <div>
       <h3>{blog.title}</h3>
       <h4>Written by {blog.author}</h4>
-      {status === "posting" && <div>WAIT FOR IT... WAIT FOR IT...</div>}
       <div>URL: <a href={blog.url}>{blog.url}</a></div>
-      <div>
-        <span>Likes: {blog.likes}</span>
-        <button onClick={handleLike}>Like!</button>
-      </div>
+      <div>Likes: {blog.likes}</div>
       <div>Added by: {blog.user.name}</div>
+      <Button label="Like!" loading={isLoading} onClick={handleLike} />
       {user.username === blog.user.username &&
-        <div>
-          <button onClick={handleRemove}>Remove</button>
-        </div>
+        <Button label="Remove" loading={isLoading} onClick={handleRemove} />
       }
       <h4>Comments</h4>
-      <CommentForm blog={blog} />
       <ul>
         {blog.comments.map(comment =>
           <li key={comment}>{comment}</li>
         )}
       </ul>
+      <TogglableCommentForm blog={blog} label="Click here to add comment" />
     </div>
   )
 }

@@ -7,12 +7,12 @@ import { notifyError } from "./notification"
 type Status = "idle" | "fetching"
 type UsersState = Readonly<{
   status: Status
-  users: ReadonlyArray<UserEntity>
+  users: Record<string, UserEntity>
 }>
 
 const initialState: UsersState = {
   status: "idle",
-  users: []
+  users: {}
 }
 
 const slice = createSlice({
@@ -25,7 +25,7 @@ const slice = createSlice({
         status
       }
     },
-    setUsers: (state, { payload: users }: PayloadAction<Array<UserEntity>>) => {
+    setUsers: (state, { payload: users }: PayloadAction<Record<string, UserEntity>>) => {
       return {
         ...state,
         users
@@ -42,7 +42,8 @@ export const fetchUsers = (): AppThunkAction => async dispatch => {
   dispatch(setStatus("fetching"))
   try {
     const users = await api.getAll()
-    dispatch(setUsers(users))
+    const indexedUsers = Object.fromEntries(users.map(user => [ user.id, user ]))
+    dispatch(setUsers(indexedUsers))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't fetch users from server. Too bad!"))
