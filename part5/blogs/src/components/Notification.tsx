@@ -1,21 +1,6 @@
-import React, { CSSProperties } from "react"
+import React from "react"
+import Alert from "@mui/material/Alert"
 import { useAppSelector } from "../store"
-
-const notificationStyle: CSSProperties = {
-  color: "white",
-  fontSize: 17,
-  padding: 10
-}
-
-const infoStyle: CSSProperties = {
-  ...notificationStyle,
-  backgroundColor: "green"
-}
-
-const errorStyle: CSSProperties = {
-  ...notificationStyle,
-  backgroundColor: "maroon"
-}
 
 export const Notification = () => {
   const { type, message } = useAppSelector(state => state.notification)
@@ -23,11 +8,13 @@ export const Notification = () => {
     type === "none"
       ? null
       :
-      <div
+      <Alert
         id={`notification-${type}`}
-        style={type === "info" ? infoStyle : errorStyle}
+        icon={false}
+        severity={type === "info" ? "success" : "error"}
+        variant="outlined"
       >
         {message}
-      </div>
+      </Alert>
   )
 }

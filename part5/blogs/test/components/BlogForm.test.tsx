@@ -21,7 +21,7 @@ describe("<BlogForm />", () => {
     const toggle = jest.fn()
     const createBlog = jest.spyOn(blogThunks, "createBlog")
 
-    beforeEach(() => container = render(<BlogForm toggle={toggle} />).container)
+    beforeEach(() => container = render(<BlogForm label="" toggle={toggle} />).container)
 
     it("current 'title' value is dispatched with the 'createBlog' thunk", async () => {
       const titleInput = container.querySelector("#title-input") as Element

@@ -8,12 +8,12 @@ import { notifyError, notifySuccess } from "./notification"
 type Status = "idle" | "fetching" | "posting"
 type BlogsState = Readonly<{
   status: Status
-  blogs: ReadonlyArray<BlogEntity>
+  blogs: Record<string, BlogEntity>
 }>
 
 const initialState: BlogsState = {
   status: "idle",
-  blogs: []
+  blogs: {}
 }
 
 const slice = createSlice({
@@ -26,42 +26,40 @@ const slice = createSlice({
         status
       }
     },
-    setBlogs: (state, { payload: blogs }: PayloadAction<Array<BlogEntity>>) => {
+    setBlogs: (state, { payload: blogs }: PayloadAction<Record<string, BlogEntity>>) => {
       return {
         ...state,
         blogs
       }
     },
-    add: (state, { payload: newBlog }: PayloadAction<BlogEntity>) => {
+    add: (state, { payload: blog }: PayloadAction<BlogEntity>) => {
       return {
         ...state,
-        blogs: state.blogs.concat(newBlog)
-      }
-    },
-    update: (state, { payload: updatedBlog }: PayloadAction<BlogEntity>) => {
-      return {
-        ...state,
-        blogs: state.blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog)
+        blogs: { ...state.blogs, [blog.id]: blog }
       }
     },
     remove: (state, { payload: idToRemove }: PayloadAction<string>) => {
+      const { [idToRemove]: blogToRemove, ...blogs } = state.blogs
       return {
         ...state,
-        blogs: state.blogs.filter(({ id }) => id !== idToRemove)
+        blogs
       }
     }
   }
 })
 
-const { setStatus, setBlogs, add, update, remove } = slice.actions
+const { setStatus, setBlogs, add, remove } = slice.actions
 
 const api = accessApi<BlogEntity>("/api/blogs")
+
+const doNothing = () => { /**/ }
 
 export const fetchBlogs = (): AppThunkAction => async dispatch => {
   dispatch(setStatus("fetching"))
   try {
     const blogs = await api.getAll()
-    dispatch(setBlogs(blogs))
+    const indexedBlogs = Object.fromEntries(blogs.map(blog => [ blog.id, blog ]))
+    dispatch(setBlogs(indexedBlogs))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't fetch blogs from server. Too bad!"))
@@ -70,15 +68,13 @@ export const fetchBlogs = (): AppThunkAction => async dispatch => {
   }
 }
 
-export const createBlog = (blog: BlogDto, token: string, onSuccess?: () => void): AppThunkAction => async dispatch => {
+export const createBlog = (blog: BlogDto, token: string, onSuccess = doNothing): AppThunkAction => async dispatch => {
   dispatch(setStatus("posting"))
   try {
     const newBlog = await api.post(blog, token)
     dispatch(add(newBlog))
     dispatch(notifySuccess(`Hooray! You just added a new blog "${newBlog.title}"`))
-    if (onSuccess) {
-      onSuccess()
-    }
+    onSuccess()
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! The server says no. Please check the inputs."))
@@ -91,7 +87,7 @@ export const incrementLikes = ({ id, likes }: BlogEntity): AppThunkAction => asy
   dispatch(setStatus("posting"))
   try {
     const updatedBlog = await api.put({ likes: likes + 1 }, id)
-    dispatch(update(updatedBlog))
+    dispatch(add(updatedBlog))
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't add that like. Too bad!"))
@@ -100,15 +96,13 @@ export const incrementLikes = ({ id, likes }: BlogEntity): AppThunkAction => asy
   }
 }
 
-export const removeBlog = ({ id }: BlogEntity, token: string, onSuccess?: () => void): AppThunkAction => async dispatch => {
+export const removeBlog = ({ id }: BlogEntity, token: string, onSuccess = doNothing): AppThunkAction => async dispatch => {
   dispatch(setStatus("posting"))
   try {
     await api.delete(id, token)
     dispatch(remove(id))
     dispatch(notifySuccess("You just removed a blog. Uhh... Hooray...?"))
-    if (onSuccess) {
-      onSuccess()
-    }
+    onSuccess()
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't remove that blog. Too bad!"))
@@ -117,16 +111,17 @@ export const removeBlog = ({ id }: BlogEntity, token: string, onSuccess?: () => 
   }
 }
 
-export const addComment = ({ id }: BlogEntity, comment: string, onSuccess?: () => void): AppThunkAction => async dispatch => {
+export const addComment = ({ id }: BlogEntity, comment: string, onSuccess = doNothing): AppThunkAction => async dispatch => {
+  dispatch(setStatus("posting"))
   try {
-    const response = await axios.post<BlogEntity>(`/api/blogs/${id}/comments`, { comment })
-    dispatch(update(response.data))
-    if (onSuccess) {
-      onSuccess()
-    }
+    const { data } = await axios.post<BlogEntity>(`/api/blogs/${id}/comments`, { comment })
+    dispatch(add(data))
+    onSuccess()
   } catch (error) {
     console.error(error)
     dispatch(notifyError("Oops! Couldn't add that like. Too bad!"))
+  } finally {
+    dispatch(setStatus("idle"))
   }
 }
 

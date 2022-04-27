@@ -1,14 +1,15 @@
 import React, { ComponentType, useState } from "react"
+import { Button } from "./Button"
 
 export interface TogglableProps {
+  label: string
   toggle: () => void
 }
 
 export const togglable = <P extends TogglableProps = TogglableProps>(
-  label: string,
   WrappedComponent: ComponentType<P>
 ) => {
-  const TogglableComponent = (props: Omit<P, keyof TogglableProps>) => {
+  const TogglableComponent = ({ label, ...props }: Omit<P, "toggle">) => {
     const [ visible, setVisible ] = useState(false)
     const toggle = () => setVisible(!visible)
     const toggleProps = { toggle }
@@ -16,11 +17,11 @@ export const togglable = <P extends TogglableProps = TogglableProps>(
     return (
       <>
         <div style={{ display: visible ? "none" : "" }}>
-          <button onClick={toggle}>{label}</button>
+          <Button label={label} onClick={toggle} />
         </div>
         <div style={{ display: visible ? "" : "none" }}>
           <WrappedComponent { ...toggleProps } { ...props as P }/>
-          <button onClick={toggle}>Close</button>
+          <Button label="Close" onClick={toggle} />
         </div>
       </>
     )

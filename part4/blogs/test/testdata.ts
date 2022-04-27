@@ -6,49 +6,57 @@ export const blogs: Array<BlogSchema> = [
     title: "All About Coffee",
     author: "Beany McBeanface",
     url: "http://all.about.coffee",
-    likes: 42
+    likes: 42,
+    comments: []
   },
   {
     title: "All About Chuck Norris",
     author: "Chucky McChuckface",
     url: "http://all.about.chucknorr.is",
-    likes: 666
+    likes: 666,
+    comments: []
   },
   {
     title: "All About Boats",
     author: "Boaty McBoatface",
     url: "http://all.about.boats",
-    likes: 13
+    likes: 13,
+    comments: []
   },
   {
     title: "All About Java",
     author: "Beany McBeanface",
     url: "http://all.about.java",
-    likes: 7
+    likes: 7,
+    comments: []
   },
   {
     title: "All About Cheese",
     author: "Cheesy McCheeseface",
     url: "http://all.about.jeez",
-    likes: 1
+    likes: 1,
+    comments: []
   },
   {
     title: "All About Kovfefe",
     author: "Beany McBeanface",
     url: "http://all.about.kovfefe",
-    likes: 313
+    likes: 313,
+    comments: []
   },
   {
     title: "All About Ronald McDonald",
     author: "RonaldMcDonaldy McRonaldMcDonaldface",
     url: "http://all.about.ran.ran.rooooo",
-    likes: 159
+    likes: 159,
+    comments: []
   },
   {
     title: "Still Some More About Chuck Norris",
     author: "Chucky McChuckface",
     url: "http://moar.about.chuckchorr.is",
-    likes: 33
+    likes: 33,
+    comments: []
   }
 ]
 

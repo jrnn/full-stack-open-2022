@@ -4,8 +4,7 @@ import { useAppSelector } from "../store"
 
 export const UserEntry = () => {
   const id = useParamsId()
-  const user = useAppSelector(state => state.users.users
-    .find(user => user.id === id))
+  const user = useAppSelector(({ users }) => users.users[id])
 
   if (!user) {
     return (

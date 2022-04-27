@@ -1,10 +1,10 @@
 import axios from "axios"
 
-interface AsyncApiService<R, IdentifierType> {
+interface AsyncApiService<R, I> {
   getAll: (token?: string) => Promise<Array<R>>
   post: (resource: Partial<R>, token?: string) => Promise<R>
-  put: (resourse: Partial<R>, id: IdentifierType, token?: string) => Promise<R>
-  delete: (id: IdentifierType, token?: string) => Promise<void>
+  put: (resourse: Partial<R>, id: I, token?: string) => Promise<R>
+  delete: (id: I, token?: string) => Promise<void>
 }
 
 const bearer = (token?: string) => {
