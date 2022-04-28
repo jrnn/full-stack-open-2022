@@ -11,6 +11,9 @@ const App = () => {
         <Link to="/books">
           <button type="button">Books</button>
         </Link>
+        <Link to="/addbook">
+          <button type="button">Add book</button>
+        </Link>
       </div>
       <Outlet />
     </>
