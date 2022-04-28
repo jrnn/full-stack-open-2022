@@ -21,19 +21,24 @@ const typeDefs = gql`
 
   type Query {
     allAuthors: [Author!]!
-    allBooks(author: String): [Book!]!
+    allBooks(author: String, genre: String): [Book!]!
     authorCount: Int!
     bookCount: Int!
   }
 `
 
+interface QueryArgsAllBooks {
+  author?: string
+  genre?: string
+}
+
 const resolvers = {
   Query: {
     allAuthors: () => authors,
-    allBooks: (_: never, { author }: { author?: string }) => {
-      return !author
-        ? books
-        : books.filter(b => b.author === author)
+    allBooks: (_: never, { author, genre }: QueryArgsAllBooks) => {
+      return books
+        .filter(b => !author ? true : b.author === author)
+        .filter(b => !genre ? true : b.genres.includes(genre))
     },
     authorCount: () => authors.length,
     bookCount: () => books.length
