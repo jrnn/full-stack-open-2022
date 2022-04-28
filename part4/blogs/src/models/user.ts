@@ -58,7 +58,7 @@ schema.set("toJSON", {
 })
 
 schema.pre<UserDocument>("validate", async function(next) {
-  const countOfUsersWithSameUsername = await this.model("User")
+  const countOfUsersWithSameUsername = await this.$model("User")
     .countDocuments({ username: this.username })
     .where({ _id: { $ne: this._id }})
 
