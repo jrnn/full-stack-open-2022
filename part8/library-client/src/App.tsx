@@ -1,10 +1,18 @@
-import Authors from "./components/Authors"
+import { Link, Outlet } from "react-router-dom"
 
 const App = () => {
   return (
     <>
       <h1>Library</h1>
-      <Authors />
+      <div>
+        <Link to="/authors">
+          <button type="button">Authors</button>
+        </Link>
+        <Link to="/books">
+          <button type="button">Books</button>
+        </Link>
+      </div>
+      <Outlet />
     </>
   )
 }

@@ -4,3 +4,10 @@ export interface Author {
   born?: number
   bookCount: number
 }
+
+export interface Book {
+  id: string
+  title: string
+  author: string
+  published: number
+}
