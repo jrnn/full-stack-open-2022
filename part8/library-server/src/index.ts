@@ -20,16 +20,9 @@ const typeDefs = gql`
   }
 
   type Query {
-    "All authors known."
     allAuthors: [Author!]!
-
-    "All books known."
-    allBooks: [Book!]!
-
-    "Total number of authors known."
+    allBooks(author: String): [Book!]!
     authorCount: Int!
-
-    "Total number of books known."
     bookCount: Int!
   }
 `
@@ -37,7 +30,11 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     allAuthors: () => authors,
-    allBooks: () => books,
+    allBooks: (_: never, { author }: { author?: string }) => {
+      return !author
+        ? books
+        : books.filter(b => b.author === author)
+    },
     authorCount: () => authors.length,
     bookCount: () => books.length
   },
