@@ -4,7 +4,18 @@ import * as data from "./data"
 const MODE = process.env["NODE_ENV"] || "development"
 
 const typeDefs = gql`
+  type Book {
+    title: String!
+    published: Int!
+    author: String!
+    id: ID!
+    genres: [String!]!
+  }
+
   type Query {
+    "All books known."
+    allBooks: [Book!]!
+
     "Total number of authors known."
     authorCount: Int!
 
@@ -15,6 +26,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    allBooks: () => data.books,
     authorCount: () => data.authors.length,
     bookCount: () => data.books.length
   }
