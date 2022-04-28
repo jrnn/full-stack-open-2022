@@ -1,9 +1,16 @@
 import { ApolloServer, gql } from "apollo-server"
-import * as data from "./data"
+import { authors, books } from "./data"
 
 const MODE = process.env["NODE_ENV"] || "development"
 
 const typeDefs = gql`
+  type Author {
+    name: String!
+    id: ID!
+    born: Int
+    bookCount: Int!
+  }
+
   type Book {
     title: String!
     published: Int!
@@ -13,6 +20,9 @@ const typeDefs = gql`
   }
 
   type Query {
+    "All authors known."
+    allAuthors: [Author!]!
+
     "All books known."
     allBooks: [Book!]!
 
@@ -26,9 +36,15 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    allBooks: () => data.books,
-    authorCount: () => data.authors.length,
-    bookCount: () => data.books.length
+    allAuthors: () => authors,
+    allBooks: () => books,
+    authorCount: () => authors.length,
+    bookCount: () => books.length
+  },
+  Author: {
+    bookCount: ({ name }: { name: string }) => {
+      return books.filter(b => b.author === name).length
+    }
   }
 }
 
