@@ -1,12 +1,10 @@
 import AuthorModel, { AuthorDocument } from "./models/author"
 import BookModel, { BookDocument } from "./models/book"
 
-/*
-interface AllBooks {
+interface AllBooksArguments {
   author?: string
   genre?: string
 }
-*/
 
 interface AddBookArguments {
   title: string
@@ -15,27 +13,25 @@ interface AddBookArguments {
   genres?: Array<string>
 }
 
-/*
-interface EditAuthor {
+interface EditAuthorArguments {
   name: string
   setBornTo: number
 }
-*/
 
 const resolvers = {
   Query: {
     allAuthors: async (): Promise<Array<AuthorDocument>> => {
       return AuthorModel.find({})
     },
-    /*
-    allBooks: (_: never, { author, genre }: AllBooks): Array<Book> => {
-      return books
-        .filter(book => !author ? true : book.author === author)
-        .filter(book => !genre ? true : book.genres.includes(genre))
-    },
-    */
-    allBooks: async (): Promise<Array<BookDocument>> => {
-      return BookModel.find({}).populate("author")
+    allBooks: async (_: never, { author: name, genre }: AllBooksArguments): Promise<Array<BookDocument>> => {
+      const genreSelector = !genre ? {} : { genres: { $in: [ genre ] }}
+      if (!name) {
+        return BookModel.find(genreSelector).populate("author")
+      }
+      const author = await AuthorModel.findOne({ name })
+      return !author
+        ? []
+        : BookModel.find({ ...genreSelector, author: author._id }).populate("author")
     },
     authorCount: async (): Promise<number> => {
       return AuthorModel.countDocuments()
@@ -45,12 +41,10 @@ const resolvers = {
     }
   },
   Author: {
-    /*
-    bookCount: ({ name }: { name: string }): number => {
-      return books.filter(b => b.author === name).length
+    bookCount: async ({ name }: { name: string }): Promise<number> => {
+      const { _id } = await AuthorModel.findOne({ name }) as AuthorDocument
+      return BookModel.countDocuments({ author: _id })
     }
-    */
-    bookCount: async (): Promise<number> => 1337
   },
   Mutation: {
     addBook: async (_: never, { author: name, ...args }: AddBookArguments): Promise<BookDocument> => {
@@ -61,17 +55,9 @@ const resolvers = {
       const newBook = await new BookModel({ ...args, author: author._id }).save()
       return newBook.populate("author")
     },
-    /*
-    editAuthor: (_: never, { name, setBornTo }: EditAuthor): Author | null => {
-      const author = authors.find(a => a.name === name)
-      if (!author) {
-        return null
-      }
-      author.born = setBornTo
-      return author
+    editAuthor: async (_: never, { name, setBornTo }: EditAuthorArguments): Promise<AuthorDocument | null> => {
+      return AuthorModel.findOneAndUpdate({ name }, { born: setBornTo }, { new: true })
     }
-    */
-    editAuthor: async (): Promise<null> => null
   }
 }
 
