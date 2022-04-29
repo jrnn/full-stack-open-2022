@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server"
 import AuthorModel, { AuthorDocument } from "./models/author"
 import BookModel, { BookDocument } from "./models/book"
 
@@ -48,12 +49,17 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (_: never, { author: name, ...args }: AddBookArguments): Promise<BookDocument> => {
-      const author = await AuthorModel.findOneAndUpdate({ name }, { name }, {
-        new: true,
-        upsert: true
-      })
-      const newBook = await new BookModel({ ...args, author: author._id }).save()
-      return newBook.populate("author")
+      try {
+        const author = await AuthorModel.findOneAndUpdate({ name }, { name }, {
+          new: true,
+          upsert: true
+        })
+        const newBook = await new BookModel({ ...args, author: author._id }).save()
+        return newBook.populate("author")
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Oops! Somehing went wrong. Too bad!"
+        throw new UserInputError(message)
+      }
     },
     editAuthor: async (_: never, { name, setBornTo }: EditAuthorArguments): Promise<AuthorDocument | null> => {
       return AuthorModel.findOneAndUpdate({ name }, { born: setBornTo }, { new: true })
