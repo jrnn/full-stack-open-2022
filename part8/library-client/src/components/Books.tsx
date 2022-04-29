@@ -1,33 +1,23 @@
-import { useQuery } from "@apollo/client"
-import { AllBooksResponse, ALL_BOOKS } from "../graphql/queries"
+import { useEffect } from "react"
+import { useAllBooks } from "../graphql"
+import { useStore } from "../store"
+import BookList from "./BookList"
 
 const Books = () => {
-  const { loading, data } = useQuery<AllBooksResponse>(ALL_BOOKS)
+  const { loading, data, error } = useAllBooks()
+  const notifyError = useStore(store => store.notifyError)
 
-  if (loading) {
-    return <div>... LEWDING ...</div>
-  }
+  useEffect(() => {
+    if (error) {
+      notifyError(error.message)
+    }
+  }, [ error, notifyError ])
+
   return (
     <>
       <h2>Books</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Published</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data && data.allBooks.map(book =>
-            <tr key={book.id}>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.published}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      {loading && <div>... LEWDING ...</div>}
+      {data && <BookList books={data.allBooks} />}
     </>
   )
 }

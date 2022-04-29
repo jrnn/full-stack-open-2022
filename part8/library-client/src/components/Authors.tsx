@@ -1,33 +1,27 @@
-import { useQuery } from "@apollo/client"
-import { AllAuthorsResponse, ALL_AUTHORS } from "../graphql/queries"
+import { useEffect } from "react"
+import { useAllAuthors } from "../graphql"
+import { useStore } from "../store"
+import AuthorList from "./AuthorList"
+import YearOfBirthForm from "./YearOfBirthForm"
 
 const Authors = () => {
-  const { loading, data } = useQuery<AllAuthorsResponse>(ALL_AUTHORS)
+  const { loading, data, error } = useAllAuthors()
+  const notifyError = useStore(store => store.notifyError)
 
-  if (loading) {
-    return <div>... LEWDING ...</div>
-  }
+  useEffect(() => {
+    if (error) {
+      notifyError(error.message)
+    }
+  }, [ error, notifyError ])
+
   return (
     <>
       <h2>Authors</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Year of birth</th>
-            <th>Number of books</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data && data.allAuthors.map(author =>
-            <tr key={author.id}>
-              <td>{author.name}</td>
-              <td>{author.born || "--"}</td>
-              <td>{author.bookCount}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      {loading && <div>... LEWDING ...</div>}
+      {data && <>
+        <AuthorList authors={data.allAuthors} />
+        <YearOfBirthForm />
+      </>}
     </>
   )
 }

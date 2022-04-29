@@ -1,18 +1,19 @@
-import { useMutation } from "@apollo/client"
 import { useState } from "react"
-import { ADD_BOOK } from "../graphql/mutations"
-import { ALL_AUTHORS, ALL_BOOKS } from "../graphql/queries"
+import { useAddBook } from "../graphql"
 import { useTextField } from "../hooks"
+import { useStore } from "../store"
 import TextField from "./TextField"
 
 const AddBookForm = () => {
+  const { execute } = useAddBook()
+  const notifySuccess = useStore(store => store.notifySuccess)
+  const notifyError = useStore(store => store.notifyError)
+
   const titleInput = useTextField("Title")
   const authorInput = useTextField("Author")
   const publishedInput = useTextField("Published", "number")
   const genreInput = useTextField("Genre")
-
   const [ genres, setGenres ] = useState<Array<string>>([])
-  const [ addBook ] = useMutation(ADD_BOOK)
 
   const submit = () => {
     const variables = {
@@ -21,22 +22,16 @@ const AddBookForm = () => {
       published: Number(publishedInput.value),
       genres
     }
-    const onCompleted = () => {
+    execute(variables, (data) => {
       titleInput.reset()
       authorInput.reset()
       publishedInput.reset()
       genreInput.reset()
       setGenres([])
-    }
-    const refetchQueries = [
-      {
-        query: ALL_AUTHORS
-      },
-      {
-        query: ALL_BOOKS
-      }
-    ]
-    addBook({ variables, onCompleted, refetchQueries })
+      notifySuccess(`New book "${data.addBook.title}" added to library!`)
+    }, (error) => {
+      notifyError(error.message)
+    })
   }
 
   const addGenre = () => {
@@ -45,31 +40,28 @@ const AddBookForm = () => {
   }
 
   return (
-    <>
-      <h2>Add new book</h2>
-      <form>
-        <div>
-          <TextField { ...titleInput } />
-        </div>
-        <div>
-          <TextField { ...authorInput } />
-        </div>
-        <div>
-          <TextField { ...publishedInput } />
-        </div>
-        <div>
-          <TextField { ...genreInput } />
-          <button onClick={addGenre} type="button">Add genre</button>
-        </div>
-        {genres.length > 0 && <b>Given genres:</b>}
-        <ul>
-          {genres.map(genre =>
-            <li key={genre}>{genre}</li>
-          )}
-        </ul>
-        <button onClick={submit} type="button">Create new book</button>
-      </form>
-    </>
+    <form>
+      <div>
+        <TextField { ...titleInput } />
+      </div>
+      <div>
+        <TextField { ...authorInput } />
+      </div>
+      <div>
+        <TextField { ...publishedInput } />
+      </div>
+      <div>
+        <TextField { ...genreInput } />
+        <button onClick={addGenre} type="button">Add genre</button>
+      </div>
+      {genres.length > 0 && <b>Given genres:</b>}
+      <ul>
+        {genres.map(genre =>
+          <li key={genre}>{genre}</li>
+        )}
+      </ul>
+      <button onClick={submit} type="button">Create new book</button>
+    </form>
   )
 }
 

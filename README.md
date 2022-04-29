@@ -18,5 +18,7 @@ material:
 - In part 4, I chose to use `mongodb-memory-server` in tests.
 - The "anecdotes" exercises in part 7 provided a nice opportunity to try and mimic a mini Redux
   setup using React's own `useContext` and `useReducer`.
+- In part 8, tried using [zustand](https://github.com/pmndrs/zustand) for client-side state
+  management (instead of Redux).
 
 The phonebook app built in parts 2-3 can be found [here](https://fso-2022-phonebook.herokuapp.com/)
