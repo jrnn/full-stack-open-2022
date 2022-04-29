@@ -1,18 +1,11 @@
+import { DB_URI, MODE, SECRET_KEY } from "./config"
 import { ApolloServer } from "apollo-server"
-import dotenv from "dotenv"
+import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
+import UserModel from "./models/user"
 import resolvers from "./resolvers"
 import typeDefs from "./typeDefs"
 
-dotenv.config()
-
-const MODE = process.env["NODE_ENV"] || "development"
-const DB_URI = process.env["DB_URI"]
-
-if (!DB_URI) {
-  console.error("DB_URI missing from env vars")
-  process.exit(1)
-}
 mongoose.connect(DB_URI)
   .then(() => console.log(`Now connected to MongoDB at ${DB_URI}`))
   .catch((error) => {
@@ -22,7 +15,17 @@ mongoose.connect(DB_URI)
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: async (ctx) => {
+    const auth = ctx.req.headers.authorization
+    if (auth && auth.toLowerCase().startsWith("bearer ")) {
+      const token = auth.substring(7)
+      const { id } = <{ id: string }>jwt.verify(token, SECRET_KEY)
+      const currentUser = await UserModel.findById(id)
+      return { currentUser }
+    }
+    return { ...ctx, currentUser: null }
+  }
 })
 
 server.listen().then(({ url }) => console.log(`Running at ${url} in ${MODE} mode`))
