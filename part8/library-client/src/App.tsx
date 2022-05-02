@@ -34,11 +34,14 @@ const App = () => {
         <Link to="/books">
           <button type="button">Books</button>
         </Link>
-        {!!token &&
+        {!!token && <>
           <Link to="/addbook">
             <button type="button">Add book</button>
           </Link>
-        }
+          <Link to="/recommend">
+            <button type="button">Recommend</button>
+          </Link>
+        </>}
         {!token
           ?
           <Link to="/login">

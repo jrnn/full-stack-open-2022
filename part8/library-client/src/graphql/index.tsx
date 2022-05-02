@@ -42,6 +42,7 @@ const GraphQLProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
 export { useAllAuthors } from "./queries/allAuthors"
 export { useAllBooks } from "./queries/allBooks"
 export { useAllGenres } from "./queries/allGenres"
+export { useWhoAmI } from "./queries/whoAmI"
 
 export { useAddBook } from "./mutations/addBook"
 export { useEditAuthor } from "./mutations/editAuthor"
