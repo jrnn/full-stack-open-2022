@@ -55,6 +55,9 @@ const resolvers = {
         ? []
         : BookModel.find({ ...genreSelector, author: author._id }).populate("author")
     },
+    allGenres: async (): Promise<Array<string>> => {
+      return await BookModel.distinct("genres")
+    },
     authorCount: async (): Promise<number> => {
       return AuthorModel.countDocuments()
     },

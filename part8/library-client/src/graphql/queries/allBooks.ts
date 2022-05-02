@@ -5,17 +5,32 @@ interface AllBooksResponse {
   allBooks: ReadonlyArray<Book>
 }
 
+interface AllBooksVariables {
+  genre: string | undefined
+}
+
 export const ALL_BOOKS = gql`
-  query {
-    allBooks {
+  query(
+    $genre: String
+  ) {
+    allBooks(
+      genre: $genre
+    ) {
       id
       title
-      author
+      author {
+        name
+      }
       published
     }
   }
 `
 
-export const useAllBooks = () => {
-  return useQuery<AllBooksResponse>(ALL_BOOKS)
+export const useAllBooks = (genre?: string) => {
+  const opts = {
+    variables: {
+      genre
+    }
+  }
+  return useQuery<AllBooksResponse, AllBooksVariables>(ALL_BOOKS, opts)
 }
