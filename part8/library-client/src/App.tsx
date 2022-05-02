@@ -1,7 +1,28 @@
-import { Link, Outlet } from "react-router-dom"
+import { useApolloClient } from "@apollo/client"
+import { useEffect } from "react"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 import Notification from "./components/Notification"
+import { useStore } from "./store"
 
 const App = () => {
+  const apolloClient = useApolloClient()
+  const navigate = useNavigate()
+  const token = useStore(store => store.token)
+  const checkLocalToken = useStore(store => store.checkLocalToken)
+  const clearToken = useStore(store => store.clearToken)
+  const notifySuccess = useStore(store => store.notifySuccess)
+
+  const logout = () => {
+    clearToken()
+    apolloClient.resetStore()
+    notifySuccess("You are now logged out. Hope to see you again soon!")
+    navigate("/login")
+  }
+
+  useEffect(() => {
+    checkLocalToken()
+  }, [ checkLocalToken ])
+
   return (
     <>
       <Notification/>
@@ -13,9 +34,19 @@ const App = () => {
         <Link to="/books">
           <button type="button">Books</button>
         </Link>
-        <Link to="/addbook">
-          <button type="button">Add book</button>
-        </Link>
+        {!!token &&
+          <Link to="/addbook">
+            <button type="button">Add book</button>
+          </Link>
+        }
+        {!token
+          ?
+          <Link to="/login">
+            <button type="button">Login</button>
+          </Link>
+          :
+          <button onClick={logout} type="button">Logout</button>
+        }
       </div>
       <Outlet />
     </>

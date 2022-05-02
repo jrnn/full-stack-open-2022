@@ -6,6 +6,7 @@ import YearOfBirthForm from "./YearOfBirthForm"
 
 const Authors = () => {
   const { loading, data, error } = useAllAuthors()
+  const token = useStore(store => store.token)
   const notifyError = useStore(store => store.notifyError)
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const Authors = () => {
       {loading && <div>... LEWDING ...</div>}
       {data && <>
         <AuthorList authors={data.allAuthors} />
-        <YearOfBirthForm />
+        {token && <YearOfBirthForm />}
       </>}
     </>
   )

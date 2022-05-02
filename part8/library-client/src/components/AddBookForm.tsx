@@ -40,28 +40,31 @@ const AddBookForm = () => {
   }
 
   return (
-    <form>
-      <div>
-        <TextField { ...titleInput } />
-      </div>
-      <div>
-        <TextField { ...authorInput } />
-      </div>
-      <div>
-        <TextField { ...publishedInput } />
-      </div>
-      <div>
-        <TextField { ...genreInput } />
-        <button onClick={addGenre} type="button">Add genre</button>
-      </div>
-      {genres.length > 0 && <b>Given genres:</b>}
-      <ul>
-        {genres.map(genre =>
-          <li key={genre}>{genre}</li>
-        )}
-      </ul>
-      <button onClick={submit} type="button">Create new book</button>
-    </form>
+    <>
+      <h2>Details of new book</h2>
+      <form>
+        <div>
+          <TextField { ...titleInput } />
+        </div>
+        <div>
+          <TextField { ...authorInput } />
+        </div>
+        <div>
+          <TextField { ...publishedInput } />
+        </div>
+        <div>
+          <TextField { ...genreInput } />
+          <button onClick={addGenre} type="button">Add genre</button>
+        </div>
+        {genres.length > 0 && <b>Given genres:</b>}
+        <ul>
+          {genres.map(genre =>
+            <li key={genre}>{genre}</li>
+          )}
+        </ul>
+        <button onClick={submit} type="button">Create new book</button>
+      </form>
+    </>
   )
 }
 
