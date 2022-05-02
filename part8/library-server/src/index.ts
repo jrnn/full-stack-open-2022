@@ -1,31 +1,74 @@
-import { DB_URI, MODE, SECRET_KEY } from "./config"
-import { ApolloServer } from "apollo-server"
-import jwt from "jsonwebtoken"
+import { DB_URI, MODE, PORT } from "./config"
+
+import { ApolloServer } from "apollo-server-express"
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core"
+import { createServer } from "http"
+import express from "express"
+import { makeExecutableSchema } from "@graphql-tools/schema"
 import mongoose from "mongoose"
-import UserModel from "./models/user"
+import { useServer } from "graphql-ws/lib/use/ws"
+import { WebSocketServer } from "ws"
+
 import resolvers from "./resolvers"
 import typeDefs from "./typeDefs"
+import { userExtractor } from "./util/userExtractor"
 
-mongoose.connect(DB_URI)
-  .then(() => console.log(`Now connected to MongoDB at ${DB_URI}`))
-  .catch((error) => {
+const connectToDatabase = async () => {
+  try {
+    await mongoose.connect(DB_URI)
+    console.log(`Connected to MongoDB at ${DB_URI}`)
+  } catch (error) {
     console.error("Couldn't connect to MongoDB =", error)
     process.exit(1)
+  }
+}
+
+const startServer = async () => {
+  const app = express()
+  const httpServer = createServer(app)
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers
   })
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: async (ctx) => {
-    const auth = ctx.req.headers.authorization
-    if (auth && auth.toLowerCase().startsWith("bearer ")) {
-      const token = auth.substring(7)
-      const { id } = <{ id: string }>jwt.verify(token, SECRET_KEY)
-      const currentUser = await UserModel.findById(id)
-      return { currentUser }
-    }
-    return { ...ctx, currentUser: null }
-  }
-})
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/"
+  })
+  const wsServerCleanup = useServer({ schema }, wsServer)
 
-server.listen().then(({ url }) => console.log(`Running at ${url} in ${MODE} mode`))
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await wsServerCleanup.dispose()
+            }
+          }
+        }
+      }
+    ],
+    context: async (context) => {
+      const currentUser = await userExtractor(context)
+      return {
+        ...context,
+        currentUser
+      }
+    }
+  })
+  await server.start()
+
+  server.applyMiddleware({
+    app,
+    path: "/"
+  })
+  httpServer.listen(PORT, () => {
+    console.log(`Running at http://localhost:${PORT}${server.graphqlPath} in ${MODE} mode`)
+  })
+}
+
+connectToDatabase()
+startServer()

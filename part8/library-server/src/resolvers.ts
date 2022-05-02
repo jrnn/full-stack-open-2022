@@ -1,9 +1,14 @@
 import { PASSWORD, SECRET_KEY } from "./config"
-import { AuthenticationError, UserInputError } from "apollo-server"
+import { AuthenticationError, UserInputError } from "apollo-server-express"
 import jwt from "jsonwebtoken"
+import { PubSub } from "graphql-subscriptions"
 import AuthorModel, { AuthorDocument } from "./models/author"
 import BookModel, { BookDocument } from "./models/book"
 import UserModel, { UserDocument } from "./models/user"
+
+const BOOK_ADDED = "BOOK_ADDED"
+
+const pubsub = new PubSub()
 
 interface AllBooksArguments {
   author?: string
@@ -89,7 +94,12 @@ const resolvers = {
           upsert: true
         })
         const newBook = await new BookModel({ ...args, author: author._id }).save()
-        return newBook.populate("author")
+        const newBookPopulated = newBook.populate("author")
+
+        pubsub.publish(BOOK_ADDED, {
+          bookAdded: newBookPopulated
+        })
+        return newBookPopulated
       } catch (error) {
         const message = error instanceof Error ? error.message : "Oops! Somehing went wrong. Too bad!"
         throw new UserInputError(message)
@@ -126,6 +136,13 @@ const resolvers = {
         username: user.username
       }
       return { value: jwt.sign(token, SECRET_KEY) }
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator([
+        BOOK_ADDED
+      ])
     }
   }
 }
