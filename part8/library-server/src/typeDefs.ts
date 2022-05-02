@@ -29,6 +29,7 @@ const typeDefs = gql`
   type Query {
     allAuthors: [Author!]!
     allBooks(author: String, genre: String): [Book!]!
+    allGenres: [String!]!
     authorCount: Int!
     bookCount: Int!
     whoAmI: User
@@ -41,9 +42,18 @@ const typeDefs = gql`
       published: Int!,
       genres: [String!]
     ): Book!
-    createUser(username: String!, favoriteGenre: String!): User!
-    editAuthor(name: String!, setBornTo: Int!): Author
-    login(username: String!, password: String!): Token!
+    createUser(
+      username: String!,
+      favoriteGenre: String!
+    ): User!
+    editAuthor(
+      name: String!,
+      setBornTo: Int!
+    ): Author
+    login(
+      username: String!,
+      password: String!
+    ): Token!
   }
 `
 

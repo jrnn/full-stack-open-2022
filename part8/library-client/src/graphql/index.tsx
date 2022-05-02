@@ -31,9 +31,9 @@ const createClient = (token?: string) => {
 
 const GraphQLProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const token = useStore(store => store.token)
-  console.log("GraphQLProveder :: render :: token =", token)
+  const client = createClient(token)
   return (
-    <ApolloProvider client={createClient(token)}>
+    <ApolloProvider client={client}>
       { children }
     </ApolloProvider>
   )
@@ -41,6 +41,7 @@ const GraphQLProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
 export { useAllAuthors } from "./queries/allAuthors"
 export { useAllBooks } from "./queries/allBooks"
+export { useAllGenres } from "./queries/allGenres"
 
 export { useAddBook } from "./mutations/addBook"
 export { useEditAuthor } from "./mutations/editAuthor"

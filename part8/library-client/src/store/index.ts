@@ -12,11 +12,13 @@ interface Notification {
 interface Store {
   notification: Notification
   token: string | undefined
+  selectedGenre: string
   notifySuccess: (message: string) => void
   notifyError: (message: string) => void
   checkLocalToken: () => void
   setToken: (token: string) => void
   clearToken: () => void
+  setSelectedGenre: (genre: string) => void
 }
 
 const emptyNotification: Notification = {
@@ -44,6 +46,7 @@ const setNotification = (
 export const useStore = create<Store>((set, get) => ({
   notification: emptyNotification,
   token: undefined,
+  selectedGenre: "",
   notifySuccess: (message) => {
     setNotification(message, "info", get, set)
   },
@@ -63,5 +66,8 @@ export const useStore = create<Store>((set, get) => ({
   clearToken: () => {
     window.localStorage.removeItem(USER_AUTH_KEY)
     set({ token: undefined })
+  },
+  setSelectedGenre: (genre) => {
+    set({ selectedGenre: genre })
   }
 }))
