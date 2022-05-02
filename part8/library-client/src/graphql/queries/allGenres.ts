@@ -4,7 +4,7 @@ interface AllGenresResponse {
   allGenres: ReadonlyArray<string>
 }
 
-const ALL_GENRES = gql`
+export const ALL_GENRES = gql`
   query {
     allGenres
   }

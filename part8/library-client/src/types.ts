@@ -10,4 +10,5 @@ export interface Book {
   title: string
   author: Author
   published: number
+  genres: Array<string>
 }
