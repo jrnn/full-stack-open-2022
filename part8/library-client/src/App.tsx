@@ -2,6 +2,7 @@ import { useApolloClient } from "@apollo/client"
 import { useEffect } from "react"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import Notification from "./components/Notification"
+import { useBookAdded } from "./graphql"
 import { useStore } from "./store"
 
 const App = () => {
@@ -11,6 +12,8 @@ const App = () => {
   const checkLocalToken = useStore(store => store.checkLocalToken)
   const clearToken = useStore(store => store.clearToken)
   const notifySuccess = useStore(store => store.notifySuccess)
+
+  const sub = useBookAdded()
 
   const logout = () => {
     clearToken()
@@ -51,6 +54,7 @@ const App = () => {
           <button onClick={logout} type="button">Logout</button>
         }
       </div>
+      {sub.data && <h5>Latest addition to library: {sub.data.bookAdded.title}</h5>}
       <Outlet />
     </>
   )
