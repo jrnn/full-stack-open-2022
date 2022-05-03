@@ -13,7 +13,7 @@ const App = () => {
   const clearToken = useStore(store => store.clearToken)
   const notifySuccess = useStore(store => store.notifySuccess)
 
-  const sub = useBookAdded()
+  useBookAdded()
 
   const logout = () => {
     clearToken()
@@ -54,7 +54,6 @@ const App = () => {
           <button onClick={logout} type="button">Logout</button>
         }
       </div>
-      {sub.data && <h5>Latest addition to library: {sub.data.bookAdded.title}</h5>}
       <Outlet />
     </>
   )
