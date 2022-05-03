@@ -1,14 +1,26 @@
 import { FC, PropsWithChildren } from "react"
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from "@apollo/client"
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, split } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
+import { getMainDefinition } from "@apollo/client/utilities"
+import { createClient as createWsClient } from "graphql-ws"
 import { useStore } from "../store"
-
-const GRAPHQL_URI = "http://localhost:4000"
 
 const cache = new InMemoryCache()
 const httpLink = new HttpLink({
-  uri: GRAPHQL_URI
+  uri: "http://localhost:4000"
 })
+const wsLink = new GraphQLWsLink(createWsClient({
+  url: "ws://localhost:4000"
+}))
+const splitLink = split(
+  ({ query }) => {
+    const def = getMainDefinition(query)
+    return def.kind === "OperationDefinition" && def.operation === "subscription"
+  },
+  wsLink,
+  httpLink
+)
 const authLink = (token: string) => setContext((_, { headers }) => {
   return {
     headers: {
@@ -20,8 +32,8 @@ const authLink = (token: string) => setContext((_, { headers }) => {
 
 const createClient = (token?: string) => {
   const link = !token
-    ? httpLink
-    : authLink(token).concat(httpLink)
+    ? splitLink
+    : authLink(token).concat(splitLink)
 
   return new ApolloClient({
     cache,
@@ -47,5 +59,7 @@ export { useWhoAmI } from "./queries/whoAmI"
 export { useAddBook } from "./mutations/addBook"
 export { useEditAuthor } from "./mutations/editAuthor"
 export { useLogin } from "./mutations/login"
+
+export { useBookAdded } from "./subscriptions/bookAdded"
 
 export default GraphQLProvider

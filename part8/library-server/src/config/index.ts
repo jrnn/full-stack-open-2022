@@ -11,5 +11,6 @@ if (!_DB_URI) {
 
 export const DB_URI = _DB_URI
 export const MODE = process.env["NODE_ENV"] || "development"
+export const PORT = process.env["PORT"] || 4000
 export const SECRET_KEY = process.env["SECRET_KEY"] || "theOwlsAreNotWhatTheySeem"
 export const PASSWORD = process.env["INCREDIBLY_SECURE_PASSWORD"] || "trustno1"

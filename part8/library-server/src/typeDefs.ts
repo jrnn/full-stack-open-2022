@@ -1,4 +1,4 @@
-import { gql } from "apollo-server"
+import { gql } from "apollo-server-express"
 
 const typeDefs = gql`
   type Author {
@@ -54,6 +54,10 @@ const typeDefs = gql`
       username: String!,
       password: String!
     ): Token!
+  }
+
+  type Subscription {
+    bookAdded: Book!
   }
 `
 

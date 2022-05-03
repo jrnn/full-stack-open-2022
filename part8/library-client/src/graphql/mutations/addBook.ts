@@ -1,9 +1,6 @@
 import { ApolloError, gql, useMutation } from "@apollo/client"
-import { ALL_AUTHORS } from "../queries/allAuthors"
-import { ALL_BOOKS } from "../queries/allBooks"
 import { Book } from "../../types"
 import { doNothing } from "../../util"
-import { ALL_GENRES } from "../queries/allGenres"
 
 interface AddBookResponse {
   addBook: Book
@@ -40,15 +37,6 @@ const ADD_BOOK = gql`
   }
 `
 
-const refetchQueries = [
-  {
-    query: ALL_AUTHORS
-  },
-  {
-    query: ALL_GENRES
-  }
-]
-
 export const useAddBook = () => {
   const [ mutate, result ] = useMutation<AddBookResponse, AddBookVariables>(ADD_BOOK)
 
@@ -60,40 +48,7 @@ export const useAddBook = () => {
     mutate({
       variables,
       onCompleted: onCompleted || doNothing,
-      onError: onError || doNothing,
-      refetchQueries,
-      update: (cache, { data }) => {
-        if (data) {
-          cache.updateQuery({
-            query: ALL_BOOKS,
-            variables: {
-              genre: ""
-            }
-          }, (cacheData) => {
-            return !cacheData
-              ? cacheData
-              : ({
-                ...cacheData,
-                allBooks: cacheData.allBooks.concat(data.addBook)
-              })
-          })
-          data.addBook.genres.forEach(genre => {
-            cache.updateQuery({
-              query: ALL_BOOKS,
-              variables: {
-                genre
-              }
-            }, (cacheData) => {
-              return !cacheData
-                ? cacheData
-                : ({
-                  ...cacheData,
-                  allBooks: cacheData.allBooks.concat(data.addBook)
-                })
-            })
-          })
-        }
-      }
+      onError: onError || doNothing
     })
   }
 
