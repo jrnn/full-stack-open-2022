@@ -12,6 +12,11 @@ import { WebSocketServer } from "ws"
 import resolvers from "./resolvers"
 import typeDefs from "./typeDefs"
 import { userExtractor } from "./util/userExtractor"
+import { createAuthorByNameLoader, createBooksByAuthorLoader } from "./util/loaders"
+
+if (MODE === "development") {
+  mongoose.set("debug", true)
+}
 
 const connectToDatabase = async () => {
   try {
@@ -55,7 +60,9 @@ const startServer = async () => {
       const currentUser = await userExtractor(context)
       return {
         ...context,
-        currentUser
+        currentUser,
+        authorByNameLoader: createAuthorByNameLoader(),
+        booksByAuthorLoader: createBooksByAuthorLoader()
       }
     }
   })

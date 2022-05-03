@@ -5,6 +5,7 @@ import { PubSub } from "graphql-subscriptions"
 import AuthorModel, { AuthorDocument } from "./models/author"
 import BookModel, { BookDocument } from "./models/book"
 import UserModel, { UserDocument } from "./models/user"
+import { AuthorByNameLoader, BooksByAuthorLoader } from "./util/loaders"
 
 const BOOK_ADDED = "BOOK_ADDED"
 
@@ -42,6 +43,8 @@ interface Token {
 }
 
 interface Context {
+  authorByNameLoader: AuthorByNameLoader
+  booksByAuthorLoader: BooksByAuthorLoader
   currentUser: UserDocument | null
 }
 
@@ -74,9 +77,14 @@ const resolvers = {
     }
   },
   Author: {
-    bookCount: async ({ name }: { name: string }): Promise<number> => {
-      const { _id } = await AuthorModel.findOne({ name }) as AuthorDocument
-      return BookModel.countDocuments({ author: _id })
+    bookCount: async (
+      { name }: { name: string },
+      _: never,
+      { authorByNameLoader, booksByAuthorLoader }: Context
+    ): Promise<number> => {
+      const { _id } = await authorByNameLoader.load(name)
+      const books = await booksByAuthorLoader.load(_id)
+      return books.length
     }
   },
   Mutation: {
