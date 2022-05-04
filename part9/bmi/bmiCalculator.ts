@@ -1,3 +1,8 @@
+interface CalculateBmiArguments {
+  heightInCm: number
+  weightInKg: number
+}
+
 enum BmiCategory {
   UNDERWEIGHT_SEVERE = "Severely underweight",
   UNDERWEIGHT_MODERATE = "Moderately underweight",
@@ -30,9 +35,42 @@ const toBmiCategory = (bmi: number): BmiCategory => {
   }
 }
 
-const calculateBmi = (heightInCm: number, weightInKg: number): BmiCategory => {
+const calculateBmi = ({ heightInCm, weightInKg }: CalculateBmiArguments): BmiCategory => {
   const bmi = weightInKg / Math.pow(0.01 * heightInCm, 2)
   return toBmiCategory(bmi)
 }
 
-console.log(calculateBmi(180, 74))
+const toPositiveNumber = (s: string): number => {
+  const n = Number(s)
+  if (isNaN(n) || n <= 0) {
+    throw new Error(`Invalid argument '${s}'. Only positive numbers, please.`)
+  }
+  return n
+}
+
+const parseArgs = (args: Array<string>): CalculateBmiArguments => {
+  if (args.length !== 4) {
+    throw new Error("Wrong number of arguments. Give exactly two arguments: (1) height in cm, (2) weight in kg")
+  }
+  return {
+    heightInCm: toPositiveNumber(args[2]),
+    weightInKg: toPositiveNumber(args[3])
+  }
+}
+
+const main = (args: Array<string>) => {
+  try {
+    console.log(calculateBmi(parseArgs(args)))
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`${error.name} -- ${error.message}`)
+    } else {
+      console.error("Oops! Something went wrong =", error)
+    }
+    process.exit(1)
+  }
+}
+
+main(process.argv)
+
+export {}
