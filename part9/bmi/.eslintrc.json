@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "@typescript-eslint/semi": [
+      "error"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ]
+  }
+}
