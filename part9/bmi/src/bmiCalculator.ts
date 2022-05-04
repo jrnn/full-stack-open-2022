@@ -35,7 +35,7 @@ const toBmiCategory = (bmi: number): BmiCategory => {
   }
 };
 
-const toPositiveNumber = (i?: unknown): number => {
+const toPositiveNumber = (i: unknown): number => {
   const n = Number(i);
   if (isNaN(n) || n <= 0) {
     throw new Error(`Invalid argument '${i}'. Only positive numbers, please.`);
@@ -44,6 +44,9 @@ const toPositiveNumber = (i?: unknown): number => {
 };
 
 export const toCalculateBmiArgs = (height?: unknown, weight?: unknown): CalculateBmiArguments => {
+  if (!height || !weight) {
+    throw new Error("One or more missing arguments.");
+  }
   return {
     heightInCm: toPositiveNumber(height),
     weightInKg: toPositiveNumber(weight)

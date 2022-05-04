@@ -3,7 +3,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "calculateBmi": "ts-node bmi.ts",
-    "calculateExercises": "ts-node ./src/exerciseCalculator.ts",
+    "calculateExercises": "ts-node exercises.ts",
     "dev": "ts-node-dev ./src/index.ts",
     "lint": "eslint .",
     "start": "ts-node ./src/index.ts",

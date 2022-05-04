@@ -38,7 +38,25 @@ const getRating = (target: number, average: number): [ Rating, RatingDescription
   return [ 1, RatingDescription.BAD ];
 };
 
-const calculateExercises = ({ target, dailyHours }: CalculateExercisesArguments): Result => {
+const toNonNegativeNumber = (i: unknown): number => {
+  const n = Number(i);
+  if (isNaN(n) || n < 0) {
+    throw new Error(`Invalid argument '${i}'. Only non-negative numbers, please.`);
+  }
+  return n;
+};
+
+export const toCalculateExercisesArgs = (target?: unknown, dailyHours?: Array<unknown>): CalculateExercisesArguments => {
+  if (!target || !dailyHours) {
+    throw new Error("One or more missing arguments.");
+  }
+  return {
+    target: toNonNegativeNumber(target),
+    dailyHours: dailyHours.map(toNonNegativeNumber)
+  };
+};
+
+export const calculateExercises = ({ target, dailyHours }: CalculateExercisesArguments): Result => {
   const average = getAverage(dailyHours);
   const [ rating, ratingDescription ] = getRating(target, average);
   return {
@@ -51,40 +69,3 @@ const calculateExercises = ({ target, dailyHours }: CalculateExercisesArguments)
     average
   };
 };
-
-const toNonNegativeNumber = (s: string): number => {
-  const n = Number(s);
-  if (isNaN(n) || n < 0) {
-    throw new Error(`Invalid argument '${s}'. Only non-negative numbers, please.`);
-  }
-  return n;
-};
-
-const parseArgs = (args: Array<string>): CalculateExercisesArguments => {
-  if (args.length < 4) {
-    throw new Error("Wrong number of arguments. Give target hours per day as the first argument,"
-      + " followed by any number of daily exercise hours (at least one).");
-  }
-  const [ target, ...dailyHours ] = args.slice(2);
-  return {
-    target: toNonNegativeNumber(target),
-    dailyHours: dailyHours.map(toNonNegativeNumber)
-  };
-};
-
-const main = (args: Array<string>) => {
-  try {
-    console.log(calculateExercises(parseArgs(args)));
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(`${error.name} -- ${error.message}`);
-    } else {
-      console.error("Oops! Something went wrong =", error);
-    }
-    process.exit(1);
-  }
-};
-
-main(process.argv);
-
-export {};
