@@ -35,42 +35,22 @@ const toBmiCategory = (bmi: number): BmiCategory => {
   }
 }
 
-const calculateBmi = ({ heightInCm, weightInKg }: CalculateBmiArguments): BmiCategory => {
-  const bmi = weightInKg / Math.pow(0.01 * heightInCm, 2)
-  return toBmiCategory(bmi)
-}
-
-const toPositiveNumber = (s: string): number => {
-  const n = Number(s)
+const toPositiveNumber = (i?: unknown): number => {
+  const n = Number(i)
   if (isNaN(n) || n <= 0) {
-    throw new Error(`Invalid argument '${s}'. Only positive numbers, please.`)
+    throw new Error(`Invalid argument '${i}'. Only positive numbers, please.`)
   }
   return n
 }
 
-const parseArgs = (args: Array<string>): CalculateBmiArguments => {
-  if (args.length !== 4) {
-    throw new Error("Wrong number of arguments. Give exactly two arguments: (1) height in cm, (2) weight in kg")
-  }
+export const toCalculateBmiArgs = (height?: unknown, weight?: unknown): CalculateBmiArguments => {
   return {
-    heightInCm: toPositiveNumber(args[2]),
-    weightInKg: toPositiveNumber(args[3])
+    heightInCm: toPositiveNumber(height),
+    weightInKg: toPositiveNumber(weight)
   }
 }
 
-const main = (args: Array<string>) => {
-  try {
-    console.log(calculateBmi(parseArgs(args)))
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(`${error.name} -- ${error.message}`)
-    } else {
-      console.error("Oops! Something went wrong =", error)
-    }
-    process.exit(1)
-  }
+export const calculateBmi = ({ heightInCm, weightInKg }: CalculateBmiArguments): BmiCategory => {
+  const bmi = weightInKg / Math.pow(0.01 * heightInCm, 2)
+  return toBmiCategory(bmi)
 }
-
-main(process.argv)
-
-export {}

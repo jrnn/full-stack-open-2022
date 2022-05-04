@@ -2,7 +2,7 @@
   "name": "part9-bmi",
   "main": "./src/index.ts",
   "scripts": {
-    "calculateBmi": "ts-node ./src/bmiCalculator.ts",
+    "calculateBmi": "ts-node bmi.ts",
     "calculateExercises": "ts-node ./src/exerciseCalculator.ts",
     "dev": "ts-node-dev ./src/index.ts",
     "lint": "eslint .",
