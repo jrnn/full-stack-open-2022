@@ -1,7 +1,8 @@
 {
   "name": "part9-bmi",
   "scripts": {
-    "calculateBmi": "ts-node bmiCalculator.ts"
+    "calculateBmi": "ts-node bmiCalculator.ts",
+    "calculateExercises": "ts-node exerciseCalculator.ts"
   },
   "devDependencies": {
     "ts-node": "10.7.0",
