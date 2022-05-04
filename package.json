@@ -11,7 +11,8 @@
     "part5/*",
     "part6/*",
     "part7/*",
-    "part8/*"
+    "part8/*",
+    "part9/*"
   ],
   "license": "MIT"
 }
