@@ -1,0 +1,1 @@
+export { toPatientDto } from "./patientValidator";
