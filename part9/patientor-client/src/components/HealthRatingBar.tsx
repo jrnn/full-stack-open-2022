@@ -1,4 +1,4 @@
-import { Rating } from "@mui/lab";
+import { Rating } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 type BarProps = {
