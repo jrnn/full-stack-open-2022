@@ -10,9 +10,37 @@ export interface Diagnosis {
   latin?: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Entry {
+interface EntryBase {
+  id: string
+  date: string
+  specialist: string
+  diagnosisCodes?: Array<string>
+  description: string
 }
+
+interface EntryHospital extends EntryBase {
+  type: "Hospital"
+  discharge: {
+    date: string
+    criteria: string
+  }
+}
+
+interface EntryOccupational extends EntryBase {
+  type: "OccupationalHealthcare"
+  employerName: string
+  sickLeave?: {
+    startDate: string
+    endDate: string
+  }
+}
+
+interface EntryHealthCheck extends EntryBase {
+  type: "HealthCheck",
+  healthCheckRating: number
+}
+
+export type Entry = EntryHospital | EntryOccupational | EntryHealthCheck;
 
 export interface Patient {
   id: string
@@ -25,7 +53,7 @@ export interface Patient {
 }
 
 export type SanitizedPatient = Omit<Patient, "entries" | "ssn">;
-export type PatientDto = Omit<Patient, "id">;
+export type PatientDto = Omit<Patient, "entries" | "id">;
 
 export interface UnsafePatientDto {
   name?: unknown
