@@ -10,6 +10,10 @@ export interface Diagnosis {
   latin?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Entry {
+}
+
 export interface Patient {
   id: string
   name: string
@@ -17,9 +21,10 @@ export interface Patient {
   ssn: string,
   gender: Gender,
   occupation: string
+  entries: Array<Entry>
 }
 
-export type PatientWithoutSsn = Omit<Patient, "ssn">;
+export type SanitizedPatient = Omit<Patient, "entries" | "ssn">;
 export type PatientDto = Omit<Patient, "id">;
 
 export interface UnsafePatientDto {

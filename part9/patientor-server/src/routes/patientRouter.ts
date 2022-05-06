@@ -10,6 +10,14 @@ router.get("/", (_, response) => {
   return response.status(200).json(patients);
 });
 
+router.get("/:id", ({ params }, response) => {
+  const patient = patientService.getOne(params.id);
+  if (!patient) {
+    return response.status(404).json({ error: `No patient found with id '${params.id}'` });
+  }
+  return response.status(200).json(patient);
+});
+
 router.post<unknown, unknown, UnsafePatientDto>("/", ({ body }, response) => {
   try {
     const newPatient = patientService.create(toPatientDto(body));

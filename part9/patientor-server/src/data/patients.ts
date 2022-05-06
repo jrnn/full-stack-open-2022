@@ -44,7 +44,8 @@ const patients: Array<Patient> = data
   .map(toPatientDto)
   .map(patient => ({
     ...patient,
-    id: uuid()
+    id: uuid(),
+    entries: []
   }));
 
 export default patients;
