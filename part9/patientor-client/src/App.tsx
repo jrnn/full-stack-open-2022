@@ -8,6 +8,7 @@ import { useStateValue } from "./state";
 import { Patient } from "./types";
 
 import PatientListPage from "./PatientListPage";
+import PatientDetailsPage from "./PatientDetailsPage";
 
 const App = () => {
   const [, dispatch] = useStateValue();
@@ -39,6 +40,7 @@ const App = () => {
           </Button>
           <Divider hidden />
           <Routes>
+            <Route path="/patients/:id" element={<PatientDetailsPage />} />
             <Route path="/" element={<PatientListPage />} />
           </Routes>
         </Container>
