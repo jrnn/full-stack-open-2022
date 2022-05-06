@@ -6,12 +6,13 @@ import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typograp
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
 import AddPatientModal from "../AddPatientModal";
 import { Patient } from "../types";
-import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
-import { useStateValue } from "../state";
+import { addPatient, useDispatch, useStateValue } from "../state";
+import { createPatient } from "../services";
 
 const PatientListPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
+  const { patients } = useStateValue();
   const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
@@ -25,13 +26,10 @@ const PatientListPage = () => {
   };
 
   const submitNewPatient = (values: PatientFormValues) => {
-    const executeAsync = async () => {
+    const create = async () => {
       try {
-        const { data: newPatient } = await axios.post<Patient>(
-          `${apiBaseUrl}/patients`,
-          values
-        );
-        dispatch({ type: "ADD_PATIENT", payload: newPatient });
+        const newPatient = await createPatient(values);
+        dispatch(addPatient(newPatient));
         closeModal();
       } catch (e: unknown) {
         if (axios.isAxiosError(e)) {
@@ -44,7 +42,7 @@ const PatientListPage = () => {
         }
       }
     };
-    void executeAsync();
+    void create();
   };
 
   return (

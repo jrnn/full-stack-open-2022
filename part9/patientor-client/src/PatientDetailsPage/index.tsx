@@ -1,31 +1,29 @@
 import { FC, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import { fetchPatient } from "../services/patients";
-import { useStateValue } from "../state";
+import { fetchPatient } from "../services";
+import { addPatient, useDispatch, useStateValue } from "../state";
 
 interface Props {
   id: string
 }
 
 const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
-  const [ { patients }, dispatch ] = useStateValue();
+  const dispatch = useDispatch();
+  const { patients } = useStateValue();
   const patient = patients[id];
 
   useEffect(() => {
-    const updatePatient = async () => {
+    const fetchDetails = async () => {
       try {
         const patientToUpdate = await fetchPatient(id);
-        dispatch({
-          type: "ADD_PATIENT",
-          payload: patientToUpdate
-        });
+        dispatch(addPatient(patientToUpdate));
       } catch (error) {
         console.error(error);
       }
     };
     if (patient && !patient.ssn) {
-      updatePatient();
+      fetchDetails();
     }
   }, [ dispatch, id, patient ]);
 
