@@ -40,8 +40,8 @@ router.post<{ id: string }, unknown, UnsafeEntryDto>("/:id/entries", ({ params, 
     return response.status(404).json({ error: `No patient found with id '${params.id}'` });
   }
   try {
-    const newEntry = patientService.addEntry(patient, toEntryDto(body));
-    return response.status(200).json(newEntry);
+    patientService.addEntry(patient, toEntryDto(body));
+    return response.status(200).json(patient);
   } catch (error) {
     return handleError(error, response);
   }

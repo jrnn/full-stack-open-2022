@@ -36,6 +36,9 @@ interface EntryHealthCheck extends EntryBase {
 
 export type Entry = EntryHospital | EntryOccupational | EntryHealthCheck;
 
+export type EntryHospitalDto = Omit<EntryHospital, "id">;
+export type EntryDto = EntryHospitalDto;
+
 export enum Gender {
   Male = "male",
   Female = "female",

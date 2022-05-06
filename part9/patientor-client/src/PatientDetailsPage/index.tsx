@@ -1,18 +1,38 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
-import { fetchPatient } from "../services";
+import { Box, Button, Typography } from "@mui/material";
+import { createEntry, fetchPatient } from "../services";
 import { addPatient, useDispatch, useStateValue } from "../state";
 import EntryDetails from "./EntryDetails";
+import AddEntryModal from "../AddEntryModal";
+import { EntryDto } from "../types";
 
 interface Props {
   id: string
 }
 
 const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
+  const [ modalOpen, setModalOpen ] = useState(false);
   const dispatch = useDispatch();
   const { patients } = useStateValue();
   const patient = patients[id];
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const submitNewEntry = (dto: EntryDto) => {
+    const create = async () => {
+      try {
+        const patientToUpdate = await createEntry(id, dto);
+        dispatch(addPatient(patientToUpdate));
+        closeModal();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    create();
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -59,6 +79,17 @@ const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
           )}
         </Box>
       }
+      <AddEntryModal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+      />
+      <Button
+        variant="contained"
+        onClick={() => setModalOpen(true)}
+      >
+        Add new entry
+      </Button>
     </div>
   );
 };
