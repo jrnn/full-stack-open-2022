@@ -1,22 +1,8 @@
 import { Gender, PatientDto, UnsafePatientDto } from "../types";
-
-const isString = (s?: unknown): s is string => {
-  return !!s && typeof s === "string";
-};
-
-const isPropertyValue = <E extends Record<string, string>>(e: E, s: string): s is E[keyof E] => {
-  return Object.values(e).includes(s);
-};
+import { isPropertyValue, isString, validateString } from "./utils";
 
 const isGender = (s: string): s is Gender => {
   return isPropertyValue(Gender, s);
-};
-
-const validateString = (key: string, value?: unknown): string => {
-  if (isString(value)) {
-    return value;
-  }
-  throw new Error(`Mandatory attribute '${key}' is either missing or invalid. Must be a string.`);
 };
 
 const validateGender = (value?: unknown): Gender => {

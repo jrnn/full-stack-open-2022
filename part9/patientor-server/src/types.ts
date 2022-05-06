@@ -1,3 +1,8 @@
+type ObjectIndex = string | number | symbol;
+type DistributiveOmit<T, K extends ObjectIndex> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export enum Gender {
   MALE = "male",
   FEMALE = "female",
@@ -41,6 +46,7 @@ interface EntryHealthCheck extends EntryBase {
 }
 
 export type Entry = EntryHospital | EntryOccupational | EntryHealthCheck;
+export type EntryDto = DistributiveOmit<Entry, "id">;
 
 export interface Patient {
   id: string
@@ -61,4 +67,16 @@ export interface UnsafePatientDto {
   ssn?: unknown
   gender?: unknown
   occupation?: unknown
+}
+
+export interface UnsafeEntryDto {
+  type?: unknown
+  date?: unknown
+  specialist?: unknown
+  diagnosisCodes?: unknown
+  description?: unknown
+  discharge?: unknown
+  employerName?: unknown
+  sickLeave?: unknown
+  healthCheckRating?: unknown
 }
