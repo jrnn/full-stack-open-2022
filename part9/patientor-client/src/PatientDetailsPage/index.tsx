@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { fetchPatient } from "../services";
 import { addPatient, useDispatch, useStateValue } from "../state";
+import EntryDetails from "./EntryDetails";
 
 interface Props {
   id: string
@@ -22,7 +23,7 @@ const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
         console.error(error);
       }
     };
-    if (patient && !patient.ssn) {
+    if (patient && (!patient.ssn || !patient.entries)) {
       fetchDetails();
     }
   }, [ dispatch, id, patient ]);
@@ -48,6 +49,16 @@ const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
           SSN:&nbsp;{patient.ssn || "N/A"}
         </Typography>
       </Box>
+      {!!patient.entries &&
+        <Box paddingTop={2}>
+          <Typography variant="h6">
+            Entries
+          </Typography>
+          {patient.entries.map(entry =>
+            <EntryDetails key={entry.id} entry={entry} />
+          )}
+        </Box>
+      }
     </div>
   );
 };
