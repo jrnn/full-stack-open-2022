@@ -2,10 +2,20 @@ import { FC } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useStateValue } from "../state";
 import { Diagnosis, Entry } from "../types";
+import TypeSpecificEntryDetails from "./TypeSpecificEntryDetails";
+import { Healing, LocalHospital, MedicalServices } from "@mui/icons-material";
 
 interface Props {
   entry: Entry
 }
+
+const getIconByType = ({ type }: Entry) => (
+  <>
+    {type === "Hospital" && <LocalHospital />}
+    {type === "OccupationalHealthcare" && <MedicalServices />}
+    {type === "HealthCheck" && <Healing />}
+  </>
+);
 
 const EntryDetails: FC<Props> = ({ entry }) => {
   const { diagnoses } = useStateValue();
@@ -18,6 +28,7 @@ const EntryDetails: FC<Props> = ({ entry }) => {
         <CardContent>
           <Typography variant="caption">
             {entry.date}
+            {getIconByType(entry)}
           </Typography>
           <Typography variant="body2">
             {entry.description}
@@ -33,6 +44,10 @@ const EntryDetails: FC<Props> = ({ entry }) => {
               )}
             </ul>
           }
+          <TypeSpecificEntryDetails entry={entry} />
+          <Typography variant="caption">
+            Diagnosed by <b>{entry.specialist}</b>
+          </Typography>
         </CardContent>
       </Card>
     </Box>
