@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { CoursePart } from "../types";
+import Part from "./Part";
 
 interface Props {
   parts: Array<CoursePart>
@@ -7,11 +8,11 @@ interface Props {
 
 const Content: FC<Props> = ({ parts }) => {
   return (
-    <ul>
+    <>
       {parts.map(part =>
-        <li key={part.name}>{part.name} {part.exerciseCount}</li>
+        <Part key={part.name} part={part} />
       )}
-    </ul>
+    </>
   );
 };
 
