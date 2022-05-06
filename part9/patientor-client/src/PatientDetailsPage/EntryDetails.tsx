@@ -1,12 +1,17 @@
 import { FC } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import { Entry } from "../types";
+import { useStateValue } from "../state";
+import { Diagnosis, Entry } from "../types";
 
 interface Props {
   entry: Entry
 }
 
 const EntryDetails: FC<Props> = ({ entry }) => {
+  const { diagnoses } = useStateValue();
+  const toDiagnosis = (code: string): Diagnosis => {
+    return diagnoses[code] || { code, name: "" };
+  };
   return (
     <Box>
       <Card variant="outlined">
@@ -19,10 +24,10 @@ const EntryDetails: FC<Props> = ({ entry }) => {
           </Typography>
           {entry.diagnosisCodes &&
             <ul>
-              {entry.diagnosisCodes.map(code =>
+              {entry.diagnosisCodes.map(toDiagnosis).map(({ code, name }) =>
                 <li key={code}>
                   <Typography variant="body2">
-                    {code}
+                    {code} {name}
                   </Typography>
                 </li>
               )}

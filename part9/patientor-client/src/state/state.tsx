@@ -1,12 +1,14 @@
 import { createContext, Dispatch, FC, PropsWithChildren, useContext, useReducer } from "react";
 import { Action, reducer } from "./reducer";
-import { Patient } from "../types";
+import { Diagnosis, Patient } from "../types";
 
 export type State = {
+  diagnoses: { [code: string]: Diagnosis },
   patients: { [id: string]: Patient };
 };
 
 const initialState: State = {
+  diagnoses: {},
   patients: {}
 };
 
