@@ -1,3 +1,6 @@
+type DistributiveOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+type UnionToIntersection<U> = (U extends unknown ? (u: U) => void : never) extends ((v: infer V) => void) ? V : never;
+
 export interface Diagnosis {
   code: string;
   name: string;
@@ -35,9 +38,9 @@ interface EntryHealthCheck extends EntryBase {
 }
 
 export type Entry = EntryHospital | EntryOccupational | EntryHealthCheck;
-
-export type EntryHospitalDto = Omit<EntryHospital, "id">;
-export type EntryDto = EntryHospitalDto;
+export type EntryType = Entry["type"];
+export type EntryDto = DistributiveOmit<Entry, "id">;
+export type EntryFormValues = UnionToIntersection<DistributiveOmit<Entry, "id" | "type">>;
 
 export enum Gender {
   Male = "male",

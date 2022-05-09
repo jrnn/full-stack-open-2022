@@ -1,12 +1,7 @@
 import { FC } from "react";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import { assertNever } from "../services";
 import { Entry } from "../types";
-
-const assertNever = (_: never): never => {
-  throw new Error(""
-    + "In a dream world, this error will never be thrown. "
-    + "So, if you see this error, it means you're living in a nightmare world.");
-};
 
 interface Props {
   entry: Entry
