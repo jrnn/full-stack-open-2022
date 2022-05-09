@@ -1,7 +1,7 @@
 import { Grid, Button } from "@mui/material";
 import { Field, Formik, Form } from "formik";
 
-import { TextField, SelectField, GenderOption } from "./FormField";
+import { TextField, SelectField, GenderOption } from "../components/FormField";
 import { Gender, Patient } from "../types";
 
 /*

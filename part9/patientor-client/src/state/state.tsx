@@ -1,35 +1,30 @@
-import React, { createContext, useContext, useReducer } from "react";
-import { Patient } from "../types";
-
-import { Action } from "./reducer";
+import { createContext, Dispatch, FC, PropsWithChildren, useContext, useReducer } from "react";
+import { Action, reducer } from "./reducer";
+import { Diagnosis, Patient } from "../types";
 
 export type State = {
+  diagnoses: { [code: string]: Diagnosis },
   patients: { [id: string]: Patient };
 };
 
 const initialState: State = {
+  diagnoses: {},
   patients: {}
 };
 
-export const StateContext = createContext<[State, React.Dispatch<Action>]>([
-  initialState,
-  () => initialState
-]);
+const DispatchContext = createContext<Dispatch<Action>>(() => initialState);
+const StateContext = createContext<State>(initialState);
 
-type StateProviderProps = {
-  reducer: React.Reducer<State, Action>;
-  children: React.ReactElement;
-};
-
-export const StateProvider = ({
-  reducer,
-  children
-}: StateProviderProps) => {
+export const StateProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
-    <StateContext.Provider value={[state, dispatch]}>
-      {children}
-    </StateContext.Provider>
+    <DispatchContext.Provider value={dispatch}>
+      <StateContext.Provider value={state}>
+        {children}
+      </StateContext.Provider>
+    </DispatchContext.Provider>
   );
 };
+
+export const useDispatch = () => useContext(DispatchContext);
 export const useStateValue = () => useContext(StateContext);

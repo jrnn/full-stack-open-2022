@@ -1,31 +1,38 @@
-import React from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container, Typography } from "@mui/material";
 
-import { apiBaseUrl } from "./constants";
-import { useStateValue } from "./state";
-import { Patient } from "./types";
-
+import { fetchDiagnoses, fetchPatients } from "./services";
+import { setDiagnoses, setPatientList, useDispatch } from "./state";
 import PatientListPage from "./PatientListPage";
+import PatientDetailsPage from "./PatientDetailsPage";
 
 const App = () => {
-  const [, dispatch] = useStateValue();
-  React.useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`);
+  const dispatch = useDispatch();
 
-    const fetchPatientList = async () => {
+  useEffect(() => {
+    const fetch = async () => {
       try {
-        const { data: patientListFromApi } = await axios.get<Patient[]>(
-          `${apiBaseUrl}/patients`
-        );
-        dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+        const patients = await fetchPatients();
+        dispatch(setPatientList(patients));
       } catch (e) {
         console.error(e);
       }
     };
-    void fetchPatientList();
-  }, [dispatch]);
+    void fetch();
+  }, [ dispatch ]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const diagnoses = await fetchDiagnoses();
+        dispatch(setDiagnoses(diagnoses));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    void fetch();
+  }, [ dispatch ]);
 
   return (
     <div className="App">
@@ -39,6 +46,7 @@ const App = () => {
           </Button>
           <Divider hidden />
           <Routes>
+            <Route path="/patients/:id" element={<PatientDetailsPage />} />
             <Route path="/" element={<PatientListPage />} />
           </Routes>
         </Container>

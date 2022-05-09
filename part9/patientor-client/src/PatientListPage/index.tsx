@@ -1,16 +1,19 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
 import AddPatientModal from "../AddPatientModal";
 import { Patient } from "../types";
-import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
-import { useStateValue } from "../state";
+import { addPatient, useDispatch, useStateValue } from "../state";
+import { createPatient } from "../services";
 
 const PatientListPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
+  const { patients } = useStateValue();
+  const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>();
@@ -23,13 +26,10 @@ const PatientListPage = () => {
   };
 
   const submitNewPatient = (values: PatientFormValues) => {
-    const executeAsync = async () => {
+    const create = async () => {
       try {
-        const { data: newPatient } = await axios.post<Patient>(
-          `${apiBaseUrl}/patients`,
-          values
-        );
-        dispatch({ type: "ADD_PATIENT", payload: newPatient });
+        const newPatient = await createPatient(values);
+        dispatch(addPatient(newPatient));
         closeModal();
       } catch (e: unknown) {
         if (axios.isAxiosError(e)) {
@@ -42,7 +42,7 @@ const PatientListPage = () => {
         }
       }
     };
-    void executeAsync();
+    void create();
   };
 
   return (
@@ -63,7 +63,12 @@ const PatientListPage = () => {
         </TableHead>
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
-            <TableRow key={patient.id}>
+            <TableRow
+              key={patient.id}
+              hover
+              onClick={() => navigate(`/patients/${patient.id}`)}
+              sx={{ cursor: "pointer" }}
+            >
               <TableCell>{patient.name}</TableCell>
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>

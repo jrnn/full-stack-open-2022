@@ -1,20 +1,33 @@
 import { v4 as uuid } from "uuid";
 import patients from "../data/patients";
-import { PatientDto, PatientWithoutSsn } from "../types";
+import { Entry, EntryDto, Patient, PatientDto, SanitizedPatient } from "../types";
 
-export const getAll = (): Array<PatientWithoutSsn> => {
+export const getAll = (): Array<SanitizedPatient> => {
   return patients.map(patient => {
-    const { ssn, ...rest } = patient;
+    const { entries, ssn, ...rest } = patient;
     return rest;
   });
 };
 
-export const create = (dto: PatientDto): PatientWithoutSsn => {
-  const newPatient = {
+export const getOne = (id: string): Patient | undefined => {
+  return patients.find(patient => patient.id === id);
+};
+
+export const create = (dto: PatientDto): Patient => {
+  const newPatient: Patient = {
+    ...dto,
+    id: uuid(),
+    entries: []
+  };
+  patients.push(newPatient);
+  return newPatient;
+};
+
+export const addEntry = (patient: Patient, dto: EntryDto): Entry => {
+  const newEntry: Entry = {
     ...dto,
     id: uuid()
   };
-  patients.push(newPatient);
-  const { ssn, ...rest } = newPatient;
-  return rest;
+  patient.entries.push(newEntry);
+  return newEntry;
 };
