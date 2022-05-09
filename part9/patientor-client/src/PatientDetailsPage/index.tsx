@@ -1,7 +1,9 @@
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
-import { createEntry, fetchPatient } from "../services";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { createEntry, fetchPatient, interpretErrorMessage } from "../services";
 import { addPatient, useDispatch, useStateValue } from "../state";
 import EntryDetails from "./EntryDetails";
 import AddEntryModal from "../AddEntryModal";
@@ -13,12 +15,14 @@ interface Props {
 
 const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
   const [ modalOpen, setModalOpen ] = useState(false);
+  const [ error, setError ] = useState<string>();
   const dispatch = useDispatch();
   const { patients } = useStateValue();
   const patient = patients[id];
 
   const closeModal = () => {
     setModalOpen(false);
+    setError(undefined);
   };
 
   const submitNewEntry = (dto: EntryDto) => {
@@ -28,7 +32,7 @@ const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
         dispatch(addPatient(patientToUpdate));
         closeModal();
       } catch (error) {
-        console.error(error);
+        setError(interpretErrorMessage(error));
       }
     };
     create();
@@ -80,6 +84,7 @@ const PatientDetailsPageWithId: FC<Props> = ({ id }) => {
         </Box>
       }
       <AddEntryModal
+        error={error}
         isOpen={modalOpen}
         onClose={closeModal}
         onSubmit={submitNewEntry}

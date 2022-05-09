@@ -1,9 +1,11 @@
 import { FC } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
+import Healing from "@mui/icons-material/Healing";
+import LocalHospital from "@mui/icons-material/LocalHospital";
+import MedicalServices from "@mui/icons-material/MedicalServices";
 import { useStateValue } from "../state";
 import { Diagnosis, Entry } from "../types";
 import TypeSpecificEntryDetails from "./TypeSpecificEntryDetails";
-import { Healing, LocalHospital, MedicalServices } from "@mui/icons-material";
 
 interface Props {
   entry: Entry

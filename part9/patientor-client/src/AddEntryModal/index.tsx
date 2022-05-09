@@ -1,16 +1,17 @@
 import { FC } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Alert, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import AddHospitalEntryForm from "./AddHospitalEntryForm";
 import { useStateValue } from "../state";
 import { EntryDto } from "../types";
 
 interface Props {
+  error: string | undefined
   isOpen: boolean
   onClose: () => void
   onSubmit: (dto: EntryDto) => void
 }
 
-const AddEntryModal: FC<Props> = ({ isOpen, onClose, onSubmit }) => {
+const AddEntryModal: FC<Props> = ({ error, isOpen, onClose, onSubmit }) => {
   const { diagnoses } = useStateValue();
   return (
     <Dialog
@@ -20,6 +21,7 @@ const AddEntryModal: FC<Props> = ({ isOpen, onClose, onSubmit }) => {
     >
       <DialogTitle>Add new entry</DialogTitle>
       <DialogContent>
+        {error && <Alert severity="error">{error}</Alert>}
         <AddHospitalEntryForm
           diagnoses={Object.values(diagnoses)}
           onCancel={onClose}
