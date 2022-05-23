@@ -1,6 +1,5 @@
 import dotenv from "dotenv"
-import { bonaFideConnection } from "./db"
-import { inMemoryConnection } from "./db.memory"
+import { DatabaseConnection } from "../types"
 
 dotenv.config()
 
@@ -19,6 +18,8 @@ export const MODE = _mode
 export const PORT = process.env["PORT"] || "3003"
 export const SECRET_KEY = _secretKey
 
-export const db = _mode === "test"
-  ? inMemoryConnection
-  : bonaFideConnection
+// just this once, TypeScript: cut me some slack
+/* eslint-disable @typescript-eslint/no-var-requires */
+export const db: DatabaseConnection = _mode === "test"
+  ? require("./db.memory").inMemoryConnection
+  : require("./db").bonaFideConnection

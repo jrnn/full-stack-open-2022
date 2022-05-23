@@ -2,7 +2,7 @@
   "name": "part5-blogs-client",
   "main": "./src/index.tsx",
   "scripts": {
-    "build": "npm run lint && webpack --mode production",
+    "build": "webpack --mode production",
     "cypress": "cypress open",
     "lint": "eslint .",
     "start": "webpack serve --mode development",

@@ -1,0 +1,22 @@
+# Keeping this here just in case the phonebook app needs to be redeployed ...
+
+FROM node:17-alpine as build
+COPY . /temp
+WORKDIR /temp
+RUN npm install --workspace part2/phonebook --workspace part3/phonebook
+RUN npm run build --workspace part2/phonebook --workspace part3/phonebook
+
+FROM node:17-alpine as cherry-pick
+WORKDIR /phonebook
+COPY /part3/phonebook/package.json .
+COPY --from=build /temp/part3/phonebook/dist ./lib
+COPY --from=build /temp/part2/phonebook/dist ./static
+RUN npm install --production
+RUN rm -f package*.json
+
+FROM alpine:latest as serve
+ENV NODE_ENV=production
+RUN apk add --update nodejs
+COPY --from=cherry-pick /phonebook /phonebook
+EXPOSE 3001
+CMD [ "node", "phonebook/lib/index.js" ]
