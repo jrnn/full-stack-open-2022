@@ -1,0 +1,59 @@
+# The name of this file is not particularly descriptive. It refers to part 11
+# (CI/CD) of the course. Or, to be specific, its last two exercises (11.20 &
+# 11.21) where we're to build our own pipeline. I chose to roll with the "blogs"
+# app from parts 4-5.
+
+name: Build and deploy Blogs Galore
+
+on:
+  push:
+    branches:
+      - master
+      - part11
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci -w part4/blogs -w part5/blogs
+      - name: Lint
+        run: npm run lint -w part4/blogs -w part5/blogs
+      - name: Build
+        run: npm run build -w part4/blogs -w part5/blogs
+      - name: Run unit tests
+        run: npm test -w part4/blogs -w part5/blogs
+      - name: Run E2E tests
+        uses: cypress-io/github-action@v2
+        with:
+          install: false
+          start: |
+            npm run start:test -w part4/blogs
+            npm run start -w part5/blogs
+          wait-on: 'http://localhost:8080'
+          command: npm run test:e2e -w part5/blogs
+      - name: Deploy to Heroku
+        if: ${{ github.event_name == 'push' }}
+        uses: akhileshns/heroku-deploy@79ef2ae4ff9b897010907016b268fd0f88561820
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_TOKEN }}
+          heroku_app_name: 'fso-2022-blogs-galore'
+          heroku_email: 'juho.juurinen@gmail.com'
+          usedocker: true
+          stack: 'container'
+          healthcheck: 'https://fso-2022-blogs-galore.herokuapp.com/api/ping'
+          checkstring: 'pong'
+          delay: 5
+          rollbackonhealthcheckfailed: true

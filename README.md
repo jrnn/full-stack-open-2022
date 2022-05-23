@@ -20,5 +20,13 @@ material:
   setup using React's own `useContext` and `useReducer`.
 - In part 8, tried using [zustand](https://github.com/pmndrs/zustand) for client-side state
   management (instead of Redux).
+- In part 11, I again used Docker to help with the Heroku deployment. I didn't bother figuring out
+  how to deploy several Heroku apps from one repo at once, so I just overwrote the previous stuff ;)
+
+Not all parts could reasonably be shoehorned into one monorepo. In separate repositories:
+- [Part 10](https://github.com/jrnn/fso22-repo-rater)
+- [Part 11](https://github.com/jrnn/full-stack-open-pokedex)
 
 The phonebook app built in parts 2-3 can be found [here](https://fso-2022-phonebook.herokuapp.com/)
+
+The blog app built in parts 4-5, and deployed later in part 11, can be found [here](https://fso-2022-blogs-galore.herokuapp.com/)

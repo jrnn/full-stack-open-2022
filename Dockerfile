@@ -1,21 +1,21 @@
-# Make the production build for the React client (part2/phonebook), and compile
-# the Express server from TypeScript to JavaScript (part3/phonebook).
+# Make the production build for the React client (part5/blogs), and compile the
+# Express server from TypeScript to JavaScript (part4/blogs).
 #
-FROM node:17-alpine as build
-COPY . /temp
-WORKDIR /temp
-RUN npm install --workspace part2/phonebook --workspace part3/phonebook
-RUN npm run build --workspace part2/phonebook --workspace part3/phonebook
+FROM node:18-alpine as build
+COPY . /build
+WORKDIR /build
+RUN npm ci -w part4/blogs -w part5/blogs
+RUN npm run build -w part4/blogs -w part5/blogs
 
 # Cherry-pick the build products from the previous stage and install only the
 # production dependencies required by the Express server. At the end of this
-# stage, everything needed for deployment is found in /phonebook.
+# stage, everything needed for deployment is found in /app.
 #
-FROM node:17-alpine as cherry-pick
-WORKDIR /phonebook
-COPY /part3/phonebook/package.json .
-COPY --from=build /temp/part3/phonebook/dist ./lib
-COPY --from=build /temp/part2/phonebook/dist ./static
+FROM node:18-alpine as cherry-pick
+WORKDIR /app
+COPY /part4/blogs/package.json .
+COPY --from=build /build/part4/blogs/dist/src ./server
+COPY --from=build /build/part5/blogs/dist ./static
 RUN npm install --production
 RUN rm -f package*.json
 
@@ -26,6 +26,6 @@ RUN rm -f package*.json
 FROM alpine:latest as serve
 ENV NODE_ENV=production
 RUN apk add --update nodejs
-COPY --from=cherry-pick /phonebook /phonebook
-EXPOSE 3001
-CMD [ "node", "phonebook/lib/index.js" ]
+COPY --from=cherry-pick /app /app
+EXPOSE 3003
+CMD [ "node", "app/server/index.js" ]
