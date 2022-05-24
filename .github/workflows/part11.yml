@@ -8,9 +8,10 @@ name: Build and deploy Blogs Galore
 on:
   push:
     branches:
-      - master
       - part11
   pull_request:
+    branches:
+      - part11
     types:
       - opened
       - synchronize
@@ -57,3 +58,5 @@ jobs:
           checkstring: 'pong'
           delay: 5
           rollbackonhealthcheckfailed: true
+      - name: Just a friendly reminder
+        run: echo "The owls are not what they seem"
