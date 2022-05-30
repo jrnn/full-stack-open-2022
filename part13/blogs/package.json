@@ -3,7 +3,6 @@
   "main": "./src/index.ts",
   "scripts": {
     "build": "rimraf ./dist && tsc --project ./tsconfig.json",
-    "cli": "npm run build && node ./dist/cli.js",
     "dev": "nodemon --watch src ./src/index.ts",
     "lint": "eslint .",
     "start": "npm run build && cross-env NODE_ENV=production node ./dist/index.js",
