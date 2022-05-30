@@ -3,6 +3,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "build": "rimraf ./dist && tsc --project ./tsconfig.json",
+    "cli": "npm run build && node ./dist/cli.js",
     "dev": "nodemon --watch src ./src/index.ts",
     "lint": "eslint .",
     "start": "npm run build && cross-env NODE_ENV=production node ./dist/index.js",
@@ -10,7 +11,10 @@
   },
   "dependencies": {
     "cors": "2.8.5",
-    "express": "4.18.1"
+    "dotenv": "16.0.1",
+    "express": "4.18.1",
+    "pg": "8.7.3",
+    "sequelize": "6.20.1"
   },
   "devDependencies": {
     "@types/cors": "2.8.12",
