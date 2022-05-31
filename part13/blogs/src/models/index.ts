@@ -9,8 +9,8 @@ export const setupDatabase = async () => {
   try {
     await sequelize.authenticate()
     console.log("Connected to database")
-    await Blog.sync({ alter: true })
     await User.sync({ alter: true })
+    await Blog.sync({ alter: true })
     console.log("Tables created if missing")
   } catch (error) {
     console.error("Something went wrong =", error)

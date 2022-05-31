@@ -24,7 +24,22 @@ const blogFinder: RequestHandler = async (request: TypedRequest, _, next) => {
 export const blogsRouter = Router()
 
 blogsRouter.get("/", throwsError(async (_, response) => {
-  const blogs = await Blog.findAll()
+  const blogs = await Blog.findAll({
+    attributes: {
+      exclude: [
+        "userId"
+      ]
+    },
+    include: {
+      model: User,
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    }
+  })
   return response.status(200).json(blogs)
 }))
 

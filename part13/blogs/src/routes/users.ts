@@ -1,12 +1,23 @@
 import { Router } from "express"
 import { NotFoundError, throwsError } from "../errors"
-import { User } from "../models"
+import { Blog, User } from "../models"
 import { TypedRequest } from "../types"
 
 export const usersRouter = Router()
 
 usersRouter.get("/", throwsError(async (_, response) => {
-  const users = await User.findAll()
+  const users = await User.findAll({
+    include: {
+      model: Blog,
+      attributes: {
+        exclude: [
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    }
+  })
   return response.status(200).json(users)
 }))
 
