@@ -1,12 +1,13 @@
-import { CreationOptional, DataTypes, InferAttributes, Model } from "sequelize"
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from "sequelize"
 import { sequelize } from "./sequelize"
 
-export class Blog extends Model<InferAttributes<Blog>> {
+export class Blog extends Model<InferAttributes<Blog>, InferCreationAttributes<Blog>> {
   declare id: CreationOptional<number>
   declare author?: string
   declare url: string
   declare title: string
-  declare likes: number
+  declare likes: CreationOptional<number>
+  declare userId: ForeignKey<number>
 }
 
 Blog.init({

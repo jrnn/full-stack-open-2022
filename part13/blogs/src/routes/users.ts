@@ -1,10 +1,7 @@
-import { Request, Router } from "express"
+import { Router } from "express"
 import { NotFoundError, throwsError } from "../errors"
 import { User } from "../models"
-
-interface TypedRequest<T = unknown> extends Request {
-  body: T
-}
+import { TypedRequest } from "../types"
 
 export const usersRouter = Router()
 

@@ -2,6 +2,9 @@ import { Blog } from "./blog"
 import { sequelize } from "./sequelize"
 import { User } from "./user"
 
+User.hasMany(Blog)
+Blog.belongsTo(User)
+
 export const setupDatabase = async () => {
   try {
     await sequelize.authenticate()

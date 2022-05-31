@@ -1,7 +1,7 @@
-import { CreationOptional, DataTypes, InferAttributes, Model } from "sequelize"
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize"
 import { sequelize } from "./sequelize"
 
-export class User extends Model<InferAttributes<User>> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>
   declare name: string
   declare username: string

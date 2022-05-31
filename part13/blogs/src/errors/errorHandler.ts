@@ -4,6 +4,20 @@ import { UniqueConstraintError, ValidationError, ValidationErrorItem } from "seq
 const interpretError = (error: Error) => {
   const { name, message } = error
   switch (name) {
+    case "AuthenticationError": {
+      return {
+        name,
+        status: 401,
+        message
+      }
+    }
+    case "JsonWebTokenError": {
+      return {
+        name: "AuthenticationError",
+        status: 401,
+        message: "invalid or missing token"
+      }
+    }
     case "NotFoundError":
       return {
         name,
