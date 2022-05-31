@@ -28,7 +28,18 @@ blogsRouter.get("/", throwsError(async ({ query }, response) => {
   const search = query["search"] as string
   const where = !search
     ? {}
-    : { title: { [ Op.iLike ]: `%${search}%` }}
+    : { [ Op.or ]: [
+      {
+        author: {
+          [ Op.iLike ]: `%${search}%`
+        }
+      },
+      {
+        title: {
+          [ Op.iLike ]: `%${search}%`
+        }
+      }
+    ]}
 
   const blogs = await Blog.findAll({
     attributes: {
