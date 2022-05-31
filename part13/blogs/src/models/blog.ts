@@ -28,7 +28,10 @@ Blog.init({
   },
   likes: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    validate: {
+      isInt: true
+    }
   }
 }, {
   sequelize,

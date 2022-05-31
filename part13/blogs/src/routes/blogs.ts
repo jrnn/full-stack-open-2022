@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { Request, RequestHandler, Router } from "express"
+import { NotFoundError, throwsError } from "../errors"
 import { Blog } from "../models"
 
 interface RequestWithBlog<T = unknown> extends Request<{ id?: string }> {
@@ -8,10 +7,11 @@ interface RequestWithBlog<T = unknown> extends Request<{ id?: string }> {
   blog?: Blog
 }
 
-const blogFinder: RequestHandler = async (request: RequestWithBlog, response, next) => {
-  const blog = await Blog.findByPk(request.params.id)
+const blogFinder: RequestHandler = async (request: RequestWithBlog, _, next) => {
+  const { id } = request.params
+  const blog = await Blog.findByPk(id)
   if (!blog) {
-    return response.status(404).end()
+    return next(new NotFoundError(`no blog found with id '${id}'`))
   }
   request.blog = blog
   return next()
@@ -19,32 +19,25 @@ const blogFinder: RequestHandler = async (request: RequestWithBlog, response, ne
 
 export const blogsRouter = Router()
 
-blogsRouter.get("/", async (_, response) => {
+blogsRouter.get("/", throwsError(async (_, response) => {
   const blogs = await Blog.findAll()
   return response.status(200).json(blogs)
-})
+}))
 
-blogsRouter.post("/", async ({ body }, response) => {
-  try {
-    const blog = await Blog.create(body)
-    return response.status(201).json(blog)
-  } catch (error) {
-    return response.status(400).json({ error })
-  }
-})
+blogsRouter.post("/", throwsError(async ({ body }, response) => {
+  const blog = await Blog.create(body)
+  return response.status(201).json(blog)
+}))
 
-blogsRouter.put("/:id", blogFinder, async ({ blog, body }: RequestWithBlog<{ likes: number }>, response) => {
-  try {
-    const { likes } = body
-    blog!.likes = likes
-    await blog!.save()
-    return response.status(200).json(blog)
-  } catch (error) {
-    return response.status(400).json({ error })
-  }
-})
+blogsRouter.put("/:id", blogFinder, throwsError(async (request: RequestWithBlog<{ likes: number }>, response) => {
+  const blog = request.blog as Blog
+  blog.likes = request.body.likes
+  await blog.save()
+  return response.status(200).json(blog)
+}))
 
-blogsRouter.delete("/:id", blogFinder, async ({ blog }: RequestWithBlog, response) => {
-  await blog!.destroy()
+blogsRouter.delete("/:id", blogFinder, throwsError(async (request: RequestWithBlog, response) => {
+  const blog = request.blog as Blog
+  await blog.destroy()
   return response.status(204).end()
-})
+}))
