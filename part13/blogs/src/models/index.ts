@@ -18,4 +18,4 @@ export const setupDatabase = async () => {
   }
 }
 
-export { Blog, User }
+export { Blog, sequelize, User }

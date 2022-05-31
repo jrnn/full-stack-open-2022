@@ -1,4 +1,5 @@
 import { RequestHandler, Router } from "express"
+import { Op } from "sequelize"
 import { AuthorizationError, NotFoundError, throwsError } from "../errors"
 import { userExtractor } from "../middleware"
 import { Blog, User } from "../models"
@@ -23,7 +24,23 @@ const blogFinder: RequestHandler = async (request: TypedRequest, _, next) => {
 
 export const blogsRouter = Router()
 
-blogsRouter.get("/", throwsError(async (_, response) => {
+blogsRouter.get("/", throwsError(async ({ query }, response) => {
+  const search = query["search"] as string
+  const where = !search
+    ? {}
+    : { [ Op.or ]: [
+      {
+        author: {
+          [ Op.iLike ]: `%${search}%`
+        }
+      },
+      {
+        title: {
+          [ Op.iLike ]: `%${search}%`
+        }
+      }
+    ]}
+
   const blogs = await Blog.findAll({
     attributes: {
       exclude: [
@@ -38,7 +55,11 @@ blogsRouter.get("/", throwsError(async (_, response) => {
           "updatedAt"
         ]
       }
-    }
+    },
+    where,
+    order: [
+      [ "likes", "DESC" ]
+    ]
   })
   return response.status(200).json(blogs)
 }))
