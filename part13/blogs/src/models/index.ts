@@ -1,11 +1,16 @@
 import { Blog } from "./blog"
 import { sequelize } from "./sequelize"
+import { User } from "./user"
+
+User.hasMany(Blog)
+Blog.belongsTo(User)
 
 export const setupDatabase = async () => {
   try {
     await sequelize.authenticate()
     console.log("Connected to database")
-    await Blog.sync()
+    await User.sync({ alter: true })
+    await Blog.sync({ alter: true })
     console.log("Tables created if missing")
   } catch (error) {
     console.error("Something went wrong =", error)
@@ -13,4 +18,4 @@ export const setupDatabase = async () => {
   }
 }
 
-export { Blog }
+export { Blog, User }

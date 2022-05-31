@@ -7,4 +7,4 @@ export const throwsError = (throwingHandler: (req: Request, res: Response) => Pr
 }
 
 export { errorHandler } from "./errorHandler"
-export { NotFoundError } from "./errors"
+export { AuthenticationError, AuthorizationError, NotFoundError } from "./errors"
