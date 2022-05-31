@@ -11,6 +11,13 @@ const interpretError = (error: Error) => {
         message
       }
     }
+    case "AuthorizationError": {
+      return {
+        name,
+        status: 403,
+        message: "you're not allowed to do that"
+      }
+    }
     case "JsonWebTokenError": {
       return {
         name: "AuthenticationError",

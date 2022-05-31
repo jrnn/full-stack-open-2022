@@ -1,5 +1,5 @@
 import { RequestHandler, Router } from "express"
-import { NotFoundError, throwsError } from "../errors"
+import { AuthorizationError, NotFoundError, throwsError } from "../errors"
 import { userExtractor } from "../middleware"
 import { Blog, User } from "../models"
 import { TypedRequest } from "../types"
@@ -41,8 +41,12 @@ blogsRouter.put("/:id", blogFinder, throwsError(async (request: TypedRequest<{ l
   return response.status(200).json(blog)
 }))
 
-blogsRouter.delete("/:id", blogFinder, throwsError(async (request: TypedRequest, response) => {
+blogsRouter.delete("/:id", userExtractor, blogFinder, throwsError(async (request: TypedRequest, response) => {
   const blog = request.blog as Blog
+  const user = request.user as User
+  if (blog.userId !== user.id) {
+    throw new AuthorizationError()
+  }
   await blog.destroy()
   return response.status(204).end()
 }))
