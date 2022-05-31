@@ -20,7 +20,10 @@ User.init({
   username: {
     type: DataTypes.TEXT,
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      isEmail: true
+    }
   }
 }, {
   sequelize,
