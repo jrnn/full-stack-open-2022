@@ -56,7 +56,10 @@ blogsRouter.get("/", throwsError(async ({ query }, response) => {
         ]
       }
     },
-    where
+    where,
+    order: [
+      [ "likes", "DESC" ]
+    ]
   })
   return response.status(200).json(blogs)
 }))
