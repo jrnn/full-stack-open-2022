@@ -1,13 +1,14 @@
 import cors from "cors"
 import express from "express"
 import { errorHandler } from "../errors"
-import { blogsRouter, loginRouter, usersRouter } from "../routes"
+import { authorsRouter, blogsRouter, loginRouter, usersRouter } from "../routes"
 
 export const app = express()
 
 app.use(cors())
 app.use(express.json())
 
+app.use("/api/authors", authorsRouter)
 app.use("/api/blogs", blogsRouter)
 app.use("/api/login", loginRouter)
 app.use("/api/users", usersRouter)
