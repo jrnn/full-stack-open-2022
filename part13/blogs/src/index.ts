@@ -1,9 +1,9 @@
 import { MODE, PORT } from "./config"
 import { app } from "./app"
-import { setupDatabase } from "./models"
+import { connectToDatabase } from "./db"
 
 const run = async () => {
-  await setupDatabase()
+  await connectToDatabase()
   app.listen(PORT, () => {
     console.log(`Now running on port ${PORT} in ${MODE} mode.`)
   })

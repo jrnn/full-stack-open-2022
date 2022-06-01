@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { QueryTypes } from "sequelize"
+import { sequelize } from "../db"
 import { throwsError } from "../errors"
-import { sequelize } from "../models"
 
 const SELECT_AUTHORS = `
   SELECT b.author, COUNT(*) as blogs, SUM(b.likes) as likes

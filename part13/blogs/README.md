@@ -1,4 +1,4 @@
-## Part 13
+# Part 13
 
 This could just as well have been an independent repository, but I stubbornly stick to my monorepo
 fetish. Heroku is a headache because it's not built for situations such as this, and the project
@@ -15,3 +15,13 @@ Or, after diverging from the remote (e.g. due to an interactive rebase):
 Because Heroku will only be aware of this subdirectory, we can't leverage any shared resources from
 elsewhere in the repo. Hence e.g. `tsconfig.json` has to contain all relevant options, instead of
 extending the configuration from root.
+
+## Migrations
+
+Database migrations need to be run by hand:
+
+    $ npm run migration
+
+Or, to revert migrations one by one:
+
+    $ npm run migration:rollback

@@ -5,6 +5,8 @@
     "build": "rimraf ./dist && tsc --project ./tsconfig.json",
     "dev": "nodemon --watch src ./src/index.ts",
     "lint": "eslint .",
+    "migration": "npm run build && node ./dist/db/migration.js",
+    "migration:rollback": "npm run build && node ./dist/db/migration.js rollback",
     "start": "npm run build && cross-env NODE_ENV=production node ./dist/index.js",
     "types": "tsc --noEmit --project ./tsconfig.json"
   },
@@ -15,7 +17,8 @@
     "express": "4.18.1",
     "jsonwebtoken": "8.5.1",
     "pg": "8.7.3",
-    "sequelize": "6.20.1"
+    "sequelize": "6.20.1",
+    "umzug": "3.1.1"
   },
   "devDependencies": {
     "@types/cors": "2.8.12",
