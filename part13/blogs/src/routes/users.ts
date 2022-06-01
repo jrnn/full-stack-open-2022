@@ -21,6 +21,30 @@ usersRouter.get("/", throwsError(async (_, response) => {
   return response.status(200).json(users)
 }))
 
+usersRouter.get("/:id", throwsError(async (request, response) => {
+  const { id } = request.params
+  const user = await User.findByPk(id, {
+    include: {
+      model: Blog,
+      as: "readings",
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "userId"
+        ]
+      },
+      through: {
+        attributes: []
+      }
+    }
+  })
+  if (!user) {
+    throw new NotFoundError(`no user found with id '${id}'`)
+  }
+  response.status(200).json(user)
+}))
+
 usersRouter.post("/", throwsError(async ({ body }, response) => {
   const user = await User.create(body)
   return response.status(201).json(user)

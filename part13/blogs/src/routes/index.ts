@@ -1,4 +1,5 @@
 export { authorsRouter } from "./authors"
 export { blogsRouter } from "./blogs"
 export { loginRouter } from "./login"
+export { readingsRouter } from "./readings"
 export { usersRouter } from "./users"

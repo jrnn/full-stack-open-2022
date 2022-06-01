@@ -49,7 +49,7 @@ export const up: MigrationFn<QueryInterface> = async ({ context: queryInterface 
       field: "id"
     },
     onUpdate: "cascade",
-    onDelete: "set null"
+    onDelete: "restrict"
   })
 }
 

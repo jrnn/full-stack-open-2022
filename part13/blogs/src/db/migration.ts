@@ -34,13 +34,14 @@ const rollback = async () => {
   }
 }
 
-const main = () => {
+const main = async () => {
   const isRollback = process.argv[2]?.toLowerCase() === "rollback"
   if (isRollback) {
-    rollback()
+    await rollback()
   } else {
-    runMigrations()
+    await runMigrations()
   }
+  process.exit(0)
 }
 
 main()
