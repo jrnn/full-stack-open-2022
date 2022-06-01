@@ -35,7 +35,9 @@ usersRouter.get("/:id", throwsError(async (request, response) => {
         ]
       },
       through: {
-        attributes: []
+        attributes: [
+          "hasBeenRead"
+        ]
       }
     }
   })
