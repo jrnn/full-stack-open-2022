@@ -1,12 +1,9 @@
-import { PASSWORD, SECRET_KEY } from "../config"
-import { Request, Router } from "express"
-import * as jwt from "jsonwebtoken"
-import { AuthenticationError, throwsError } from "../errors"
+import { PASSWORD } from "../config"
+import { Router } from "express"
+import { AuthenticationError, throwsError, UserDisabledError } from "../errors"
 import { User } from "../models"
-
-interface TypedRequest<T = unknown> extends Request {
-  body: T
-}
+import { sessionService } from "../services"
+import { TypedRequest } from "../types"
 
 interface Credentials {
   username: string
@@ -24,7 +21,9 @@ loginRouter.post("/", throwsError(async ({ body }: TypedRequest<Credentials>, re
   if (!user) {
     throw new AuthenticationError()
   }
-  const { id, name } = user
-  const token = jwt.sign({ id, name, username }, SECRET_KEY)
+  if (user.disabled) {
+    throw new UserDisabledError()
+  }
+  const { token } = await sessionService.create(user)
   return response.status(200).json({ token })
 }))

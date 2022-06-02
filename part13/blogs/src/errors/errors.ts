@@ -18,3 +18,10 @@ export class NotFoundError extends Error {
     this.name = "NotFoundError"
   }
 }
+
+export class UserDisabledError extends Error {
+  constructor() {
+    super("the user account has been disabled")
+    this.name = "UserDisabledError"
+  }
+}
