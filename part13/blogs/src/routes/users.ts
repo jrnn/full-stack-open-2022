@@ -23,6 +23,11 @@ usersRouter.get("/", throwsError(async (_, response) => {
 
 usersRouter.get("/:id", throwsError(async (request, response) => {
   const { id } = request.params
+  const read = request.query["read"] as string
+  const where = !read
+    ? {}
+    : { hasBeenRead: read === "true" }
+
   const user = await User.findByPk(id, {
     include: {
       model: Blog,
@@ -37,7 +42,8 @@ usersRouter.get("/:id", throwsError(async (request, response) => {
       through: {
         attributes: [
           "hasBeenRead"
-        ]
+        ],
+        where
       }
     }
   })
