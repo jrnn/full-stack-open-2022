@@ -1,7 +1,7 @@
 import cors from "cors"
 import express from "express"
 import { errorHandler } from "../errors"
-import { authorsRouter, blogsRouter, loginRouter, readingsRouter, usersRouter } from "../routes"
+import { authorsRouter, blogsRouter, loginRouter, logoutRouter, readingsRouter, usersRouter } from "../routes"
 
 export const app = express()
 
@@ -11,6 +11,7 @@ app.use(express.json())
 app.use("/api/authors", authorsRouter)
 app.use("/api/blogs", blogsRouter)
 app.use("/api/login", loginRouter)
+app.use("/api/logout", logoutRouter)
 app.use("/api/readinglists", readingsRouter)
 app.use("/api/users", usersRouter)
 app.get("/api/ping", (_, response) => response.status(200).send("pong"))

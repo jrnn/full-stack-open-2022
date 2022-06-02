@@ -38,6 +38,12 @@ const interpretError = (error: Error) => {
         status: 400,
         message: interpretSequelizeError(error)
       }
+    case "UserDisabledError":
+      return {
+        name,
+        status: 403,
+        message
+      }
     default:
       return {
         name,

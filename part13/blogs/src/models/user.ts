@@ -5,6 +5,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare id: CreationOptional<number>
   declare name: string
   declare username: string
+  declare disabled: boolean
 }
 
 User.init({
@@ -24,6 +25,10 @@ User.init({
     validate: {
       isEmail: true
     }
+  },
+  disabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
   sequelize,

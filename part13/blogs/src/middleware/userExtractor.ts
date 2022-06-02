@@ -1,8 +1,6 @@
-import { SECRET_KEY } from "../config"
 import { RequestHandler } from "express"
-import * as jwt from "jsonwebtoken"
-import { AuthenticationError } from "../errors"
-import { User } from "../models"
+import { UserDisabledError } from "../errors"
+import { sessionService } from "../services"
 import { TypedRequest } from "../types"
 
 export const userExtractor: RequestHandler = async (request: TypedRequest, _, next) => {
@@ -12,10 +10,9 @@ export const userExtractor: RequestHandler = async (request: TypedRequest, _, ne
       ? auth.substring(7).trim()
       : ""
 
-    const { id } = <{ id: number }>jwt.verify(token, SECRET_KEY)
-    const user = await User.findByPk(id)
-    if (!user) {
-      throw new AuthenticationError()
+    const user = await sessionService.check(token)
+    if (user.disabled) {
+      throw new UserDisabledError()
     }
     request.user = user
     return next()

@@ -1,9 +1,11 @@
 import { Blog } from "./blog"
 import { Reading } from "./reading"
+import { Session } from "./session"
 import { User } from "./user"
 
 User.hasMany(Blog)
 Blog.belongsTo(User)
+Session.belongsTo(User)
 
 Blog.belongsToMany(User, {
   through: Reading,
@@ -14,4 +16,4 @@ User.belongsToMany(Blog, {
   as: "readings"
 })
 
-export { Blog, Reading, User }
+export { Blog, Reading, Session, User }
